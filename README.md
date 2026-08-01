@@ -1,2 +1,2 @@
 # miltools
-repo para trabajar en nuke 
+repo para trabajar en nuke, tools, plugin, shorcuts
