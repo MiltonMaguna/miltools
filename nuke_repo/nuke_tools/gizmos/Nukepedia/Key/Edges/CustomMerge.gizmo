@@ -1,0 +1,64 @@
+#! C:/Program Files/Nuke6.3v4/Nuke6.3.exe -nx
+version 6.3 v4
+Gizmo {
+ inputs 2
+ tile_color 0xa63e9ff
+ addUserKnob {20 User l Merge}
+ addUserKnob {41 operation T Merge1.operation}
+ addUserKnob {41 sRGB l "Video colorspace" -STARTLINE T Merge1.sRGB}
+ addUserKnob {41 screen_alpha l "alpha masking" -STARTLINE T Merge1.screen_alpha}
+ addUserKnob {41 bbox l "set bbox to " T Merge1.bbox}
+ addUserKnob {41 metainput l "metadata from" -STARTLINE T Merge1.metainput}
+ addUserKnob {26 ""}
+ addUserKnob {41 Achannels l "A channels" T Merge1.Achannels}
+ addUserKnob {41 Bchannels l "B channels" T Merge1.Bchannels}
+ addUserKnob {41 output T Merge1.output}
+ addUserKnob {41 also_merge l "also merge" T Merge1.also_merge}
+ addUserKnob {26 ""}
+ addUserKnob {41 maskChannelMask l INVISIBLE -STARTLINE +INVISIBLE T Merge1.maskChannelMask}
+ addUserKnob {41 maskChannelInput l mask -STARTLINE T Merge1.maskChannelInput}
+ addUserKnob {41 inject -STARTLINE T Merge1.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T Merge1.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T Merge1.fringe}
+ addUserKnob {41 mix T Merge1.mix}
+ addUserKnob {26 ""}
+ addUserKnob {3 first_frame l Lifetime}
+ first_frame 1
+ addUserKnob {3 last_frame l "" -STARTLINE}
+ last_frame 100
+}
+ Input {
+  inputs 0
+  name B
+  xpos 39
+  ypos -117
+ }
+set N8cf43b0 [stack 0]
+ Input {
+  inputs 0
+  name A
+  xpos 189
+  ypos -116
+  number 1
+ }
+push $N8cf43b0
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 107
+  ypos -41
+ }
+ Switch {
+  inputs 2
+  which {{"\[if \{ (\[value parent.knob.first_frame]>\[value frame] || \[value parent.knob.last_frame]<\[value frame])\} \{return 1\} \{return 0\}]" i}}
+  name Switch1
+  tile_color 0xff000000
+  xpos 39
+  ypos 25
+ }
+ Output {
+  name Output1
+  xpos 39
+  ypos 130
+ }
+end_group

@@ -1,0 +1,36 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Growing_Random
+ addUserKnob {20 "" Settings}
+ addUserKnob {26 "" "@b;Growing Random"}
+ addUserKnob {7 growth Growth: R -100 100}
+ growth 2.9
+ addUserKnob {7 yoffset "Y Offset:" R -100 100}
+ addUserKnob {7 magnitude Magnitude: R -100 100}
+ addUserKnob {7 velo "Peak Frame:" R 0 100}
+ velo 100
+ addUserKnob {26 "" ""}
+ addUserKnob {7 result Result R 0 1}
+ result {{(((growth*random())*(frame+magnitude))/10+yoffset)/velo x65 0}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 19
+  ypos 13
+ }
+ Output {
+  name Output1
+  xpos 19
+  ypos 39
+ }
+end_group

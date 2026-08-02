@@ -1,0 +1,342 @@
+set cut_paste_input [stack 0]
+version 13.1 v2
+Read {
+ inputs 0
+ file_type exr
+ file X:/PROYECTOS/Dropbox/Cutaways/render/FilterStation/awty_sky03_Cutaway_04FilterStation_v30_EB/awty_sky03_Cutaway_04FilterStation_v30_EB_A_Objeto/awty_sky03_Cutaway_04FilterStation_v30_EB_A_Objeto_Main_AOV%04d.exr
+ localizationPolicy off
+ format "1920 1920 0 0 1920 1920 1 Cutaways"
+ first 2146
+ last 2266
+ frame_mode "start at"
+ frame 1001
+ origfirst 2146
+ origlast 2266
+ origset true
+ name Read9
+ selected true
+ xpos -2403
+ ypos 3135
+ postage_stamp false
+}
+Remove {
+ operation keep
+ channels depth
+ name Remove9
+ selected true
+ xpos -2403
+ ypos 3214
+}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 depth
+ fromInput2 {{0} B}
+ mappings "4 depth.Z 0 0 rgba.red 0 0 depth.Z 0 0 rgba.green 0 1 depth.Z 0 0 rgba.blue 0 2 depth.Z 0 0 rgba.alpha 0 3"
+ name Shuffle8
+ label "\[value in1]"
+ selected true
+ xpos -2403
+ ypos 3266
+}
+Expression {
+ expr0 r>.1?0:r
+ expr3 r>.1?0:1
+ name Expression3
+ selected true
+ xpos -2403
+ ypos 3323
+}
+Dot {
+ name Dot62
+ selected true
+ xpos -2369
+ ypos 3359
+}
+set N7760d400 [stack 0]
+Dot {
+ name Dot63
+ selected true
+ xpos -2475
+ ypos 3359
+}
+Invert {
+ channels alpha
+ name Invert3
+ selected true
+ xpos -2509
+ ypos 3399
+}
+push $N7760d400
+Group {
+ inputs 2
+ name Group3
+ help "This node provides IBKGizmo a colour reference in which to base its keying algorithm on a per pixel basis.\nThe idea is to remove the foreground image and only leave the shades and hues of the original blue/greenscreen.\nAttach the output of this node to the 'c' input of a default IBKGizmo. Attach the input of this node along with the 'fg' input of the IBKGizmo to the original screen.\nPick which colour your screen type is in both nodes and then while viewing the alpha output from the IBKGizmo lower the darks.b (if a bluescreen - adjust darks.g if a greenscreen) in this node \nuntil you see a change in the garbage area of the matte. Once you see a change then you have gone too far -back off a step. If you are still left with discoloured edges you can use the other colours in the lights and darks to eliminate them. Remember the idea is \nto be left with the original shades of the screen and the foreground blacked out. While swapping between viewing the matte from the IBKGizmo and the rgb output of this IBKColour adjust the other colours \nuntil you see a change in the garbage area of the matte. Simple rule of thumb - if you have a light red discoloured area increase the lights.r - if you have a dark green discoloured area increase darks.g. If your screen does not have a very saturated hue you may still be left\n with areas of discolouration after the above process. The 'erode' slider can help with this - while viewing the rgb output adjust the erode until those areas disappear.\nThe 'patch black' slider allows you to fill in the black areas with screen colour. This is not always necessary but if you see blue squares in your composite increase this value and it'll fix it.\nThe above is the only real workflow for this node - working from the top parameter to the bottom parameter- going back to tweak darks/lights with 'erode' and 'patch black' activated isn't really gonna work. "
+ tile_color 0x990000
+ selected true
+ xpos -2403
+ ypos 3405
+ addUserKnob {20 "" l Parameters}
+ addUserKnob {41 screen_type l "screen type" T IBK2.screen_type}
+ addUserKnob {16 Size l size t "size of colour expansion" R 0 100}
+ Size 1
+ addUserKnob {18 off l darks t "adjust the colour values to get the best separation between black and the screen type colour.\nYou want to be left with only shades of the screen colour and black. \nIf a green screen is selected start by bringing down darks->green\nIf a blue screen is selected start by bringing down darks->blue" R -1 1}
+ off {0 0 0}
+ addUserKnob {6 off_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 mult l lights t "adjust the colour values to get the best separation between black and the screen type colour.\nYou want to be left with only shades of the screen colour and black. \nIf a green screen is selected start by bringing down darks->green\nIf a blue screen is selected start by bringing down darks->blue" R 0 2}
+ mult {1 1 1}
+ addUserKnob {6 mult_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {26 ""}
+ addUserKnob {7 erode t "increase this value if you still see traces of the foreground edge colour in the output" R 0 5}
+ erode 1.94
+ addUserKnob {26 ""}
+ addUserKnob {7 multi l "patch black" t "increase this to optionally remove the black from the output.\nThis should only be used once the the above darks/lights have been set" R 0 5}
+ multi 1.06
+ addUserKnob {6 filt l INVISIBLE -STARTLINE +INVISIBLE}
+ filt true
+ addUserKnob {26 ""}
+ addUserKnob {7 level l INVISIBLE t "multiply the rgb output. Helps remove noise from main key" +INVISIBLE}
+ level 1
+}
+ Input {
+  inputs 0
+  name Input2
+  xpos -139
+  ypos 211
+  number 1
+ }
+ Invert {
+  channels alpha
+  name Invert1
+  tile_color 0x7aa9ff00
+  xpos -18
+  ypos 186
+ }
+ Erode {
+  size {{erode}}
+  name Erode1
+  xpos -18
+  ypos 222
+ }
+set N7759fc00 [stack 0]
+ Dot {
+  name Dot3
+  tile_color 0x9597bf00
+  xpos 16
+  ypos 665
+ }
+push $N7759fc00
+ Input {
+  inputs 0
+  name Input1
+  xpos -31
+  ypos -45
+ }
+ Dot {
+  name Dot16
+  xpos 3
+  ypos -21
+ }
+set N7759f000 [stack 0]
+ Dot {
+  name Dot17
+  xpos 126
+  ypos -21
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  channels alpha
+  name Copy3
+  tile_color 0x9e3c6300
+  xpos 92
+  ypos 179
+ }
+ Premult {
+  name Premult3
+  xpos 92
+  ypos 238
+ }
+ Blur {
+  size {{Size}}
+  name Blur4
+  tile_color 0xcc804e00
+  xpos 92
+  ypos 262
+ }
+ Unpremult {
+  name Unpremult4
+  xpos 92
+  ypos 300
+ }
+set N7759dc00 [stack 0]
+ Clamp {
+  channels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  maximum 0
+  MinClampTo_enable true
+  MaxClampTo_enable true
+  name Clamp1
+  xpos 212
+  ypos 300
+ }
+set N7759d800 [stack 0]
+ Dot {
+  name Dot5
+  xpos 366
+  ypos 304
+ }
+push $N7759d800
+push $N7759dc00
+ Dot {
+  name Dot4
+  xpos 126
+  ypos 349
+ }
+set N7759d000 [stack 0]
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 rgba.alpha
+  name Copy1
+  xpos 212
+  ypos 338
+ }
+ Blur {
+  channels rgba
+  size {{Size*3*multi}}
+  name Blur1
+  xpos 212
+  ypos 390
+ }
+ Unpremult {
+  name Unpremult1
+  xpos 212
+  ypos 428
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 rgba.alpha
+  name Copy2
+  xpos 332
+  ypos 421
+ }
+ Invert {
+  channels alpha
+  name Invert2
+  xpos 334
+  ypos 473
+ }
+set N77547800 [stack 0]
+ FilterErode {
+  channels alpha
+  size {{(-Size/5)}}
+  filter gaussian
+  name FilterErode2
+  xpos 334
+  ypos 571
+ }
+push $N77547800
+ FilterErode {
+  channels alpha
+  size {{(-Size/5)*multi*2}}
+  filter gaussian
+  name FilterErode1
+  xpos 217
+  ypos 473
+ }
+ Switch {
+  inputs 2
+  which {{1-filt}}
+  name Switch1
+  xpos 217
+  ypos 578
+ }
+ Premult {
+  name Premult1
+  xpos 217
+  ypos 616
+ }
+push $N7759d000
+ Merge {
+  inputs 2
+  name Merge1
+  xpos 92
+  ypos 616
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name ChannelCopy2
+  tile_color 0x9e3c6300
+  xpos 92
+  ypos 654
+ }
+ Grade {
+  multiply {{level}}
+  name Grade1
+  xpos 92
+  ypos 706
+ }
+ Output {
+  name Output1
+  xpos 92
+  ypos 743
+ }
+push $N7759f000
+ Dot {
+  name Dot1
+  tile_color 0x9597bf00
+  xpos -94
+  ypos -21
+ }
+ Grade {
+  multiply {{mult.r} {mult.g} {mult.b} {curve}}
+  add {{off.r} {off.g} {off.b} {curve}}
+  name Grade11
+  tile_color 0x7aa9ff00
+  xpos -128
+  ypos 30
+ }
+ Clamp {
+  maximum_enable false
+  name Clamp2
+  xpos -128
+  ypos 91
+ }
+set N77544c00 [stack 0]
+push $N77544c00
+push $N77544c00
+ IBK {
+  inputs 3
+  blue_green_weight 1
+  luma 1
+  name IBK2
+  tile_color 0xff00
+  xpos -169
+  ypos 169
+ }
+end_group
+Dot {
+ name Dot68
+ selected true
+ xpos -2369
+ ypos 3486
+}
+push 0
+Dot {
+ name Dot69
+ selected true
+ xpos -1933
+ ypos 3421
+}
+Copy {
+ inputs 2
+ from0 rgba.red
+ to0 depth.Z
+ name Copy6
+ selected true
+ xpos -1967
+ ypos 3477
+}

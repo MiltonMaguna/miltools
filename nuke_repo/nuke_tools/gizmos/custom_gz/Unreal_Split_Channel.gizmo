@@ -1,0 +1,17 @@
+set cut_paste_input [stack 0]
+version 14.0 v4
+push $cut_paste_input
+NoOp {
+ name Unreal_Split_Channel
+ tile_color 0x4a1e4cff
+ gl_color 0xaf0a0aff
+ note_font "Arial Bold"
+ note_font_size 14
+ note_font_color 0x4c4c4cff
+ selected true
+ xpos 296
+ ypos -3
+ addUserKnob {20 ARCANE}
+ addUserKnob {26 text l "" +STARTLINE T "Split Channel 1.0"}
+ addUserKnob {22 Split_Channel l split_channel T "from arcane import get_session\nfrom user_tools.libs.unreal_export.unreal_export import *\n\nif check_in_pipeline():\n    node = nuke.thisNode().input(0)\n    channels = get_all_channels_to_read(node)\n    channels = get_channels(channels)\n    position = get_position(node)\n    filename = get_filename(node)\n    _node = nuke.thisNode()\n\n    if nuke.thisNode().dependent != 0:\n        delete_node_dependent(nuke.thisNode())\n\n    run_write_unreal(filename, channels, position, _node)" +STARTLINE}
+}

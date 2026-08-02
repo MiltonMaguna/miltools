@@ -1,0 +1,129 @@
+#! C:/Program Files/Nuke11.3v2/nuke-11.3.2.dll -nx
+version 11.3 v2
+Gizmo {
+ addUserKnob {20 User}
+ addUserKnob {3 udim}
+ udim 3001
+ addUserKnob {6 testChecker +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 381
+  ypos -83
+ }
+ Reformat {
+  type "to box"
+  box_width 1000
+  box_height 1000
+  box_fixed true
+  name Reformat1
+  xpos 381
+  ypos -57
+ }
+ Dot {
+  name Dot9
+  xpos 414
+  ypos 22
+ }
+set N51d51c00 [stack 0]
+ Transform {
+  translate {{((udim-selUdim)*1000)} 6000}
+  center {320 240}
+  name udim_6000_y
+  xpos 744
+  ypos 190
+  addUserKnob {20 User}
+  addUserKnob {3 selUdim}
+  selUdim 6001
+ }
+push $N51d51c00
+ Transform {
+  translate {{((udim-selUdim)*1000)} 4000}
+  center {320 240}
+  name udim_5000_y
+  xpos 608
+  ypos 181
+  addUserKnob {20 User}
+  addUserKnob {3 selUdim}
+  selUdim 5001
+ }
+push $N51d51c00
+ Transform {
+  translate {{((udim-selUdim)*1000)} 3000}
+  center {320 240}
+  name udim_4000_y
+  xpos 466
+  ypos 180
+  addUserKnob {20 User}
+  addUserKnob {3 selUdim}
+  selUdim 4001
+ }
+push $N51d51c00
+ Transform {
+  translate {{((udim-selUdim)*1000)} 2000}
+  center {320 240}
+  name udim_3000_y
+  xpos 344
+  ypos 177
+  addUserKnob {20 User}
+  addUserKnob {3 selUdim}
+  selUdim 3001
+ }
+push $N51d51c00
+ Transform {
+  translate {{((udim-selUdim)*1000)} 1000}
+  center {320 240}
+  name udim_2000_y
+  xpos 242
+  ypos 171
+  addUserKnob {20 User}
+  addUserKnob {3 selUdim}
+  selUdim 2001
+ }
+push $N51d51c00
+ Transform {
+  translate {{((udim-selUdim)*1000)} 0}
+  center {320 240}
+  name udim_0_y
+  xpos 138
+  ypos 172
+  addUserKnob {20 User}
+  addUserKnob {3 selUdim}
+  selUdim 1001
+ }
+ CheckerBoard2 {
+  inputs 0
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  name CheckerBoard1
+  xpos 13
+  ypos 135
+ }
+ Dot {
+  name Dot1
+  xpos 46
+  ypos 331
+ }
+ Switch {
+  inputs 7
+  which {{int((udim/1000))}}
+  name udim
+  selected true
+  xpos 413
+  ypos 328
+  disable {{testChecker}}
+ }
+set N51f47800 [stack 0]
+ Output {
+  name Output1
+  xpos 413
+  ypos 435
+ }
+push $N51f47800
+ Viewer {
+  frame_range 1-100
+  name Viewer1
+  xpos 78
+  ypos 429
+ }
+end_group

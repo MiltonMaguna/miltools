@@ -1,0 +1,25 @@
+Group {
+ name apDisabler
+ inputs 0
+ help "Simple tool to de/activate a selection of nodes (by selecting their classes and labels) at once."
+ knobChanged "\n\nclassSelectedArray=nuke.thisNode().knob(\"classInput\").value().replace(\" \",\"\").split(\",\")\nlabelSelectedArray=nuke.thisNode().knob(\"labelInput\").value().split(\",\")\niniState=\{\}\n\nif nuke.thisKnob().name()==\"disable\":\n    for j in classSelectedArray:\n        classSelected=nuke.allNodes(j,group=nuke.thisParent())\n        for i in classSelected:\n\t\t\tiniState.update(\{i\[\"name\"].getValue(): i\[\"disable\"].getValue()\})\n        for i in classSelected:\n            i.knob(\"disable\").setValue(nuke.thisKnob().value())\n\n    for j in labelSelectedArray:\n        if not j==\"\":\n            for i in nuke.allNodes(group=nuke.thisParent()):\n                if i\[\"label\"].getValue().strip()==j.strip():\n                    i.knob(\"disable\").setValue(nuke.thisKnob().value())\n                elif i\[\"label\"].getValue().strip()==j.strip().lstrip('!'):\n                \ttry:\n                \t\ti.knob(\"disable\").setValue(iniState\[i\[\"name\"].getValue()])\n                \texcept:\n                \t\tpass\nprint iniState\n# AUTOLABEL\n\nnClass=nuke.thisNode()\[\"classInput\"].getValue()\nnLabel=nuke.thisNode()\[\"labelInput\"].getValue()\ntoLabel=\"\"\nif not nuke.thisNode()\[\"updLabel\"].getValue()==False:\n    if not nClass==\"\":\n        toLabel=\"(c) \"+nClass\n        if not nLabel==\"\":\n            toLabel=toLabel+\"\\n(l) \"+nLabel\n    elif not nLabel==\"\":\n        toLabel=\"(l) \"+nLabel\n    else:\n        toLabel=\"\"\n    nuke.thisNode()\[\"label\"].setValue(toLabel)\n"
+ tile_color 0xff0000ff
+ note_font "Helvetica Bold"
+ addUserKnob {20 Disabler}
+ addUserKnob {1 classInput l "classes (c)" t "Enter class of nodes to de/activate when you de/activate this node. \n\n* TIP: You can add several classes by using commas.\n\n(e.g. VectorBlur, ZDefocus)"}
+ addUserKnob {1 labelInput l "labels (l)" t "Enter label of nodes to de/activate when you de/activate this node.\n\n* TIP1: You can add several labels by using commas.\n* TIP2: You can negate by starting with !\n\n(e.g. disable me, me too, !dont change me)"}
+ addUserKnob {52 script T "nuke.thisNode()\[\"knobChanged\"].setValue('''\n\nclassSelectedArray=nuke.thisNode().knob(\"classInput\").value().replace(\" \",\"\").split(\",\")\nlabelSelectedArray=nuke.thisNode().knob(\"labelInput\").value().split(\",\")\niniState=\{\}\n\nif nuke.thisKnob().name()==\"disable\":\n    for j in classSelectedArray:\n        classSelected=nuke.allNodes(j,group=nuke.thisParent())\n        for i in classSelected:\n\t\t\tiniState.update(\{i\[\"name\"].getValue(): i\[\"disable\"].getValue()\})\n        for i in classSelected:\n            i.knob(\"disable\").setValue(nuke.thisKnob().value())\n\n    for j in labelSelectedArray:\n        if not j==\"\":\n            for i in nuke.allNodes(group=nuke.thisParent()):\n                if i\[\"label\"].getValue().strip()==j.strip():\n                    i.knob(\"disable\").setValue(nuke.thisKnob().value())\n                elif i\[\"label\"].getValue().strip()==j.strip().lstrip('!'):\n                \ttry:\n                \t\ti.knob(\"disable\").setValue(iniState\[i\[\"name\"].getValue()])\n                \texcept:\n                \t\tpass\nprint iniState\n# AUTOLABEL\n\nnClass=nuke.thisNode()\[\"classInput\"].getValue()\nnLabel=nuke.thisNode()\[\"labelInput\"].getValue()\ntoLabel=\"\"\nif not nuke.thisNode()\[\"updLabel\"].getValue()==False:\n    if not nClass==\"\":\n        toLabel=\"(c) \"+nClass\n        if not nLabel==\"\":\n            toLabel=toLabel+\"\\\\n(l) \"+nLabel\n    elif not nLabel==\"\":\n        toLabel=\"(l) \"+nLabel\n    else:\n        toLabel=\"\"\n    nuke.thisNode()\[\"label\"].setValue(toLabel)\n''')" +STARTLINE}
+ addUserKnob {6 updLabel l "Auto-Update label " t "Uncheck to disable the auto-updating of this node's label." +STARTLINE}
+ updLabel true
+ addUserKnob {26 Explanation l "" +STARTLINE T " "}
+ addUserKnob {22 labelSelected l "Label Selected Nodes" t "Quick tool to add a custom label to all nodes you have selected." T "txt = nuke.getInput('Label Selected Nodes:', '')\nif txt:\n    for n in nuke.allNodes(group=nuke.thisParent()):\n        if n.isSelected():\n            n\[\"label\"].setValue(txt)\n    lab=nuke.thisNode()\[\"labelInput\"]\n    if not lab.getValue()==\"\":\n        lab.setValue(lab.getValue()+\", \"+txt)\n    else:\n        lab.setValue(txt)" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 copyright l "" +STARTLINE T "Disabler v1.2.4 - © Adrian Pueyo, 2015 - www.adrianpueyo.com"}
+}
+ Output {
+  inputs 0
+  name Output1
+  xpos 0
+  ypos 300
+ }
+end_group

@@ -1,0 +1,37 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Sinusoid_3D
+ addUserKnob {20 "" User}
+ addUserKnob {26 "" "@b;3D Sinusoid"}
+ addUserKnob {7 radius Radius: R -1000 1000}
+ radius 500
+ addUserKnob {13 origin Origin:}
+ addUserKnob {7 zslope "Z Slope:" R -1000 1000}
+ zslope 30
+ addUserKnob {7 lap Laps: R 0 1}
+ lap 0.5
+ addUserKnob {26 "" ""}
+ addUserKnob {13 result Result:}
+ result {{origin.x+radius*sin(lap*frame) i} {origin.y+radius*cos(lap*frame) i} {origin.z+zslope*frame i}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 130
+  ypos 62
+ }
+ Output {
+  name Output1
+  xpos 130
+  ypos 88
+ }
+end_group

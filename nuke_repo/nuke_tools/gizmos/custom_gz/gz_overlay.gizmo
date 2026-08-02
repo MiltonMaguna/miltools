@@ -1,0 +1,332 @@
+#! C:/Program Files/Nuke13.1v1/nuke-13.1.1.dll -nx
+version 13.1 v1
+Gizmo {
+ help "Applies a text burn-in to the media.\n\nUp to 6 pieces of metadata can be added to the shot"
+ tile_color 0x66145fff
+ addUserKnob {20 burnIn_tab l BurnIn}
+ addUserKnob {1 topleft l Vendor +INVISIBLE}
+ topleft PIMBA
+ addUserKnob {1 topcenter l "Show Code" +INVISIBLE}
+ topcenter client
+ addUserKnob {19 burnIn_color l color t "The text color"}
+ burnIn_color 0.75
+ addUserKnob {6 burnIn_color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {7 burnIn_opacity l opacity t "The text opacity"}
+ burnIn_opacity 1
+ addUserKnob {7 burnIn_xPadding l x-padding t "The distance between the Burn-in text and the left and right image borders" R 10 100}
+ burnIn_xPadding 10
+ addUserKnob {7 burnIn_yPadding l y-padding t "The distance between the Burn-in text and the top and bottom image borders" R 10 100}
+ burnIn_yPadding 7
+ addUserKnob {84 burnIn_font l font}
+ burnIn_font {{ Courier New : Bold : courbd.ttf : 0 }}
+ addUserKnob {84 fixed_width_font l "frame counter fixed width font" t "Frame counters need fixed width fonts to prevent the text from \"wiggling.\"\n\nSet this to a valid ideally sans-serif fixed width font."}
+ fixed_width_font {{ Courier New : Bold : courbd.ttf : 0 }}
+ addUserKnob {7 burnIn_textScale l "text scale" R 0 2}
+ burnIn_textScale 0.26
+ addUserKnob {1 bottomcenter l "bottom center" +INVISIBLE}
+ addUserKnob {26 version -STARTLINE T "pimba_overlay v1.1"}
+ addUserKnob {20 Background}
+ addUserKnob {6 burnIn_backgroundEnable l enable t "Enable a background for the Burn-in text. A background will be applied to each Burn-in field" -STARTLINE}
+ addUserKnob {19 burnIn_backgroundColor l color t "The background color"}
+ burnIn_backgroundColor {0 0 0 0}
+ addUserKnob {6 burnIn_backgroundColor_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {7 burnIn_backgroundOpacity l opacity t "The background opacity"}
+ burnIn_backgroundOpacity 0.705
+ addUserKnob {7 burnIn_backgroundXBorder l x-border t "The distance between the background and the left and right edges of the text. This can be used to adjust the size of the background in the x-direction" R 0 50}
+ addUserKnob {7 burnIn_backgroundYBorder l y-border t "The distance between the background and the top and bottom edges of the text. This can be used to adjust the size of the background in the y-direction" R 0 50}
+ burnIn_backgroundYBorder 7
+ addUserKnob {41 message +INVISIBLE T Text_TM.message}
+ addUserKnob {26 ""}
+ addUserKnob {6 background_grl_up +STARTLINE}
+ addUserKnob {7 opacity}
+ opacity 0.75
+ addUserKnob {7 border_y}
+ border_y 1040
+ addUserKnob {6 background_grl_down +STARTLINE}
+ addUserKnob {7 opacity_1 l opacity}
+ opacity_1 0.75
+ addUserKnob {7 border_y_1 l border_y}
+ border_y_1 41
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -702
+  ypos -165
+ }
+ Dot {
+  name Dot1
+  xpos -669
+  ypos -117
+ }
+set N1fa17800 [stack 0]
+ Dot {
+  name Dot3
+  xpos -513
+  ypos -117
+ }
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 black -1 -1 rgba.red 0 0 black -1 -1 rgba.green 0 1 black -1 -1 rgba.blue 0 2 white -1 -1 rgba.alpha 0 3"
+  name Shuffle1
+  label "\[value in1] - \[value out1]"
+  xpos -546
+  ypos -88
+ }
+set N1fa17000 [stack 0]
+ Crop {
+  box {0 0 {input.width} {parent.border_y_1}}
+  name Crop2
+  xpos -413
+  ypos 26
+ }
+push $N1fa17000
+ Crop {
+  box {0 {parent.border_y} {input.width} 1080}
+  name Crop1
+  xpos -571
+  ypos -34
+ }
+set N1fa16800 [stack 0]
+push $N1fa17800
+ Merge2 {
+  inputs 2
+  mix {{parent.opacity}}
+  name UP
+  xpos -702
+  ypos -34
+  disable {{!parent.background_grl_up}}
+ }
+ Merge2 {
+  inputs 2
+  mix {{parent.opacity_1}}
+  name DOWN
+  xpos -702
+  ypos 26
+ }
+ Dot {
+  name Dot2
+  xpos -669
+  ypos 73
+ }
+ Text2 {
+  font_size_toolbar 100
+  font_width_toolbar 100
+  font_height_toolbar 100
+  opacity {{parent.burnIn_opacity}}
+  box {{parent.burnIn_xPadding} {parent.burnIn_yPadding} {"width - parent.burnIn_xPadding"} {"height - parent.burnIn_yPadding"}}
+  transforms {{0 2}
+    }
+  font {[value parent.burnIn_font]}
+  global_font_scale {{parent.burnIn_textScale}}
+  scale {1 1}
+  cursor_initialised true
+  autofit_bbox false
+  initial_cursor_position {{0 1556}
+    }
+  group_animations {{0} imported: 0 selected: items: "root transform/"}
+  animation_layers {{1 11 1024 778 0 0 1 1 0 0 0 0}
+    }
+  color {{parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color}}
+  enable_background {{parent.burnIn_backgroundEnable}}
+  background_color {{parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor}}
+  background_opacity {{burnIn_backgroundOpacity}}
+  background_border_x {{parent.burnIn_backgroundXBorder}}
+  background_border_y {{parent.burnIn_backgroundYBorder}}
+  name Text_TM
+  label proyect
+  xpos -702
+  ypos 109
+  disable true
+ }
+ Text2 {
+  font_size_toolbar 100
+  font_width_toolbar 100
+  font_height_toolbar 100
+  opacity {{parent.burnIn_opacity}}
+  message Project
+  old_message {{80 114 111 106 101 99 116}
+    }
+  box {{parent.burnIn_xPadding} {parent.burnIn_yPadding} {"width - parent.burnIn_xPadding"} {"height - parent.burnIn_yPadding"}}
+  xjustify center
+  transforms {{0 2}
+    }
+  cursor_position 1
+  font {[value parent.burnIn_font]}
+  global_font_scale {{parent.burnIn_textScale}}
+  scale {1 1}
+  cursor_initialised true
+  autofit_bbox false
+  initial_cursor_position {{0 1556}
+    }
+  group_animations {{0} imported: 0 selected: items: "root transform/"}
+  animation_layers {{1 11 1024 778 0 0 1 1 0 0 0 0}
+    }
+  color {{parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color}}
+  enable_background {{parent.burnIn_backgroundEnable}}
+  background_color {{parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor}}
+  background_opacity {{burnIn_backgroundOpacity}}
+  background_border_x {{parent.burnIn_backgroundXBorder}}
+  background_border_y {{parent.burnIn_backgroundYBorder}}
+  name Text_TM1
+  label proyect
+  xpos -532
+  ypos 109
+  disable true
+ }
+ Text2 {
+  font_size_toolbar 100
+  font_width_toolbar 100
+  font_height_toolbar 100
+  opacity {{parent.burnIn_opacity}}
+  message "\[metadata input/timecode]"
+  old_expression_markers {{0 -1}
+    }
+  box {{parent.burnIn_xPadding} {parent.burnIn_yPadding} {"width - parent.burnIn_xPadding"} {"height - parent.burnIn_yPadding"}}
+  xjustify right
+  transforms {{0 2}
+    }
+  cursor_position 25
+  font {[value parent.burnIn_font]}
+  global_font_scale {{parent.burnIn_textScale}}
+  scale {1 1}
+  cursor_initialised true
+  autofit_bbox false
+  initial_cursor_position {{0 1556}
+    }
+  group_animations {{0} imported: 0 selected: items: "root transform/"}
+  animation_layers {{1 11 1024 778 0 0 1 1 0 0 0 0}
+    }
+  color {{parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color}}
+  enable_background {{parent.burnIn_backgroundEnable}}
+  background_color {{parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor}}
+  background_opacity {{burnIn_backgroundOpacity}}
+  background_border_x {{parent.burnIn_backgroundXBorder}}
+  background_border_y {{parent.burnIn_backgroundYBorder}}
+  name Text_TIMECODE
+  xpos -363
+  ypos 115
+ }
+ Text2 {
+  font_size_toolbar 100
+  font_width_toolbar 100
+  font_height_toolbar 100
+  opacity {{parent.burnIn_opacity}}
+  message "\[date %Y-%m-%d]"
+  old_message {{50 48 50 51 45 48 53 45 49 53}
+    }
+  old_expression_markers {{0 9}
+    }
+  box {{parent.burnIn_xPadding} {parent.burnIn_yPadding} {"width - parent.burnIn_xPadding"} {"height - parent.burnIn_yPadding"}}
+  xjustify center
+  yjustify bottom
+  transforms {{0 2}
+    }
+  cursor_position 15
+  font {[value parent.burnIn_font]}
+  global_font_scale {{parent.burnIn_textScale}}
+  scale {1 1}
+  cursor_initialised true
+  autofit_bbox false
+  initial_cursor_position {{0 1556}
+    }
+  group_animations {{0} imported: 0 selected: items: "root transform/"}
+  animation_layers {{1 11 1024 778 0 0 1 1 0 0 0 0}
+    }
+  color {{parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color}}
+  enable_background {{parent.burnIn_backgroundEnable}}
+  background_color {{parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor}}
+  background_opacity {{burnIn_backgroundOpacity}}
+  background_border_x {{parent.burnIn_backgroundXBorder}}
+  background_border_y {{parent.burnIn_backgroundYBorder}}
+  name Text_DATE
+  xpos -702
+  ypos 219
+  disable true
+ }
+ Text2 {
+  font_size_toolbar 100
+  font_width_toolbar 100
+  font_height_toolbar 100
+  opacity {{parent.burnIn_opacity}}
+  message "\[file rootname \[file tail \[value root.name]]]"
+  old_message {{111 118 101 114 108 97 121}
+    }
+  old_expression_markers {{0 6}
+    }
+  box {{parent.burnIn_xPadding} {parent.burnIn_yPadding} {"width - parent.burnIn_xPadding"} {"height - parent.burnIn_yPadding"}}
+  yjustify bottom
+  transforms {{0 2}
+    }
+  cursor_position 45
+  font {[value parent.burnIn_font]}
+  global_font_scale {{parent.burnIn_textScale}}
+  scale {1 1}
+  cursor_initialised true
+  autofit_bbox false
+  initial_cursor_position {{0 1556}
+    }
+  group_animations {{0} imported: 0 selected: items: "root transform/"}
+  animation_layers {{1 11 1024 778 0 0 1 1 0 0 0 0}
+    }
+  color {{parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color}}
+  enable_background {{parent.burnIn_backgroundEnable}}
+  background_color {{parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor}}
+  background_opacity {{burnIn_backgroundOpacity}}
+  background_border_x {{parent.burnIn_backgroundXBorder}}
+  background_border_y {{parent.burnIn_backgroundYBorder}}
+  name Text_BL_VERSION
+  xpos -512
+  ypos 219
+ }
+ Text2 {
+  font_size_toolbar 100
+  font_width_toolbar 100
+  font_height_toolbar 100
+  opacity {{parent.burnIn_opacity}}
+  message "\[frame]"
+  old_message {{49 48 48 49}
+    }
+  old_expression_markers {{0 3}
+    }
+  box {{parent.burnIn_xPadding} {parent.burnIn_yPadding} {"width - parent.burnIn_xPadding"} {"height - parent.burnIn_yPadding"}}
+  xjustify right
+  yjustify bottom
+  transforms {{0 2}
+    }
+  cursor_position 7
+  font {[value parent.fixed_width_font]}
+  global_font_scale {{parent.burnIn_textScale}}
+  scale {1 1}
+  cursor_initialised true
+  autofit_bbox false
+  initial_cursor_position {{0 1556}
+    }
+  group_animations {{0} imported: 0 selected: items: "root transform/"}
+  animation_layers {{1 11 1024 778 0 0 1 1 0 0 0 0}
+    }
+  color {{parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color} {parent.burnIn_color}}
+  enable_background {{parent.burnIn_backgroundEnable}}
+  background_color {{parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor} {parent.burnIn_backgroundColor}}
+  background_opacity {{burnIn_backgroundOpacity}}
+  background_border_x {{parent.burnIn_backgroundXBorder}}
+  background_border_y {{parent.burnIn_backgroundYBorder}}
+  name Text_FRAME
+  xpos -358
+  ypos 219
+ }
+ Output {
+  name Output1
+  xpos -358
+  ypos 323
+ }
+push $N1fa16800
+ Viewer {
+  frame_range 1001-1010
+  fps 23.97602463
+  name Viewer1
+  xpos -103
+  ypos 284
+ }
+end_group

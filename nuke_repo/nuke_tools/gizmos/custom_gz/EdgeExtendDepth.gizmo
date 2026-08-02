@@ -1,0 +1,55 @@
+#! C:/Program Files/Nuke10.0v4/nuke-10.0.4.dll -nx
+version 10.0 v4
+Gizmo {
+ label "EdgeExtendDepth\n"
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 509
+  ypos 438
+ }
+ Expression {
+  channel0 depth
+  expr0 z>500?0:z
+  name Expression1
+  xpos 509
+  ypos 478
+ }
+ Shuffle {
+  in depth
+  green red
+  blue red
+  alpha red
+  name Shuffle9
+  label "\[value in] to \[value out]"
+  xpos 640
+  ypos 472
+ }
+ Clamp {
+  channels alpha
+  MaxClampTo_enable true
+  name Clamp2
+  xpos 741
+  ypos 472
+ }
+ bl_EdgeExtend2 {
+  name bl_EdgeExtend2_1
+  xpos 869
+  ypos 478
+  threshold 1
+  Size 3
+ }
+ Shuffle {
+  out depth
+  name Shuffle10
+  label "\[value in] to \[value out]"
+  xpos 1006
+  ypos 472
+ }
+ Output {
+  name Output1
+  xpos 1006
+  ypos 572
+ }
+end_group

@@ -1,0 +1,178 @@
+#! C:/Program Files/Nuke8.0v5/nuke-8.0.v5.dll -nx
+version 8.0 v5
+Gizmo {
+help "Proyecta sobre una esfera y lo graba con otra camara, para simular la curvatura en un paneo, y anda bastaaaante bien. \n\nEl motion es con un vectorblur. Y el zoom es cambiando la distancia focal del lente, nada de andar moviendo la camara. "
+note_font Verdana
+mapsize {0.15 0.15}
+addUserKnob {20 User l Panera}
+addUserKnob {41 filmBackSizePresets l "Film Back Preset" T camarainfo.filmBackSizePresets}
+addUserKnob {41 focal l "focal length" T CameraProject.focal}
+addUserKnob {13 rotation}
+addUserKnob {7 zom l Zoom t "Modifica la distancia focal del lente de la camara que graba" R -10 10}
+addUserKnob {26 render l Render}
+addUserKnob {41 filter T ScanlineRender1.filter}
+addUserKnob {41 antialiasing T ScanlineRender1.antialiasing}
+addUserKnob {6 mb_enable l "motion blur" +STARTLINE}
+mb_enable true
+addUserKnob {7 mb_amount t "el multiply del vectorblur" R 0 3}
+mb_amount 0.5
+addUserKnob {20 noisetab l Noise}
+addUserKnob {41 filmBackSize l "Film Back Size" T camarainfo.filmBackSize}
+addUserKnob {7 amp l "Amplitud general"}
+amp 0.1
+addUserKnob {3 seed l "Semilla (seed)"}
+seed 20
+addUserKnob {26 ""}
+addUserKnob {7 velocity R 0 10}
+velocity 0.5
+addUserKnob {13 frequency l "freq individual"}
+frequency {0.2 0.2 0}
+addUserKnob {13 amp_ind l "amplitud individual"}
+amp_ind {4 4 0}
+addUserKnob {26 ""}
+addUserKnob {7 velocity2 l "velocity 2" R 0 10}
+velocity2 1
+addUserKnob {13 frequency2 l "freq individual 2"}
+frequency2 {0.2 0.2 0}
+addUserKnob {13 amp_ind2 l "amplitud individual 2"}
+amp_ind2 {1 1 0}
+addUserKnob {26 ""}
+addUserKnob {13 noise l Noise t "Output del calculo de la curva"}
+noise {{amp*((random((frame+seed)*velocity*frequency.x)-.5)*amp_ind.x+(random((frame+seed)*velocity2*frequency2.x)-.5)*amp_ind2.x)} {amp*((random((frame+seed+1000)*velocity*frequency.y)-.5)*amp_ind.y+(random((frame+seed+1000)*velocity2*frequency2.y)-.5)*amp_ind2.y)} {amp*((random((frame+seed)*velocity*frequency.z)-.5)*amp_ind.z+(random((frame+seed)*velocity2*frequency2.z)-.5)*amp_ind2.z)}}
+addUserKnob {20 LensDistortion}
+addUserKnob {6 onLD l On -STARTLINE}
+addUserKnob {7 overScan l "OverScan (LensDist)" R 0 50}
+overScan 30
+addUserKnob {26 ""}
+addUserKnob {41 distortion1 l "Radial Distortion 1" T Undistort.distortion1}
+addUserKnob {41 distortion2 l "Radial Distortion 2" T Undistort.distortion2}
+}
+Camera2 {
+inputs 0
+rotate {{parent.rotation.x+noise.x i} {parent.rotation.y+noise.y i} {parent.rotation.z+noise.z i}}
+focal {{parent.CameraProject.focal+parent.zom i}}
+haperture {{parent.camarainfo.filmBackSize.x i}}
+vaperture {{parent.camarainfo.filmBackSize.y i}}
+name CameraCapture
+xpos -857
+ypos 528
+}
+set N3002ebc0 [stack 0]
+push $N3002ebc0
+Camera2 {
+inputs 0
+focal 26
+haperture {{parent.camarainfo.filmBackSize.x}}
+vaperture {{parent.camarainfo.filmBackSize.y}}
+name CameraProject
+tile_color 0xffff
+gl_color 0xffff
+xpos -1029
+ypos 431
+}
+set N3002ef30 [stack 0]
+push $N3002ef30
+Input {
+inputs 0
+name Input1
+xpos -1513
+ypos 523
+}
+set N3002f2a0 [stack 0]
+Shuffle {
+alpha white
+name Shuffle1
+xpos -1403
+ypos 523
+}
+CDL_024mm {
+name Undistort
+xpos -1302
+ypos 525
+disable {{!parent.onLD}}
+}
+set N3058ca30 [stack 0]
+Project3D {
+inputs 2
+crop {{!parent.onLD}}
+name projector3d
+selected true
+xpos -1192
+ypos 525
+}
+Sphere {
+radius 0.33
+name Sphere1
+xpos -1192
+ypos 549
+}
+Scene {
+inputs 3
+name Scene1
+xpos -1029
+ypos 528
+}
+push $N3002f2a0
+Remove {
+name Remove1
+xpos -1485
+ypos 665
+}
+ScanlineRender {
+inputs 3
+filter Mitchell
+overscan {{parent.onLD*parent.overScan}}
+shutteroffset centred
+motion_vectors_type velocity
+name ScanlineRender1
+xpos -1039
+ypos 671
+}
+CDL_024mm {
+name Distort
+xpos -1039
+ypos 704
+disable {{!parent.onLD}}
+distortion1 {{parent.parent.Undistort.LensDistortion_24mm1.distortion1}}
+distortion2 {{parent.parent.Undistort.LensDistortion_24mm1.distortion2}}
+invertDistortion false
+}
+VectorBlur {
+uv motion
+scale {{mb_amount i}}
+name VectorBlur1
+xpos -1039
+ypos 737
+disable {{!mb_enable i}}
+}
+set N3c90a4d0 [stack 0]
+Output {
+name Output1
+xpos -1039
+ypos 783
+}
+push $N3002f2a0
+CameraTracker {
+serializeKnob "22 serialization::archive 9 0 4 0 2 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0"
+trackStart 101
+trackStop 138
+filmBackSizePresets {{133} "0\tCustom" "1\tFilm/35mm/2 perf 1.78" "2\tFilm/35mm/2 perf 2.40 v1" "3\tFilm/35mm/2 perf 2.40 v2" "4\tFilm/35mm/3 perf 1.78" "5\tFilm/35mm/4 perf 1.33 TV Safe" "6\tFilm/35mm/4 perf 1.33 Large TV Transmit" "7\tFilm/35mm/4 perf 1.78" "8\tFilm/35mm/4 perf 1.85 Extract" "9\tFilm/35mm/4 perf 1.85 Projection" "10\tFilm/35mm/4 perf 2.40 Anamorphic Projection" "11\tFilm/35mm/4 perf 2.40 Extract" "12\tFilm/16mm 1.37" "13\tFilm/Super 16mm 1.66" "14\tFilm/Super 16mm 1.85" "15\tFilm/35mm Full Frame" "16\tFilm/65mm 2.20" "17\tFilm/Panavision Super 70mm" "18\tFilm/70mm Extract 2.40" "19\tFilm/70mm Imax" "20\tFilm/Academy" "21\tFilm/Super35" "22\tArri/D21 1.33" "23\tArri/D21 1.78" "24\tArri/D21 1.85" "25\tArri/D21 2.40" "26\tArri/Alexa 16:9 1.78" "27\tArri/Alexa 16:9 1.85" "28\tArri/Alexa 16:9 2.39 Scope 2x" "29\tArri/Alexa 16:9 2.39 Flat" "30\tArri/Alexa 4:3 1.33" "31\tArri/Alexa 4:3 1.78" "32\tArri/Alexa 4:3 1.85" "33\tArri/Alexa 4:3 2.39 Scope 2x" "34\tArri/Alexa 4:3 2.39 Flat" "35\tBlack Magic/Pocket Cinema Camera" "36\tBlack Magic/Cinema Camera 2k" "37\tBlack Magic/Production Camera 4k" "38\tCanon/DSLR/M Still" "39\tCanon/DSLR/M Video" "40\tCanon/DSLR/1D MKIV Still" "41\tCanon/DSLR/1D MKIV Video" "42\tCanon/DSLR/1DX Still" "43\tCanon/DSLR/1DX Video" "44\tCanon/DSLR/5D MKII+III Still" "45\tCanon/DSLR/5D MKII+III Video" "46\tCanon/DSLR/6D Still" "47\tCanon/DSLR/6D Video" "48\tCanon/DSLR/7D Still" "49\tCanon/DSLR/7D Video" "50\tCanon/DSLR/60D Still" "51\tCanon/DSLR/60D Video" "52\tCanon/DSLR/70D Still" "53\tCanon/DSLR/70D Video" "54\tCanon/DSLR/Rebel 550D 600D 650D T2i T3i T4i Still" "55\tCanon/DSLR/Rebel 550D 600D 650D T2i T3i T4i Video" "56\tCanon/1DC Still" "57\tCanon/1DC Video" "58\tCanon/C100" "59\tCanon/C300" "60\tCanon/C500" "61\tCanon/XL1 4:3" "62\tCanon/XL1 16:9" "63\tCanon/XL2 4:3" "64\tCanon/XL2 16:9" "65\tNikon/DSLR/D4 FX Still" "66\tNikon/DSLR/D4 1.2x Still" "67\tNikon/DSLR/D4 DX Still" "68\tNikon/DSLR/D4 5:4 Still" "69\tNikon/DSLR/D90 Still" "70\tNikon/DSLR/D300S Still" "71\tNikon/DSLR/D600 FX Still" "72\tNikon/DSLR/D600 DX Still" "73\tNikon/DSLR/D700 FX Still" "74\tNikon/DSLR/D700 DX Still" "75\tNikon/DSLR/D800 FX Still" "76\tNikon/DSLR/D800 1.2x Still" "77\tNikon/DSLR/D800 DX Still" "78\tNikon/DSLR/D800 5:4 Still" "79\tNikon/DSLR/D3100 DX Still" "80\tNikon/DSLR/D3200 DX Still" "81\tNikon/DSLR/D5100 DX Still" "82\tNikon/DSLR/D7000 DX Still" "83\tPhantom/65 4k" "84\tPhantom/65 4k 16:9" "85\tPhantom/65 UHD" "86\tPhantom/65 2k Square" "87\tPhantom/65 2k 1.85" "88\tPhantom/65 2k 2.35" "89\tPhantom/65 1080p" "90\tPhantom/65 1632x1200" "91\tPhantom/65 720p" "92\tPhantom/65 1152x896" "93\tPhantom/65 800x600" "94\tPhantom/65 640x480" "95\tPhantom/65 512x512" "96\tPhantom/65 256x256" "97\tPhantom/Flex 2.5k" "98\tPhantom/Flex 1080p" "99\tPhantom/Flex 720p" "100\tPhantom/Flex 640x480" "101\tPhantom/HD Gold 2k Square" "102\tPhantom/HD Gold 2k 1.85" "103\tPhantom/HD Gold 2k 2.35" "104\tPhantom/HD Gold 1080p" "105\tPhantom/HD Gold 720p" "106\tPhantom/HD Gold 1152x896" "107\tPhantom/HD Gold 800x600" "108\tPhantom/HD Gold 640x480" "109\tPhantom/HD Gold 512x512" "110\tRed/One/4.5k" "111\tRed/One/4k 16:9" "112\tRed/One/4k 2:1" "113\tRed/One/4k HD" "114\tRed/One/4k Anamorphic" "115\tRed/One/3k 16:9" "116\tRed/One/3k 2:1" "117\tRed/One/2k 16:9" "118\tRed/One/2k 2:1" "119\tRed/Epic/5k" "120\tRed/Epic/5k 2:1" "121\tRed/Epic/5k HD" "122\tRed/Epic/5k ANA" "123\tRed/Epic/5k WS" "124\tRed/Epic/4k" "125\tRed/Epic/4k HD" "126\tRed/Epic/3k" "127\tRed/Epic/3k HD" "128\tRed/Epic/2k" "129\tRed/Epic/2k HD" "130\tRed/Epic/2k WS" "131\tRed/Epic/1k HD" "132\tRed/Epic/1k WS" "133\tRed/Epic Dragon/6k Full" "134\tRed/Epic Dragon/6k FF3" "135\tRed/Epic Dragon/5.5k Full" "136\tRed/Epic Dragon/5k Full" "137\tRed/Epic Dragon/4k Full" "138\tRed/Epic Dragon/3k Full" "139\tRed/Epic Dragon/2k Full" "140\tRed/Epic Dragon/1k Full" "141\tSony/DSLR/APS-C A37" "142\tSony/DSLR/APS-C A57" "143\tSony/DSLR/APS-C A58" "144\tSony/DSLR/APS-C A65" "145\tSony/DSLR/APS-C A77" "146\tSony/DSLR/APS-C A3000" "147\tSony/DSLR/Full Frame A99" "148\tSony/DSLR/Mirrorless A7" "149\tSony/DSLR/NEX-6" "150\tSony/DSLR/SLT-A37" "151\tSony/DSLR/SLT-A57" "152\tSony/DSLR/SLT-A99" "153\tSony/DSR-400" "154\tSony/EX1" "155\tSony/F3" "156\tSony/FS100U" "157\tSony/FS700" "158\tSony/F35 1.78" "159\tSony/F35 1.85" "160\tSony/F35 2.39" "161\tSony/F55" "162\tSony/F5" "163\tSony/F65"}
+filmBackSize {30.7 15.8}
+filenameSalt 9508
+userTrackViews {left right}
+name camarainfo
+xpos -1328
+ypos 455
+}
+push $N3c90a4d0
+push $N3058ca30
+Viewer {
+inputs 2
+frame_range 101-138
+frame_range_lock true
+input_process false
+name Viewer1
+xpos -814
+ypos 760
+}
+end_group
