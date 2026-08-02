@@ -1,5 +1,6 @@
 # custom files excluded from version control
-*nuke_repo/nuke_tools/plugins/Cattery
+*nuke_repo/nuke_tools/plugins/Cattery/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
