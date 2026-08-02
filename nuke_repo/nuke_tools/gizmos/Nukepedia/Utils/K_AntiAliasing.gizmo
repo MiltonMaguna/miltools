@@ -1,0 +1,28 @@
+#! /Applications/Nuke6.0v3/NukeX6.0v3.app/../Nuke6.0v3.app/Contents/MacOS/Nuke6.0v3 -nx
+version 6.0 v3
+Gizmo {
+ help "==========================================\nAntiAliasing  v1.0       05_08_11\n==========================================\n\n It provide an anti aliasing effects based on matrix   \n\n==========================================\nfeel free to contact me at niccolo.barbero@gmail.com\n=========================================="
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 151
+  ypos -100
+ }
+ Matrix {
+  matrix {
+      {1 2 1}
+      {2 4 2}
+      {1 2 1}
+    }
+  normalize true
+  name Matrix1
+  xpos 151
+  ypos -60
+ }
+ Output {
+  name Output1
+  xpos 151
+  ypos 40
+ }
+end_group

@@ -1,0 +1,2611 @@
+#! C:/Program Files/Nuke10.0v3/nuke-10.0.3.dll -nx
+version 10.0 v3
+add_layer {eyeST eyeST.red eyeST.green eyeST.blue eyeST.alpha}
+Gizmo {
+ inputs 4
+ onCreate "\nn = nuke.thisNode()\nn\['reflScale'].setRange(0.1,5)\nn\['reflScaleRt'].setRange(0.1,5)\nn\['highlightSizeLf'].setRange(0,1)\nn\['highlightSizeRt'].setRange(0,1)\nn\['sizeUVMask'].setRange(0,2)\nn\['sizeUVMaskRt'].setRange(0,2)\nn\['reflOcclBlur'].setRange(0,10)\nn\['reflOcclBlurRt'].setRange(0,10)\nn\['highlightSizeLf'].clearFlag(0x00000004)\nn\['highlightSizeRt'].clearFlag(0x00000004)\nn\['highlightOcclBlurLf'].setRange(0,10)\nn\['highlightOcclBlurRt'].setRange(0,10)\nn\['sizeUVMask'].clearFlag(0x00000004)\nn\['sizeUVMaskRt'].clearFlag(0x00000004)\nn\['reflOcclBlur'].clearFlag(0x00000004)\nn\['reflOcclBlurRt'].clearFlag(0x00000004)\nn\['realAmbocc'].clearFlag(0x00000004)\nn\['fakeAmbocc'].clearFlag(0x00000004)\nn\['realAmboccRt'].clearFlag(0x00000004)\nn\['fakeAmboccRt'].clearFlag(0x00000004)\n"
+ knobChanged "\n\ndef averageVectors(a,b):\n    alist = \[]\n    blist = \[]\n    if (type(a) != list and type(b) !=list):\n        return (a+b)*0.5;\n    elif (type(a) != list and type(b) == list):  \n        for i in range (0,len(b)):\n            alist.append(a)\n        blist=b\n    elif (type(a) == list and type(b) != list):\n        for i in range (0,len(a)):\n            blist.append(b)\n        alist = a\n    else:\n        alist = a\n        blist = b\n    avg = \[]\n    for j in range (0,min(len(alist),len(blist))):\n        avg.append((alist\[j]+blist\[j])*0.5)\n    return avg;\n\ndef makeDepend(n,k,knob1='',knob2='',linker='',linkColorPanel=False):\n    if (n\[linker].value()):\n        if (k.name() == knob1):\n            n\[knob2].setValue(n\[knob1].value())\n        if (k.name() == knob2):\n            n\[knob1].setValue(n\[knob2].value())\n        if(linkColorPanel):\n            try:\n                if (k.name() == knob1+'_panelDropped'):\n                    n\[knob2+'_panelDropped'].setValue(n\[knob1+'_panelDropped'].value())\n                if (k.name() == knob2+'_panelDropped'):\n                    n\[knob1+'_panelDropped'].setValue(n\[knob2+'_panelDropped'].value())\n            except:\n                pass\n        if (k.name() == linker):\n            average = averageVectors(n\[knob1].value(),n\[knob2].value())\n            n\[knob1].setValue(average)\n            n\[knob2].setValue(average)\n            if(linkColorPanel):\n                try:\n                    panelMin = min(n\[knob1+'_panelDropped'].value(),n\[knob2+'_panelDropped'].value())\n                    n\[knob1+'_panelDropped'].setValue(panelMin)\n                    n\[knob2+'_panelDropped'].setValue(panelMin)\n                except:\n                    pass\n            \nn = nuke.thisNode()\nk = nuke.thisKnob()\n\nmakeDepend(n,k,'offsetS','offsetSRt','linkReflBasics')\nmakeDepend(n,k,'offsetT','offsetTRt','linkReflBasics')\nmakeDepend(n,k,'reflRotation','reflRotationRt','linkReflBasics')\nmakeDepend(n,k,'reflScale','reflScaleRt','linkReflBasics')\nmakeDepend(n,k,'blurCornealBulge','blurCornealBulgeRt','linkReflBasics')\n\nmakeDepend(n,k,'overallGrade','overallGradeRt','linkReflGain')\nmakeDepend(n,k,'gradeSclera','gradeScleraRt','linkReflGain')\nmakeDepend(n,k,'gradeIris','gradeIrisRt','linkReflGain')\nmakeDepend(n,k,'gradePupil','gradePupilRt','linkReflGain')\nmakeDepend(n,k,'gradeUVMask','gradeUVMaskRt','linkReflGain')\nmakeDepend(n,k,'sizeUVMask','sizeUVMaskRt','linkReflGain')\nmakeDepend(n,k,'softnessUVMask','softnessUVMaskRt','linkReflGain')\nmakeDepend(n,k,'reflOcclusion','reflOcclusionRt','linkReflGain')\nmakeDepend(n,k,'reflOcclBlur','reflOcclBlurRt','linkReflGain')\n\nmakeDepend(n,k,'highlightColorLf','highlightColorRt','linkHighlights')\nmakeDepend(n,k,'positionSLf','positionSRt','linkHighlights')\nmakeDepend(n,k,'positionTLf','positionTRt','linkHighlights')\nmakeDepend(n,k,'rotationLf','rotationRt','linkHighlights')\nmakeDepend(n,k,'highlightSizeLf','highlightSizeRt','linkHighlights')\nmakeDepend(n,k,'highlightSoftnessLf','highlightSoftnessRt','linkHighlights')\nmakeDepend(n,k,'highlightOcclusionLf','highlightOcclusionRt','linkHighlights')\nmakeDepend(n,k,'highlightOcclBlurLf','highlightOcclBlurRt','linkHighlights')\n\nmakeDepend(n,k,'causticsColorLf','causticsColorRt','linkCaustics')\nmakeDepend(n,k,'offsetXLf','offsetXRt','linkCaustics')\nmakeDepend(n,k,'offsetYLf','offsetYRt','linkCaustics')\nmakeDepend(n,k,'causticsBlurLf','causticsBlurRt','linkCaustics')\n\nmakeDepend(n,k,'overallEyeGain','overallEyeGainRt','linkCC')\nmakeDepend(n,k,'scleraGain','scleraGainRt','linkCC')\nmakeDepend(n,k,'irisGain','irisGainRt','linkCC')\nmakeDepend(n,k,'pupilGain','pupilGainRt','linkCC')\nmakeDepend(n,k,'realAmbocc','realAmboccRt','linkCC')\nmakeDepend(n,k,'fakeAmbocc','fakeAmboccRt','linkCC')\nmakeDepend(n,k,'fakeAmboccWidth','fakeAmboccWidthRt','linkCC')\nmakeDepend(n,k,'blurEyeBorder','blurEyeBorderRt','linkCC')\n"
+ tile_color 0xa7d300ff
+ addUserKnob {20 Reflection l "Reflection Basics" t "Basic controls for ST-mapped eye reflections"}
+ addUserKnob {26 eyeTool l "" t "Version 1, 5/21/2016 -- first attempt at this\nVersion 2, 6/05/2016 -- added highlight image, color correction, motion blur, lots of interface improvements\nVersion 3, 12/14/2016 -- added support for using meniscus only, and masking based on eye object UVs\nVersion 4, 3/03/2017 -- added support for monster eye ST AOVs, and per-eye color correction\nVersion 5, 3/25/2017 -- added per-eye control on nearly everything. May break existing eye setups :(" +STARTLINE T "Eye Reflection ST Map Tool, v5.0\n"}
+ addUserKnob {41 eyeSTchannel l "eye ST channel" t "Use this to select which ST channel in the eyeRefl_layer to use. Default is \"eyeST,\" but you can change it to another ST AOV that accounts for one of the monsters' eye bump." T Shuffle_MONSTER.in}
+ addUserKnob {4 meniscusOption l "" t "Use this to choose whether to use the whole eye including meniscus, or to handle the eye or meniscus by itself." +STARTLINE M {"use full eye including meniscus" "use meniscus only" "exclude meniscus" "" "" ""}}
+ addUserKnob {6 applyHalfBugFix l "apply bug fix for halved ST's (only use if needed!)" t "There is a bug which I (Arun) haven't tracked down yet, in which eyeST AOVs come out half as bright as they should be... which of course messes up the coordinate mapping.\nUntil I can figure out how to even reproduce this... check this box if this happens to you. You will know it if you see values of 0.5 in the blue channel of your eyeST AOV channel(s).\nSorry." +STARTLINE}
+ addUserKnob {26 topspace l "" +STARTLINE T " "}
+ addUserKnob {6 addToBaseLayer l "add reflection + highlights + caustics to base layer" t "Output eye-color-corrected base layer + reflection + highlights + fake caustics \n(if checked off,  just output reflection + highlights + fake caustics)" +STARTLINE}
+ addToBaseLayer true
+ addUserKnob {6 antiAlias l "add extra antialiasing to reflection + highlights + caustics" t "Check this if you experience too much aliasing in the reflection, for example around the meniscus area." +STARTLINE}
+ addUserKnob {26 topspace2 l "" +STARTLINE T " "}
+ addUserKnob {6 enableMBlur l "enable motion blur, if enabled in eyeRefl layer" t "Adds motion blur to the eye reflection and masks, based on the motion vectors from the eyeRefl layer, if any.\nIf motion blur is heavy, disable this to improve speed!" +STARTLINE}
+ enableMBlur true
+ addUserKnob {41 scale l "motion blur multiply" T VectorBlur1.scale}
+ addUserKnob {41 offset l "motion blur offset" T VectorBlur1.offset}
+ addUserKnob {26 topspace3 l "" +STARTLINE T " "}
+ addUserKnob {26 ""}
+ addUserKnob {26 leftEyeReflBasics l "" +STARTLINE T "Left eye\n"}
+ addUserKnob {7 offsetS l "offset s" t "Horizontal offset in S, affecting left eye" R -0.5 0.5}
+ addUserKnob {7 offsetT l "offset t" t "Vertical offset in T, affecting left eye" R -0.5 0.5}
+ addUserKnob {7 reflRotation l rotation t "Rotate the reflection image in the left eye." R -180 180}
+ addUserKnob {14 reflScale l scale t "Scale the reflection image in the left eye." R 0.1 5}
+ reflScale 1
+ addUserKnob {7 blurCornealBulge l "soften corneal bulge" t "If there's a hard edge around the corneal bulge in the left eye, blur out the edge in the ST coordinates." R 0 20}
+ addUserKnob {26 ""}
+ addUserKnob {26 rightEyeReflBasics l "" +STARTLINE T "\t                Right eye\t     "}
+ addUserKnob {6 linkReflBasics l "link left and right" t "Link the attributes of basic left and right eye reflection ST-related settings. (If you uncheck this, and adjust them separately, then re-check this, the settings will re-sync to average values.)" -STARTLINE}
+ linkReflBasics true
+ addUserKnob {26 space3_1 l "" +STARTLINE T " "}
+ addUserKnob {7 offsetSRt l "offset s" t "Horizontal offset in S, affecting right eye" R -0.5 0.5}
+ addUserKnob {7 offsetTRt l "offset t" t "Vertical offset in T, affecting right eye" R -0.5 0.5}
+ addUserKnob {7 reflRotationRt l rotation t "Rotate the reflection image in the right eye." R -180 180}
+ addUserKnob {14 reflScaleRt l scale t "Scale the reflection image in the right eye." R 0.1 5}
+ reflScaleRt 1
+ addUserKnob {7 blurCornealBulgeRt l "soften corneal bulge" t "If there's a hard edge around the corneal bulge in the right eye, blur out the edge in the ST coordinates." R 0 20}
+ addUserKnob {26 ""}
+ addUserKnob {7 fresnelEffect l INVISIBLE t "Amount of Fresnel effect desired \n(with intensity normalized, so the brightness of straight-on reflection won't change).\nThis is left on by default, as that's \nthe most correct behaviour. However,\nif you want to tone down intensity around\nthe edges of the eye, start here first." +INVISIBLE}
+ fresnelEffect 1
+ addUserKnob {7 fresnelIOR l INVISIBLE t "Controls the effective index of refraction for the Fresnel effect.\nThis is set to 1.376 by default (according to the Internet, that's the IOR of the human cornea)." +INVISIBLE R 1 3}
+ fresnelIOR 1.376
+ addUserKnob {20 ReflectionGain l "Reflection Gain" t "Controls to grade the eye reflections by the eye regions, or by a soft pupil-centered UV mask."}
+ addUserKnob {6 enableRefl l "enable reflection" t "Enable reflection from the reflection map" +STARTLINE}
+ enableRefl true
+ addUserKnob {26 ""}
+ addUserKnob {26 leftEyeReflGain l "" +STARTLINE T "Left eye\n"}
+ addUserKnob {18 overallGrade l "overall refl gain" t "Modify the overall intensity of the reflection effect in the left eye." R 0 4}
+ overallGrade 1
+ addUserKnob {6 overallGrade_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradeSclera l "sclera gain" t "Grade reflection within sclera area in left eye" R 0 4}
+ gradeSclera 1
+ addUserKnob {6 gradeSclera_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradeIris l "iris gain" t "Grade reflection within iris area in left eye" R 0 4}
+ gradeIris 1
+ addUserKnob {6 gradeIris_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradePupil l "pupil gain" t "Grade reflection within pupil area in left eye" R 0 4}
+ gradePupil 1
+ addUserKnob {6 gradePupil_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradeUVMask l "UV mask gain" t "Grade reflection within UV mask area in left eye" R 0 4}
+ gradeUVMask 1
+ addUserKnob {6 gradeUVMask_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {14 sizeUVMask l "UV mask size" t "Size of the UV mask centered on left pupil" R 0 2}
+ sizeUVMask 1
+ addUserKnob {7 softnessUVMask l "UV mask softness" t "How much to soften the UV based circular map centered on the left pupil"}
+ softnessUVMask 0.5
+ addUserKnob {7 reflOcclusion l "reflection occlusion" t "Amount of reflection occlusion on left eye.\nDefault is 1, since that's the most correct.\nBut reduce this if the brows or lashes are\nblocking desired reflections."}
+ reflOcclusion 1
+ addUserKnob {14 reflOcclBlur l "reflection occlusion blur" t "Use this to blur the reflection occlusion mask in the left eye for a softer effect." R 0 10}
+ reflOcclBlur 1
+ addUserKnob {26 ""}
+ addUserKnob {26 rightEyeReflGain l "" +STARTLINE T "\t                     Right eye\t          "}
+ addUserKnob {6 linkReflGain l "link left and right" t "Link the attributes for left and right eye reflection gain. (If you uncheck this, and adjust them separately, then re-check this, the settings will re-sync to average values.)" -STARTLINE}
+ linkReflGain true
+ addUserKnob {26 space2_1 l "" +STARTLINE T " "}
+ addUserKnob {18 overallGradeRt l "overall refl gain" t "Modify the overall intensity of the reflection effect in the right eye." R 0 4}
+ overallGradeRt 1
+ addUserKnob {6 overallGradeRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradeScleraRt l "sclera gain" t "Grade reflection within sclera area in right eye" R 0 4}
+ gradeScleraRt 1
+ addUserKnob {6 gradeScleraRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradeIrisRt l "iris gain" t "Grade reflection within iris area in right eye" R 0 4}
+ gradeIrisRt 1
+ addUserKnob {6 gradeIrisRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradePupilRt l "pupil gain" t "Grade reflection within pupil area in right eye" R 0 4}
+ gradePupilRt 1
+ addUserKnob {6 gradePupilRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 gradeUVMaskRt l "UV mask gain" t "Grade reflection within UV mask area in right eye" R 0 4}
+ gradeUVMaskRt 1
+ addUserKnob {6 gradeUVMaskRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {14 sizeUVMaskRt l "UV mask size" t "Size of the UV mask centered on right pupil" R 0 2}
+ sizeUVMaskRt 1
+ addUserKnob {7 softnessUVMaskRt l "UV mask softness" t "How much to soften the UV based circular map centered on the right pupil"}
+ softnessUVMaskRt 0.5
+ addUserKnob {7 reflOcclusionRt l "reflection occlusion" t "Amount of reflection occlusion on right eye.\nDefault is 1, since that's the most correct.\nBut reduce this if the brows or lashes are\nblocking desired reflections."}
+ reflOcclusionRt 1
+ addUserKnob {14 reflOcclBlurRt l "reflection occlusion blur" t "Use this to blur the reflection occlusion mask in the right eye for a softer effect." R 0 10}
+ reflOcclBlurRt 1
+ addUserKnob {26 ""}
+ addUserKnob {20 Highlights t "For creating quick and dirty eye highlights"}
+ addUserKnob {6 enableHighlights l "enable highlights" t "Add simple eye highlights" +STARTLINE}
+ addUserKnob {6 useHiliteImage l "use highlight image" t "Use an image for the highlights, instead of the default circular shape" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 lefteyeHighlights l "" +STARTLINE T "Left eye\n"}
+ addUserKnob {18 highlightColorLf l color t "Color for left eye highlight" R 0 4}
+ highlightColorLf 1
+ addUserKnob {6 highlightColorLf_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {7 positionSLf l "position s" t "Location of left eye highlight along S coordinate"}
+ positionSLf 0.5
+ addUserKnob {7 positionTLf l "position t" t "Location of left eye highlight along T coordinate"}
+ positionTLf 0.65
+ addUserKnob {7 rotationLf l rotation t "How much to rotate the left eye highlight " R -180 180}
+ addUserKnob {14 highlightSizeLf l size t "Size of left eye highlight"}
+ highlightSizeLf 0.5
+ addUserKnob {7 highlightSoftnessLf l softness t "Softness of the left eye highlight"}
+ highlightSoftnessLf 0.3
+ addUserKnob {7 highlightOcclusionLf l occlusion t "Reflection occlusion affecting only the left eye highlight.\nDefault is 1, since that's the most correct.\nBut reduce this if the brows or lashes are\nblocking desired reflections."}
+ highlightOcclusionLf 1
+ addUserKnob {14 highlightOcclBlurLf l "occlusion blur" t "Use this to blur the reflection occlusion mask for a softer effect, on the left eye highlight." R 0 10}
+ highlightOcclBlurLf 1
+ addUserKnob {26 ""}
+ addUserKnob {26 righteyeHighlights l "" +STARTLINE T "\t          Right eye\t\t"}
+ addUserKnob {6 linkHighlights l "link left and right" t "Link the attributes of left and right eye highlights. (If you uncheck this, and adjust them separately, then re-check this, the settings will re-sync to average values.)" -STARTLINE}
+ linkHighlights true
+ addUserKnob {26 space l "" +STARTLINE T " "}
+ addUserKnob {18 highlightColorRt l color t "Color for right eye highlight" R 0 4}
+ highlightColorRt 1
+ addUserKnob {6 highlightColorRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {7 positionSRt l "position s" t "Location of right eye highlight along S coordinate"}
+ positionSRt 0.5
+ addUserKnob {7 positionTRt l "position t" t "Location of right eye highlight along T coordinate"}
+ positionTRt 0.65
+ addUserKnob {7 rotationRt l rotation t "How much to rotate the right eye highlight" R -180 180}
+ addUserKnob {14 highlightSizeRt l size t "Size of right eye highlight"}
+ highlightSizeRt 0.5
+ addUserKnob {7 highlightSoftnessRt l softness t "Softness of the right eye highlight"}
+ highlightSoftnessRt 0.3
+ addUserKnob {7 highlightOcclusionRt l occlusion t "Reflection occlusion affecting only the right eye highlight.\nDefault is 1, since that's the most correct.\nBut reduce this if the brows or lashes are\nblocking desired reflections."}
+ highlightOcclusionRt 1
+ addUserKnob {14 highlightOcclBlurRt l "occlusion blur" t "Use this to blur the reflection occlusion mask for a softer effect, on the right eye highlight." R 0 10}
+ highlightOcclBlurRt 1
+ addUserKnob {26 ""}
+ addUserKnob {20 FakeCaustics l "Fake Caustics" t "For adding quick and dirty fake iris caustics"}
+ addUserKnob {6 enableCaustics l "enable fake caustics" t "Add fake caustic effect" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 leftEyeCaustics l "" +STARTLINE T "Left eye\n"}
+ addUserKnob {18 causticsColorLf l color t "Color adjustment for left eye caustic" R 0 4}
+ causticsColorLf 1
+ addUserKnob {6 causticsColorLf_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 causticsColor_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 CausticsColor_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {7 offsetXLf l "offset x" t "Pixel offset in X for left eye caustic" R -50 50}
+ addUserKnob {7 offsetYLf l "offset y" t "Pixel offset in Y for left eye caustic" R -50 50}
+ offsetYLf -10
+ addUserKnob {7 causticsBlurLf l blur t "How much to blur the left eye caustic effect" R 0 100}
+ causticsBlurLf 10
+ addUserKnob {26 ""}
+ addUserKnob {26 rightEyeCaustics l "" +STARTLINE T "\t          Right eye\t\t"}
+ addUserKnob {6 linkCaustics l "link left and right" t "Link the attributes of left and right eye caustics. (If you uncheck this, and adjust them separately, then re-check this, the settings will re-sync to average values.)" -STARTLINE}
+ linkCaustics true
+ addUserKnob {26 space2 l "" +STARTLINE T " "}
+ addUserKnob {18 causticsColorRt l color t "Color adjustment for right eye caustic" R 0 4}
+ causticsColorRt 1
+ addUserKnob {6 causticsColorRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {7 offsetXRt l "offset x" t "Pixel offset in X for right eye caustic" R -50 50}
+ addUserKnob {7 offsetYRt l "offset y" t "Pixel offset in Y for right eye caustic" R -50 50}
+ offsetYRt -10
+ addUserKnob {7 causticsBlurRt l blur t "How much to blur the right eye caustic effect" R 0 100}
+ causticsBlurRt 10
+ addUserKnob {26 ""}
+ addUserKnob {20 eyeCC l "Eye Color Correction" t "Apply color correction via masks to the base layer"}
+ addUserKnob {6 enableCC l "enable color correction" t "Enable the below color corrections to the base layer. \nIf \"add result to base layer\" is disabled in the first tab, these will have no effect." +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 leftEyeCC l "" +STARTLINE T "Left eye\n"}
+ addUserKnob {18 overallEyeGain l "overall eye gain" t "Gain for color correcting the whole left eye" R 0 4}
+ overallEyeGain 1
+ addUserKnob {6 overallEyeGain_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 scleraGain l "sclera gain" t "Gain for color correcting the left sclera" R 0 4}
+ scleraGain 1
+ addUserKnob {6 scleraGain_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 irisGain l "iris gain" t "Gain for color correcting the left iris" R 0 4}
+ irisGain 1
+ addUserKnob {6 irisGain_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 pupilGain l "pupil gain" t "Gain for color correcting the left pupil" R 0 4}
+ pupilGain 1
+ addUserKnob {6 pupilGain_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 realAmbocc l "\"real\" ambient occlusion" t "Darkness of the ambient occlusion shader effect.\nDefault is 1 1 1 (no effect), since base render should already be \"correct\" in this respect. "}
+ realAmbocc 1
+ addUserKnob {6 realAmbocc_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 fakeAmbocc l "\"fake\" ambient occlusion" t "Darkness of the \"fake\" occlusion effect achieved in comp via masks.\nDefault is 1 1 1 (no effect)."}
+ fakeAmbocc 1
+ addUserKnob {6 fakeAmbocc_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {14 fakeAmboccWidth l "\"fake\" ambient occlusion width" t "Control how far the \"fake\" occlusion effect extends on the left eye" R 0 100}
+ fakeAmboccWidth 10
+ addUserKnob {7 blurEyeBorder l "soften eye border" t "How much to blur the border of the left eye" R 0 20}
+ addUserKnob {6 highlightcolor_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 OverallGrade_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 Grade4_multiply_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {26 ""}
+ addUserKnob {26 rightEyeCC l "" +STARTLINE T "\t                               Right eye            "}
+ addUserKnob {6 linkCC l "link left and right" t "Link the color-correction attributes of the left and right eyes. (If you uncheck this, and adjust them separately, then re-check this, the settings will re-sync to average values.)" -STARTLINE}
+ linkCC true
+ addUserKnob {26 space3 l "" +STARTLINE T " "}
+ addUserKnob {18 overallEyeGainRt l "overall eye gain" t "Gain for color correcting the whole right eye" R 0 4}
+ overallEyeGainRt 1
+ addUserKnob {6 overallEyeGainRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 scleraGainRt l "sclera gain" t "Gain for color correcting the right sclera" R 0 4}
+ scleraGainRt 1
+ addUserKnob {6 scleraGainRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 irisGainRt l "iris gain" t "Gain for color correcting the right iris" R 0 4}
+ irisGainRt 1
+ addUserKnob {6 irisGainRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 pupilGainRt l "pupil gain" t "Gain for color correcting the right pupil" R 0 4}
+ pupilGainRt 1
+ addUserKnob {6 pupilGainRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 realAmboccRt l "\"real\" ambient occlusion" t "Darkness of the ambient occlusion shader effect.\nDefault is 1 1 1 (no effect), since base render should already be \"correct\" in this respect. "}
+ realAmboccRt 1
+ addUserKnob {6 realAmboccRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {18 fakeAmboccRt l "\"fake\" ambient occlusion" t "Darkness of the \"fake\" occlusion effect achieved in comp via masks.\nDefault is 1 1 1 (no effect)."}
+ fakeAmboccRt 1
+ addUserKnob {6 fakeAmboccRt_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {14 fakeAmboccWidthRt l "\"fake\" ambient occlusion width" t "Control how far the \"fake\" occlusion effect extends on the right eye" R 0 100}
+ fakeAmboccWidthRt 10
+ addUserKnob {7 blurEyeBorderRt l "soften eye border" t "How much to blur the border of the right eye" R 0 20}
+ addUserKnob {26 ""}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x88ad88ff
+  label "\"Real\" ambient occlusion"
+  note_font_size 50
+  xpos -1964
+  ypos -236
+  bdwidth 601
+  bdheight 644
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode10
+  tile_color 0x887552ff
+  label "\"Fake\" ambient occlusion"
+  note_font_size 50
+  xpos -2939
+  ypos -241
+  bdwidth 856
+  bdheight 747
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode11
+  tile_color 0x597588ff
+  label "Blur cornea"
+  note_font_size 50
+  xpos -840
+  ypos -2450
+  bdwidth 546
+  bdheight 422
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode12
+  tile_color 0x848382ff
+  label "Blur right edges\n"
+  note_font_size 50
+  xpos -3104
+  ypos 672
+  bdwidth 457
+  bdheight 374
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode13
+  tile_color 0x675f88ff
+  label "Refl\nOccl."
+  note_font_size 50
+  xpos -631
+  ypos -1516
+  bdwidth 169
+  bdheight 714
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode14
+  tile_color 0x675f88ff
+  label "Refl\nOccl."
+  note_font_size 50
+  xpos 1824
+  ypos -1375
+  bdwidth 184
+  bdheight 511
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode15
+  tile_color 0x675f88ff
+  label "Refl\nOccl."
+  note_font_size 50
+  xpos 688
+  ypos -1442
+  bdwidth 143
+  bdheight 597
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0xcc8888ff
+  label "Fresnel reflection"
+  note_font_size 50
+  xpos -566
+  ypos 488
+  bdwidth 993
+  bdheight 552
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode3
+  label "Choose eye and/or meniscus alpha"
+  note_font_size 50
+  xpos -566
+  ypos 1091
+  bdwidth 987
+  bdheight 498
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode4
+  tile_color 0xb4b588ff
+  label "Grade refl+highlight per eye region"
+  note_font_size 50
+  xpos -570
+  ypos -385
+  bdwidth 997
+  bdheight 808
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode5
+  tile_color 0x467a46ff
+  label "Fake Caustics"
+  note_font_size 50
+  xpos -1461
+  ypos -1587
+  bdwidth 753
+  bdheight 935
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode6
+  tile_color 0x9e9c1fff
+  label "Highlights\n"
+  note_font_size 50
+  xpos -382
+  ypos -1592
+  bdwidth 1036
+  bdheight 1043
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode7
+  tile_color 0x537f6fff
+  label Reflection
+  note_font_size 50
+  xpos 1122
+  ypos -1419
+  bdwidth 682
+  bdheight 735
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode8
+  tile_color 0x76aebcff
+  label "Grade base render per eye region"
+  note_font_size 50
+  xpos -2642
+  ypos -891
+  bdwidth 980
+  bdheight 530
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode9
+  tile_color 0x848382ff
+  label "Blur left edges\n"
+  note_font_size 50
+  xpos -2387
+  ypos 671
+  bdwidth 490
+  bdheight 371
+ }
+ Input {
+  inputs 0
+  name eyeRefl_layer
+  label "\[value number]\n"
+  xpos -491
+  ypos -3372
+  number 1
+ }
+ Dot {
+  name Dot78
+  xpos -457
+  ypos -2819
+ }
+set Nfa6d2800 [stack 0]
+ Dot {
+  name Dot13
+  xpos -457
+  ypos -2368
+ }
+set Nfa6d2400 [stack 0]
+ Dot {
+  name Dot58
+  xpos -676
+  ypos -2368
+ }
+set Nfa6d2000 [stack 0]
+add_layer {eyeUtility eyeUtility.red eyeUtility.green eyeUtility.blue eyeUtility.alpha}
+ Shuffle {
+  in eyeUtility
+  red blue
+  green blue
+  alpha blue
+  name Shuffle2
+  xpos -780
+  ypos -2315
+ }
+set Nd085bc00 [stack 0]
+ Erode {
+  size {{4*(parent.blurCornealBulgeRt)**(1/3)}}
+  blur 0.4
+  name Erode_Rt
+  xpos -780
+  ypos -2261
+ }
+push $Nfa6d2400
+ Shuffle {
+  in eyeST
+  out eyeST
+  name Shuffle_MONSTER
+  xpos -491
+  ypos -2318
+ }
+ Multiply {
+  channels eyeST
+  value {{1+parent.applyHalfBugFix}}
+  name HALVED_ST_BUG_FIX
+  xpos -491
+  ypos -2284
+ }
+ Dot {
+  name Dot57
+  xpos -457
+  ypos -2229
+ }
+set Nd085ac00 [stack 0]
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge30
+  xpos -780
+  ypos -2195
+ }
+ Dot {
+  name Dot87
+  xpos -746
+  ypos -2122
+ }
+push $Nfa6d2000
+push $Nd085bc00
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge29
+  xpos -642
+  ypos -2315
+ }
+ Erode {
+  size {{4*(parent.blurCornealBulge)**(1/3)}}
+  blur 0.4
+  name Erode2
+  xpos -642
+  ypos -2262
+ }
+push $Nd085ac00
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge31
+  xpos -642
+  ypos -2186
+ }
+push $Nd085ac00
+ Blur {
+  inputs 1+1
+  channels {eyeST.red eyeST.green -eyeST.blue -eyeST.alpha}
+  size {{parent.blurCornealBulge}}
+  name Blur5
+  xpos -491
+  ypos -2192
+ }
+ Blur {
+  inputs 1+1
+  channels {eyeST.red eyeST.green -eyeST.blue -eyeST.alpha}
+  size {{parent.blurCornealBulgeRt}}
+  name BlurRt
+  xpos -491
+  ypos -2132
+ }
+ Input {
+  inputs 0
+  name base_layer
+  label "\[value number]\n"
+  xpos -2550
+  ypos -3372
+ }
+ Dot {
+  name Dot55
+  xpos -2516
+  ypos -1930
+ }
+set Nf2240800 [stack 0]
+add_layer {eyeMVector eyeMVector.red eyeMVector.green eyeMVector.blue eyeMVector.alpha}
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  black black
+  white black
+  out2 eyeMVector
+  name zeroout
+  xpos -726
+  ypos -1934
+ }
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch6
+  xpos -491
+  ypos -1934
+ }
+ Dot {
+  name Dot1
+  xpos -457
+  ypos -1820
+ }
+set Nf2240000 [stack 0]
+ Dot {
+  name Dot21
+  xpos -553
+  ypos -1820
+ }
+set N7910dc00 [stack 0]
+ Dot {
+  name Dot2
+  xpos -650
+  ypos -1820
+ }
+set N7910d800 [stack 0]
+ Dot {
+  name Dot16
+  xpos -1219
+  ypos -1820
+ }
+set N7910d400 [stack 0]
+ Dot {
+  name Dot15
+  xpos -1545
+  ypos -1820
+ }
+set N7910d000 [stack 0]
+ Dot {
+  name Dot6
+  xpos -1545
+  ypos -122
+ }
+set N7910cc00 [stack 0]
+ Dot {
+  name Dot31
+  xpos -1545
+  ypos 1
+ }
+set N7910c800 [stack 0]
+ Dot {
+  name Dot75
+  xpos -1545
+  ypos 128
+ }
+set N7910c400 [stack 0]
+ Dot {
+  name Dot32
+  xpos -1545
+  ypos 918
+ }
+push $Nf2240800
+ Dot {
+  name Dot19
+  xpos -2516
+  ypos -961
+ }
+set N62f2dc00 [stack 0]
+ Dot {
+  name Dot60
+  xpos -2026
+  ypos -961
+ }
+set N62f2d800 [stack 0]
+ Dot {
+  name Dot20
+  xpos -1095
+  ypos -961
+ }
+set N62f2d400 [stack 0]
+push $N7910d400
+ Dot {
+  name Dot18
+  xpos -1219
+  ypos -1355
+ }
+set N62f2d000 [stack 0]
+ Shuffle {
+  red blue
+  green blue
+  alpha blue
+  name Shuffle_pupil2
+  xpos -1129
+  ypos -1359
+ }
+ Dot {
+  name Dot29
+  xpos -1095
+  ypos -1143
+ }
+set N62f2c800 [stack 0]
+ Blur {
+  size {{parent.causticsBlurLf}}
+  name Blur1
+  xpos -1234
+  ypos -1153
+ }
+ Transform {
+  translate {{parent.offsetXLf} {parent.offsetYLf}}
+  center {960 540}
+  name Transform1
+  xpos -1234
+  ypos -1031
+ }
+push $N62f2d000
+ Shuffle {
+  red green
+  blue green
+  alpha green
+  name Shuffle_iris1
+  xpos -1381
+  ypos -1359
+ }
+set Ne52fc00 [stack 0]
+push $N7910dc00
+ Shuffle {
+  in eyeUtility
+  red blue
+  green blue
+  alpha blue
+  name Shuffle_ID
+  xpos -587
+  ypos -1752
+ }
+ Unpremult {
+  name Unpremult8
+  xpos -587
+  ypos -1713
+ }
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Shuffle5
+  xpos -587
+  ypos -1675
+ }
+set Ne52f000 [stack 0]
+ Dot {
+  name Dot28
+  xpos -984
+  ypos -1472
+ }
+ Dot {
+  name Dot30
+  xpos -984
+  ypos -1244
+ }
+set Ne52e800 [stack 0]
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge13
+  xpos -1381
+  ypos -1248
+ }
+ Erode {
+  channels rgba
+  size {{parent.causticsBlurLf/8}}
+  blur 1
+  mix 0.9
+  name Erode3
+  xpos -1381
+  ypos -1165
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge6
+  xpos -1381
+  ypos -1031
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge9
+  xpos -1381
+  ypos -832
+ }
+ Grade {
+  white {{parent.causticsColorLf.r} {parent.causticsColorLf.g} {parent.causticsColorLf.b} 1}
+  multiply 10
+  name Grade1
+  xpos -1381
+  ypos -764
+ }
+push $N62f2d400
+push $N62f2c800
+ Blur {
+  size {{parent.causticsBlurRt}}
+  name Blur2
+  xpos -1020
+  ypos -1153
+ }
+ Transform {
+  translate {{parent.offsetXRt} {parent.offsetYRt}}
+  center {960 540}
+  name Transform2
+  xpos -1020
+  ypos -1035
+ }
+push $Ne52fc00
+push $Ne52e800
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge12
+  xpos -874
+  ypos -1248
+ }
+ Erode {
+  channels rgba
+  size {{parent.causticsBlurRt/8}}
+  blur 1
+  mix 0.9
+  name Erode1
+  xpos -874
+  ypos -1166
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge16
+  xpos -874
+  ypos -1035
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge17
+  xpos -874
+  ypos -828
+ }
+ Grade {
+  white {{parent.causticsColorRt.r} {parent.causticsColorRt.g} {parent.causticsColorRt.b} 1}
+  multiply 10
+  name Grade2
+  xpos -874
+  ypos -764
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge18
+  xpos -1124
+  ypos -764
+ }
+ Dot {
+  inputs 0
+  name Dot25
+  xpos -3893
+  ypos -310
+  hide_input true
+ }
+ Switch {
+  inputs 2
+  which {{parent.enableCaustics}}
+  name Switch2
+  xpos -1124
+  ypos -314
+ }
+push $Nf2240000
+ Dot {
+  name Dot8
+  xpos -457
+  ypos -661
+ }
+ Unpremult {
+  name Unpremult9
+  xpos -491
+  ypos -205
+ }
+set N24508800 [stack 0]
+ Dot {
+  name Dot93
+  xpos -457
+  ypos -51
+ }
+set N24508400 [stack 0]
+ Shuffle {
+  red white
+  green white
+  blue white
+  alpha white
+  name Shuffle4
+  xpos -491
+  ypos 575
+ }
+set N24508000 [stack 0]
+ Dot {
+  name Dot59
+  xpos -457
+  ypos 966
+ }
+push $N7910d800
+ Dot {
+  name Dot81
+  xpos -650
+  ypos -1250
+ }
+set Na09bf800 [stack 0]
+ Dot {
+  name Dot82
+  xpos -650
+  ypos -1171
+ }
+set Na09bf400 [stack 0]
+ Dot {
+  name Dot64
+  xpos -650
+  ypos 51
+ }
+set Na09bf000 [stack 0]
+ Dot {
+  name Dot12
+  xpos -650
+  ypos 710
+ }
+set Na09bec00 [stack 0]
+ Dot {
+  name Dot52
+  xpos -650
+  ypos 776
+ }
+set Na09be800 [stack 0]
+push $Na09bec00
+ Shuffle {
+  in eyeUtility
+  green red
+  blue red
+  name Shuffle_ndoteye
+  xpos -385
+  ypos 706
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy6
+  xpos -385
+  ypos 766
+ }
+ Unpremult {
+  name Unpremult7
+  xpos -385
+  ypos 850
+ }
+ Expression {
+  temp_name0 N
+  temp_expr0 parent.fresnelIOR
+  temp_name1 root
+  temp_expr1 sqrt(1-((1-(r*r))/(N*N)))
+  temp_name2 Rs
+  temp_expr2 ((r-(N*root))/(r+(N*root)))**2
+  temp_name3 Rp
+  temp_expr3 ((root-(N*r))/(root+(N*r)))**2
+  channel0 rgb
+  expr0 "(Rs + Rp)/2"
+  name Expression1
+  xpos -158
+  ypos 850
+ }
+ set C1a1bb800 [stack 0]
+ Shuffle {
+  alpha white
+  name Shuffle3
+  xpos -158
+  ypos 876
+ }
+push $Na09bf000
+ Dot {
+  name Dot23
+  xpos -388
+  ypos 51
+ }
+set N1a1bac00 [stack 0]
+push $N1a1bac00
+add_layer {eyeUtility2 eyeUtility2.red eyeUtility2.green eyeUtility2.blue eyeUtility2.alpha}
+ Shuffle {
+  in eyeUtility2
+  blue black
+  alpha black
+  name Shuffle_object_UV
+  xpos -278
+  ypos 47
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy8
+  xpos -278
+  ypos 90
+ }
+ Unpremult {
+  name Unpremult5
+  xpos -278
+  ypos 155
+ }
+set N1a1ba000 [stack 0]
+ Expression {
+  temp_name0 W
+  temp_expr0 parent.sizeUVMaskRt.w
+  temp_name1 H
+  temp_expr1 parent.sizeUVMaskRt.h
+  temp_name2 S
+  temp_expr2 parent.softnessUVMaskRt
+  temp_name3 R
+  temp_expr3 0.1
+  channel0 rgb
+  expr0 1-smoothstep(W*(1-S)*R,W*(1+S)*R+0.01,hypot((r-0.5)/W,(g-0.5)/H))
+  channel1 {-rgba.red -rgba.green -rgba.blue none}
+  name ExpressionRT
+  xpos -278
+  ypos 326
+ }
+push $Ne52f000
+ Dot {
+  name Dot38
+  xpos -34
+  ypos -1671
+ }
+set N36c8d400 [stack 0]
+ Dot {
+  name Dot45
+  xpos -34
+  ypos -1178
+ }
+set N36c8d000 [stack 0]
+ Dot {
+  name Dot53
+  xpos -34
+  ypos -125
+ }
+set N36c8cc00 [stack 0]
+ Dot {
+  name Dot97
+  xpos -34
+  ypos 258
+ }
+set N36c8c800 [stack 0]
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge43
+  xpos -163
+  ypos 326
+ }
+push $N1a1ba000
+ Expression {
+  temp_name0 W
+  temp_expr0 parent.sizeUVMask.w
+  temp_name1 H
+  temp_expr1 parent.sizeUVMask.h
+  temp_name2 S
+  temp_expr2 parent.softnessUVMask
+  temp_name3 R
+  temp_expr3 0.1
+  channel0 rgb
+  expr0 1-smoothstep(W*(1-S)*R,W*(1+S)*R+0.01,hypot((r-0.5)/W,(g-0.5)/H))
+  channel1 {-rgba.red -rgba.green -rgba.blue none}
+  name Expression3
+  xpos -168
+  ypos 155
+ }
+push $N36c8c800
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge42
+  xpos -168
+  ypos 195
+ }
+push $N24508400
+push $N36c8cc00
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge41
+  xpos -168
+  ypos -55
+ }
+ Dot {
+  name Dot54
+  xpos 83
+  ypos -51
+ }
+set Ndcd25000 [stack 0]
+push $Ndcd25000
+push $Ndcd25000
+push $N24508800
+push $N36c8cc00
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge3
+  xpos -168
+  ypos -205
+ }
+ Dot {
+  name Dot36
+  xpos 90
+  ypos -201
+ }
+set Ndcd24800 [stack 0]
+push $Ndcd24800
+push $Ndcd24800
+push $Na09bf400
+push $Na09bf800
+ Shuffle {
+  in eyeST
+  red blue
+  green blue
+  name Shuffle_reflocc2
+  xpos -588
+  ypos -1253
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy11
+  xpos -588
+  ypos -1181
+ }
+ Unpremult {
+  name Unpremult13
+  xpos -588
+  ypos -1113
+ }
+ Blur {
+  channels rgb
+  size {{parent.highlightOcclBlurLf.w} {parent.highlightOcclBlurLf.h}}
+  name BlurLF
+  xpos -588
+  ypos -1052
+ }
+ Shuffle {
+  alpha white
+  name Shuffle7
+  xpos -588
+  ypos -996
+ }
+set Nc7645400 [stack 0]
+push $Nfa6d2400
+ Dot {
+  name Dot61
+  xpos 1051
+  ypos -2368
+ }
+ Dot {
+  name Dot51
+  xpos 1051
+  ypos -1521
+ }
+push $Nf2240000
+ Dot {
+  name Dot62
+  xpos 849
+  ypos -1820
+ }
+set Nc7644800 [stack 0]
+ Dot {
+  name Dot4
+  xpos 1187
+  ypos -1820
+ }
+set Nc7644400 [stack 0]
+ Shuffle {
+  in eyeST
+  blue black
+  name Shuffle_ST
+  xpos 1153
+  ypos -1581
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy5
+  xpos 1153
+  ypos -1531
+ }
+ Unpremult {
+  name Unpremult4
+  xpos 1153
+  ypos -1477
+ }
+set N642c3800 [stack 0]
+ Dot {
+  name Dot46
+  xpos 407
+  ypos -1473
+ }
+set N642c3400 [stack 0]
+ Reformat {
+  type scale
+  scale 3
+  pbb true
+  name Reformat2
+  xpos 273
+  ypos -1312
+ }
+ set C642c3000 [stack 0]
+ Dot {
+  name Dot40
+  xpos 307
+  ypos -1258
+ }
+set N642c2800 [stack 0]
+ Input {
+  inputs 0
+  name highlight_image
+  label "\[value number]\n"
+  xpos 279
+  ypos -3370
+  number 3
+ }
+ Transform {
+  scale {0.35 {2*scale.w*height/width}}
+  center {{width/2} {height/2}}
+  name Transform4
+  xpos 279
+  ypos -1525
+ }
+ Dot {
+  name Dot41
+  xpos 313
+  ypos -1403
+ }
+set Ndda3fc00 [stack 0]
+ Transform {
+  translate {{"(parent.positionSLf - 0.5)*width"} {"(parent.positionTLf - 0.5)*height"}}
+  rotate {{parent.rotationLf}}
+  scale {{parent.highlightSizeLf.w} {parent.highlightSizeLf.h}}
+  center {{width/2} {height/2}}
+  name Transform5
+  xpos 135
+  ypos -1407
+ }
+set Ndda3f800 [stack 0]
+ Blur {
+  channels rgb
+  size {{width*parent.highlightSizeLf.w*parent.highlightSoftnessLf/10} {height*parent.highlightSizeLf.h*parent.highlightSoftnessLf/10}}
+  name Blur_Lf
+  xpos 25
+  ypos -1407
+ }
+ Dot {
+  name Dot44
+  xpos 59
+  ypos -1325
+ }
+push $Ndda3f800
+ Blur {
+  channels rgb
+  size {{width*parent.highlightSizeLf.w*parent.highlightSoftnessLf/30} {height*parent.highlightSizeLf.h*parent.highlightSoftnessLf/30}}
+  name Blur_Lf1
+  xpos 135
+  ypos -1367
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  Achannels rgb
+  name Merge23
+  xpos 135
+  ypos -1329
+ }
+ STMap {
+  inputs 2
+  channels rgba
+  uv rgb
+  name STMap2
+  xpos 135
+  ypos -1262
+  disable {{"1-\[exists parent.input3]"}}
+ }
+ Reformat {
+  type "to box"
+  box_width {{Dot46.width}}
+  box_height {{Dot46.height}}
+  box_fixed true
+  name Reformat3
+  xpos 135
+  ypos -1215
+ }
+ set Cdda3e000 [stack 0]
+ Grade {
+  white 1.1
+  multiply {{parent.highlightColorLf.r} {parent.highlightColorLf.g} {parent.highlightColorLf.b} 1}
+  name Grade8
+  xpos 135
+  ypos -1148
+ }
+push $N36c8d000
+ Dot {
+  name Dot39
+  xpos 309
+  ypos -1178
+ }
+set N134cf400 [stack 0]
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge20
+  xpos 135
+  ypos -1071
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix {{parent.highlightOcclusionLf}}
+  name Merge38
+  xpos 135
+  ypos -996
+ }
+ set C134cec00 [stack 0]
+push $Nc7644800
+ Dot {
+  name Dot79
+  xpos 849
+  ypos -1244
+ }
+set N134ce800 [stack 0]
+ Dot {
+  name Dot80
+  xpos 849
+  ypos -1170
+ }
+push $N134ce800
+ Shuffle {
+  in eyeST
+  red blue
+  green blue
+  name Shuffle_reflocc1
+  xpos 720
+  ypos -1248
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy10
+  xpos 720
+  ypos -1180
+ }
+ Unpremult {
+  name Unpremult12
+  xpos 720
+  ypos -1113
+ }
+set Nc2a65800 [stack 0]
+ Blur {
+  channels rgb
+  size {{parent.highlightOcclBlurRt.w} {parent.highlightOcclBlurRt.h}}
+  name BlurRT
+  xpos 720
+  ypos -1055
+ }
+ Shuffle {
+  alpha white
+  name Shuffle8
+  xpos 720
+  ypos -1001
+ }
+set Nc2a65000 [stack 0]
+push $N642c2800
+push $Ndda3fc00
+ Transform {
+  translate {{"(parent.positionSRt - 0.5)*width"} {"(parent.positionTRt - 0.5)*height"}}
+  rotate {{parent.rotationRt}}
+  scale {{parent.highlightSizeRt.w} {parent.highlightSizeRt.h}}
+  center {{width/2} {height/2}}
+  name Transform6
+  xpos 417
+  ypos -1407
+ }
+set Nc2a64c00 [stack 0]
+ Blur {
+  channels rgb
+  size {{width*parent.highlightSizeRt.w*parent.highlightSoftnessRt/10} {height*parent.highlightSizeRt.h*parent.highlightSoftnessRt/10}}
+  name Blur_Rt
+  xpos 527
+  ypos -1407
+ }
+ Dot {
+  name Dot42
+  xpos 561
+  ypos -1321
+ }
+push $Nc2a64c00
+ Blur {
+  channels rgb
+  size {{width*parent.highlightSizeRt.w*parent.highlightSoftnessRt/30} {height*parent.highlightSizeRt.h*parent.highlightSoftnessRt/30}}
+  name Blur_Rt1
+  xpos 417
+  ypos -1365
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  Achannels rgb
+  name Merge24
+  xpos 417
+  ypos -1325
+ }
+ STMap {
+  inputs 2
+  channels rgba
+  uv rgb
+  name STMap3
+  xpos 417
+  ypos -1262
+  disable {{"1-\[exists parent.input3]"}}
+ }
+clone $Cdda3e000 {
+  xpos 417
+  ypos -1208
+  selected false
+ }
+ Grade {
+  white 1.1
+  multiply {{parent.highlightColorRt.r} {parent.highlightColorRt.g} {parent.highlightColorRt.b} 1}
+  name Grade7
+  xpos 417
+  ypos -1151
+ }
+push $N134cf400
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge21
+  xpos 417
+  ypos -1073
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix {{parent.highlightOcclusionRt}}
+  name Merge39
+  xpos 417
+  ypos -1001
+ }
+ set C9d27c400 [stack 0]
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge22
+  xpos 283
+  ypos -899
+ }
+push $Nc7645400
+ Dot {
+  name Dot88
+  xpos -554
+  ypos -932
+ }
+push $N642c3400
+ Dot {
+  name Dot27
+  xpos -122
+  ypos -1473
+ }
+set N18893800 [stack 0]
+push $Ne52f000
+ Dot {
+  name Dot26
+  xpos -271
+  ypos -1472
+ }
+set N18893400 [stack 0]
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge15
+  xpos -305
+  ypos -1323
+ }
+ Expression {
+  temp_name0 rrot
+  temp_expr0 "(r-parent.positionSLf)*cos(parent.rotationLf*pi/180) + (g-parent.positionTLf)*sin(parent.rotationLf*pi/180)*(height/width)"
+  temp_name1 grot
+  temp_expr1 "-(r-parent.positionSLf)*sin(parent.rotationLf*pi/180) +  (g-parent.positionTLf)*cos(parent.rotationLf*pi/180)*(height/width)"
+  temp_name2 yscale
+  temp_expr2 (parent.highlightSizeLf.w+0.00001)/(parent.highlightSizeLf.h+0.00001)
+  temp_name3 soft
+  temp_expr3 "parent.highlightSoftnessLf/20 + 0.004"
+  channel0 rgb
+  expr0 "1 - smoothstep (parent.highlightSizeLf.w/20 - soft, parent.highlightSizeLf.w/20 + soft/2,hypot(rrot,grot*yscale)) + exp(-.0007*(hypot(rrot,grot*yscale)/(parent.highlightSizeLf.w*soft/25))**2)"
+  channel1 {-rgba.red -rgba.green -rgba.blue none}
+  channel2 {-rgba.red -rgba.green -rgba.blue none}
+  name ExpressionHiliteLf
+  xpos -305
+  ypos -1127
+ }
+ Grade {
+  multiply {{parent.highlightColorLf.r} {parent.highlightColorLf.g} {parent.highlightColorLf.b} 1}
+  name Grade3
+  xpos -305
+  ypos -1068
+ }
+ Premult {
+  name Premult2
+  xpos -305
+  ypos -1027
+ }
+clone $C134cec00 {
+  inputs 2
+  xpos -305
+  ypos -936
+  selected false
+ }
+push $Nc2a65000
+ Dot {
+  name Dot89
+  xpos 754
+  ypos -930
+ }
+push $N18893800
+push $N18893400
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge14
+  xpos -156
+  ypos -1321
+ }
+ Expression {
+  temp_name0 rrot
+  temp_expr0 "(r-parent.positionSRt)*cos(parent.rotationRt*pi/180) + (g-parent.positionTRt)*sin(parent.rotationRt*pi/180)*(height/width)"
+  temp_name1 grot
+  temp_expr1 "-(r-parent.positionSRt)*sin(parent.rotationRt*pi/180) +  (g-parent.positionTRt)*cos(parent.rotationRt*pi/180)*(height/width)"
+  temp_name2 yscale
+  temp_expr2 (parent.highlightSizeRt.w+0.00001)/(parent.highlightSizeRt.h+0.00001)
+  temp_name3 soft
+  temp_expr3 "parent.highlightSoftnessRt/20 + 0.004"
+  channel0 rgb
+  expr0 "1 - smoothstep (parent.highlightSizeRt.w/20 - soft, parent.highlightSizeRt.w/20 + soft/2,hypot(rrot,grot*yscale)) + exp(-.0007*(hypot(rrot,grot*yscale)/(parent.highlightSizeRt.w*soft/25))**2)"
+  channel1 {-rgba.red -rgba.green -rgba.blue none}
+  channel2 {-rgba.red -rgba.green -rgba.blue none}
+  name ExpressionHiliteRt
+  xpos -156
+  ypos -1127
+ }
+ Grade {
+  multiply {{parent.highlightColorRt.r} {parent.highlightColorRt.g} {parent.highlightColorRt.b} 1}
+  name Grade5
+  xpos -156
+  ypos -1068
+ }
+ Premult {
+  name Premult3
+  xpos -156
+  ypos -1024
+ }
+clone $C9d27c400 {
+  inputs 2
+  xpos -156
+  ypos -934
+  selected false
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge11
+  xpos -230
+  ypos -851
+ }
+ Switch {
+  inputs 2
+  which {{parent.useHiliteImage}}
+  name Switch5
+  xpos 283
+  ypos -851
+ }
+ Dot {
+  inputs 0
+  name Dot24
+  xpos 2815
+  ypos -604
+  hide_input true
+ }
+ Switch {
+  inputs 2
+  which {{parent.enableHighlights}}
+  name Switch3
+  xpos 283
+  ypos -608
+ }
+push $N36c8d400
+ Dot {
+  name Dot83
+  xpos 952
+  ypos -1671
+ }
+ Dot {
+  name Dot84
+  xpos 952
+  ypos -1281
+ }
+set Nef17000 [stack 0]
+ Dot {
+  name Dot85
+  xpos 952
+  ypos -1219
+ }
+set Nef16c00 [stack 0]
+push $Nef17000
+push $N642c3800
+ Grade {
+  inputs 1+1
+  add {{-parent.offsetS} {-parent.offsetT} 0 0}
+  black_clamp false
+  invert_mask true
+  name Offset
+  xpos 1153
+  ypos -1285
+ }
+ Grade {
+  inputs 1+1
+  add {{-parent.offsetSRt} {-parent.offsetTRt} 0 0}
+  black_clamp false
+  name OffsetRt
+  xpos 1153
+  ypos -1223
+ }
+ Expression {
+  temp_name0 A
+  temp_expr0 "g - floor(g)"
+  temp_name1 B
+  temp_expr1 abs(floor(g)%2)
+  temp_name2 C
+  temp_expr2 "B < 0.5 ? A : 1 - A"
+  expr0 "r - floor(r)"
+  expr1 C
+  expr2 b
+  name Expression2
+  xpos 1153
+  ypos -1158
+ }
+ Dot {
+  name Dot17
+  xpos 1187
+  ypos -1094
+ }
+set Nd850d800 [stack 0]
+push $Nef16c00
+ Dot {
+  name Dot91
+  xpos 952
+  ypos -889
+ }
+push $Nc7644400
+ Dot {
+  name Dot92
+  xpos 1967
+  ypos -1820
+ }
+ Dot {
+  name Dot94
+  xpos 1967
+  ypos -1242
+ }
+set Nd850cc00 [stack 0]
+ Dot {
+  name Dot95
+  xpos 1967
+  ypos -1164
+ }
+push $Nd850cc00
+ Shuffle {
+  in eyeST
+  red blue
+  green blue
+  name Shuffle_reflocc3
+  xpos 1857
+  ypos -1246
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy12
+  xpos 1857
+  ypos -1174
+ }
+ Unpremult {
+  name Unpremult14
+  xpos 1857
+  ypos -1106
+ }
+ Blur {
+  channels rgb
+  size {{parent.reflOcclBlurRt.w} {parent.reflOcclBlurRt.h}}
+  name BlurReflRt
+  xpos 1857
+  ypos -1039
+ }
+ Shuffle {
+  alpha white
+  name Shuffle10
+  xpos 1857
+  ypos -936
+ }
+push $Nd850d800
+clone $C642c3000 {
+  xpos 1548
+  ypos -1098
+  selected false
+ }
+set N5ff01000 [stack 0]
+ Input {
+  inputs 0
+  name reflection_image
+  label "\[value number]\n"
+  xpos 1569
+  ypos -3374
+  number 2
+ }
+ Dot {
+  name Dot90
+  xpos 1595
+  ypos -1374
+ }
+set N5ff00400 [stack 0]
+ Transform {
+  rotate {{parent.reflRotationRt}}
+  scale {{parent.reflScaleRt.w} {parent.reflScaleRt.h}}
+  center {{width/2} {height/2}}
+  name TransformRt
+  xpos 1649
+  ypos -1283
+ }
+ STMap {
+  inputs 2
+  channels rgba
+  uv rgb
+  name STMapRt
+  xpos 1649
+  ypos -1045
+  disable {{"(1-\[exists parent.input2]*parent.enableRefl)"}}
+ }
+ Reformat {
+  type "to box"
+  box_width {{Dot17.width}}
+  box_height {{Dot17.height}}
+  box_fixed true
+  name Reformat1
+  xpos 1649
+  ypos -1007
+ }
+ set Cc722f800 [stack 0]
+ Grade {
+  white {{parent.enableRefl}}
+  multiply {{parent.overallGradeRt.r} {parent.overallGradeRt.g} {parent.overallGradeRt.b} 1}
+  name Grade4_Rt
+  xpos 1649
+  ypos -969
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix {{parent.reflOcclusionRt}}
+  name Merge41rt
+  xpos 1649
+  ypos -936
+ }
+push $Nc2a65800
+ Blur {
+  channels rgb
+  size {{parent.reflOcclBlur.w} {parent.reflOcclBlur.h}}
+  name BlurReflLf
+  xpos 1000
+  ypos -1113
+ }
+ Shuffle {
+  alpha white
+  name Shuffle9
+  xpos 1000
+  ypos -937
+ }
+push $N5ff01000
+push $N5ff00400
+ Transform {
+  rotate {{parent.reflRotation}}
+  scale {{parent.reflScale.w} {parent.reflScale.h}}
+  center {{width/2} {height/2}}
+  name Transform3
+  xpos 1461
+  ypos -1285
+ }
+ STMap {
+  inputs 2
+  channels rgba
+  uv rgb
+  name STMap1
+  xpos 1461
+  ypos -1046
+  disable {{"(1-\[exists parent.input2]*parent.enableRefl)"}}
+ }
+clone $Cc722f800 {
+  xpos 1461
+  ypos -1009
+  selected false
+ }
+ Grade {
+  white {{parent.enableRefl}}
+  multiply {{parent.overallGrade.r} {parent.overallGrade.g} {parent.overallGrade.b} 1}
+  name Grade4
+  xpos 1461
+  ypos -974
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix {{parent.reflOcclusion}}
+  name Merge40
+  xpos 1461
+  ypos -937
+ }
+set N5b48c00 [stack 0]
+ Keymix {
+  inputs 3
+  name Keymix2
+  xpos 1555
+  ypos -899
+ }
+set N5b48800 [stack 0]
+ Dot {
+  name Dot11
+  xpos 1589
+  ypos -786
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 1153
+  ypos -796
+ }
+ Dot {
+  name Dot43
+  xpos 1187
+  ypos -447
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels rgb
+  name Merge10
+  xpos 283
+  ypos -451
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradeSclera.r} {parent.gradeSclera.g} {parent.gradeSclera.b} 1}
+  maskChannelMask rgba.red
+  name Grade_sclera
+  xpos 283
+  ypos -256
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradeIris.r} {parent.gradeIris.g} {parent.gradeIris.b} 1}
+  maskChannelMask rgba.green
+  name Grade_iris
+  xpos 283
+  ypos -205
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradePupil.r} {parent.gradePupil.g} {parent.gradePupil.b} 1}
+  maskChannelMask rgba.blue
+  name Grade_pupil
+  xpos 283
+  ypos -156
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradeScleraRt.r} {parent.gradeScleraRt.g} {parent.gradeScleraRt.b} 1}
+  maskChannelMask rgba.red
+  name Grade_scleraRt
+  xpos 283
+  ypos -106
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradeIrisRt.r} {parent.gradeIrisRt.g} {parent.gradeIrisRt.b} 1}
+  maskChannelMask rgba.green
+  name Grade_irisRt
+  xpos 283
+  ypos -55
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradePupilRt.r} {parent.gradePupilRt.g} {parent.gradePupilRt.b} 1}
+  maskChannelMask rgba.blue
+  name Grade_pupilRt
+  xpos 283
+  ypos -5
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradeUVMask.r} {parent.gradeUVMask.g} {parent.gradeUVMask.b} 1}
+  maskChannelMask rgba.red
+  name Grade_UVmask
+  xpos 283
+  ypos 195
+ }
+ Grade {
+  inputs 1+1
+  multiply {{parent.gradeUVMaskRt.r} {parent.gradeUVMaskRt.g} {parent.gradeUVMaskRt.b} 1}
+  maskChannelMask rgba.red
+  name Grade_UVmaskRt
+  xpos 283
+  ypos 326
+ }
+ Dot {
+  name Dot14
+  xpos 317
+  ypos 579
+ }
+set N3beef400 [stack 0]
+push $N24508000
+clone $C1a1bb800 {
+  xpos -155
+  ypos 575
+  selected false
+ }
+ Merge2 {
+  inputs 2
+  operation divide
+  Bchannels rgb
+  name Merge5
+  xpos 113
+  ypos 575
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge4
+  xpos 113
+  ypos 876
+ }
+push $N3beef400
+ Keymix {
+  inputs 3
+  maskChannel rgba.red
+  mix {{parent.fresnelEffect}}
+  name Keymix1
+  xpos 283
+  ypos 956
+ }
+ Dot {
+  name Dot56
+  xpos 317
+  ypos 1198
+ }
+set Nc8801c00 [stack 0]
+push $Na09be800
+ Shuffle {
+  in eyeUtility2
+  red blue
+  green blue
+  alpha blue
+  name Shuffle_meniscusmask
+  xpos -684
+  ypos 1194
+ }
+set Nc8801800 [stack 0]
+ Dot {
+  name Dot50
+  xpos -650
+  ypos 1302
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge37
+  xpos -74
+  ypos 1298
+ }
+ Clamp {
+  channels alpha
+  name Clamp1
+  xpos -74
+  ypos 1329
+ }
+push $Nc8801c00
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy9
+  xpos -74
+  ypos 1382
+ }
+push $Nc8801800
+push $Nc8801c00
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy4
+  xpos -74
+  ypos 1188
+ }
+push $Nc8801c00
+ Switch {
+  inputs 3
+  which {{parent.meniscusOption}}
+  name Switch7
+  xpos 283
+  ypos 1388
+ }
+ Premult {
+  name Premult4
+  xpos 283
+  ypos 1494
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels rgb
+  name Merge7
+  xpos -1124
+  ypos 1494
+ }
+ Copy {
+  inputs 2
+  from0 -rgba.alpha
+  to0 -rgba.alpha
+  channels eyeMVector
+  name Copy3
+  xpos -1579
+  ypos 1481
+ }
+ VectorBlur {
+  uv eyeMVector
+  method forward
+  alpha rgba.alpha
+  name VectorBlur1
+  xpos -1889
+  ypos 1488
+  disable {{"1 - parent.enableMBlur*EyeReflMetaData.mblurEnabled" x51 1}}
+ }
+ set Cdaca7400 [stack 0]
+ Matrix {
+  channels rgba
+  matrix {
+      {0.1 0.25 0.1}
+      {0.25 1 0.25}
+      {0.1 0.25 0.1}
+    }
+  normalize true
+  name Antialias
+  xpos -2131
+  ypos 1494
+  disable {{1-parent.antiAlias}}
+ }
+ Dot {
+  name Dot5
+  xpos -2241
+  ypos 1498
+ }
+set Ndaca6c00 [stack 0]
+push $N7910d000
+ Dot {
+  name Dot33
+  xpos -1861
+  ypos -1820
+ }
+ Dot {
+  name Dot34
+  xpos -1861
+  ypos -713
+ }
+clone $Cdaca7400 {
+  xpos -1895
+  ypos -627
+  selected false
+ }
+ Unpremult {
+  channels eyeUtility
+  name Unpremult6
+  xpos -2293
+  ypos -627
+ }
+set N9e131c00 [stack 0]
+ Multiply {
+  channels rgba
+  value 0
+  maskChannelInput eyeUtility.blue
+  invert_mask true
+  name Multiply_RT
+  xpos -2293
+  ypos -522
+ }
+set N9e131800 [stack 0]
+ Dot {
+  name Dot35
+  xpos -2259
+  ypos -144
+ }
+ Dot {
+  name Dot72
+  xpos -2882
+  ypos -144
+ }
+ Dot {
+  name Dot67
+  xpos -2882
+  ypos 29
+ }
+set N9e130c00 [stack 0]
+ Dot {
+  name Dot68
+  xpos -2882
+  ypos 76
+ }
+set N9e130800 [stack 0]
+ Dot {
+  name Dot76
+  xpos -2882
+  ypos 775
+ }
+set N9e130400 [stack 0]
+ FilterErode {
+  size {{-parent.blurEyeBorderRt}}
+  filter gaussian
+  name FilterErode5
+  xpos -3017
+  ypos 806
+ }
+push $N9e130400
+ FilterErode {
+  size {{parent.blurEyeBorderRt}}
+  filter gaussian
+  name FilterErode6
+  xpos -2815
+  ypos 809
+ }
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge36
+  xpos -2920
+  ypos 864
+ }
+ Dot {
+  name Dot77
+  xpos -2886
+  ypos 968
+ }
+push $N9e131c00
+ Multiply {
+  channels rgba
+  value 0
+  maskChannelInput eyeUtility.blue
+  name Multiply_LF
+  xpos -2293
+  ypos -727
+ }
+set Ndf0ef000 [stack 0]
+ Dot {
+  name Dot71
+  xpos -2148
+  ypos -717
+ }
+ Dot {
+  name Dot22
+  xpos -2148
+  ypos 22
+ }
+set Ndf0ee800 [stack 0]
+ Dot {
+  name Dot48
+  xpos -2148
+  ypos 69
+ }
+set Ndf0ee400 [stack 0]
+ Dot {
+  name Dot37
+  xpos -2148
+  ypos 774
+ }
+set Ndf0ee000 [stack 0]
+ FilterErode {
+  size {{"-parent.blurEyeBorder "}}
+  filter gaussian
+  name FilterErode3
+  xpos -2283
+  ypos 805
+ }
+push $Ndf0ee000
+ FilterErode {
+  size {{parent.blurEyeBorder}}
+  filter gaussian
+  name FilterErode4
+  xpos -2081
+  ypos 808
+ }
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge26
+  xpos -2186
+  ypos 863
+ }
+ Dot {
+  name Dot49
+  xpos -2152
+  ypos 923
+ }
+push $N7910c400
+ Unpremult {
+  channels eyeUtility
+  name Unpremult11
+  xpos -1648
+  ypos 118
+ }
+set N42da8c00 [stack 0]
+push $N42da8c00
+push $N7910c800
+push $N7910cc00
+ Dot {
+  name Dot3
+  xpos -1735
+  ypos -122
+ }
+ Shuffle {
+  in {eyeUtility.red eyeUtility.green eyeUtility.blue -eyeUtility.alpha}
+  red green
+  blue green
+  alpha green
+  name Shuffle_ambocc
+  xpos -1769
+  ypos -72
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy2
+  xpos -1769
+  ypos -9
+ }
+ Unpremult {
+  name Unpremult1
+  xpos -1769
+  ypos 56
+ }
+ Grade {
+  inputs 1+1
+  black {{parent.realAmbocc.r} {parent.realAmbocc.g} {parent.realAmbocc.b} 0}
+  maskChannelMask eyeUtility.blue
+  invert_mask true
+  name Grade_ambocc_LF
+  xpos -1769
+  ypos 108
+ }
+ Grade {
+  inputs 1+1
+  black {{parent.realAmboccRt.r} {parent.realAmboccRt.g} {parent.realAmboccRt.b} 0}
+  maskChannelMask eyeUtility.blue
+  name Grade_ambocc_RT
+  xpos -1769
+  ypos 144
+ }
+ Premult {
+  name Premult1
+  xpos -1769
+  ypos 204
+ }
+clone $Cdaca7400 {
+  xpos -1769
+  ypos 319
+  selected false
+ }
+push $N62f2d800
+ Shuffle {
+  red white
+  green white
+  blue white
+  alpha white
+  name Shuffle1
+  xpos -2060
+  ypos 126
+ }
+ Dot {
+  name Dot73
+  xpos -2026
+  ypos 258
+ }
+set Na9e9e400 [stack 0]
+ Dot {
+  name Dot74
+  xpos -2026
+  ypos 329
+ }
+set Na9e9e000 [stack 0]
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos -1879
+  ypos 325
+ }
+ Dot {
+  name Dot10
+  xpos -1845
+  ypos 608
+ }
+push $N9e131800
+ Dot {
+  name Dot63
+  xpos -2327
+  ypos -512
+ }
+set Nebdfb400 [stack 0]
+push $Nebdfb400
+push $Nebdfb400
+push $Nebdfb400
+push $Ndf0ef000
+ Dot {
+  name Dot65
+  xpos -2338
+  ypos -717
+ }
+set Nebdfb000 [stack 0]
+push $Nebdfb000
+push $Nebdfb000
+push $Nebdfb000
+push $N62f2dc00
+ Grade {
+  inputs 1+1
+  white {{parent.overallEyeGain.r} {parent.overallEyeGain.g} {parent.overallEyeGain.b} 1}
+  name gain_overall_LF
+  xpos -2550
+  ypos -790
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.scleraGain.r} {parent.scleraGain.g} {parent.scleraGain.b} 1}
+  maskChannelMask rgba.red
+  name gain_sclera_LF
+  xpos -2550
+  ypos -748
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.irisGain.r} {parent.irisGain.g} {parent.irisGain.b} 1}
+  maskChannelMask rgba.green
+  name gain_iris_LF
+  xpos -2550
+  ypos -698
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.pupilGain.r} {parent.pupilGain.g} {parent.pupilGain.b} 1}
+  maskChannelMask rgba.blue
+  name gain_pupil_LF
+  xpos -2550
+  ypos -652
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.overallEyeGainRt.r} {parent.overallEyeGainRt.g} {parent.overallEyeGainRt.b} 1}
+  name gain_overall_LF1
+  xpos -2550
+  ypos -586
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.scleraGainRt.r} {parent.scleraGainRt.g} {parent.scleraGainRt.b} 1}
+  maskChannelMask rgba.red
+  name gain_sclera_LF1
+  xpos -2550
+  ypos -544
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.irisGainRt.r} {parent.irisGainRt.g} {parent.irisGainRt.b} 1}
+  maskChannelMask rgba.green
+  name gain_iris_LF1
+  xpos -2550
+  ypos -494
+ }
+ Grade {
+  inputs 1+1
+  white {{parent.pupilGainRt.r} {parent.pupilGainRt.g} {parent.pupilGainRt.b} 1}
+  maskChannelMask rgba.blue
+  name gain_pupil_LF1
+  xpos -2550
+  ypos -448
+ }
+ Dot {
+  name Dot47
+  xpos -2516
+  ypos -78
+ }
+set Ndfb94c00 [stack 0]
+ Dot {
+  name Dot69
+  xpos -2654
+  ypos -78
+ }
+ Blur {
+  size {{parent.fakeAmboccWidthRt.w} {parent.fakeAmboccWidthRt.h}}
+  name Blur7
+  xpos -2688
+  ypos -24
+ }
+ Grade {
+  white 4
+  name Grade9
+  xpos -2688
+  ypos 21
+ }
+push $N9e130800
+push $N9e130c00
+ FilterErode {
+  channels alpha
+  size {{parent.fakeAmboccWidthRt.w} {parent.fakeAmboccWidthRt.h}}
+  filter gaussian
+  name FilterErode1
+  xpos -2813
+  ypos 19
+ }
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge32
+  xpos -2813
+  ypos 72
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge33
+  xpos -2688
+  ypos 72
+ }
+ Unpremult {
+  name Unpremult10
+  xpos -2688
+  ypos 127
+ }
+ Grade {
+  black {{parent.fakeAmboccRt.r} {parent.fakeAmboccRt.g} {parent.fakeAmboccRt.b} 0}
+  name Grade10
+  xpos -2688
+  ypos 153
+ }
+ Premult {
+  name Premult6
+  xpos -2688
+  ypos 179
+ }
+push $Na9e9e000
+ Merge2 {
+  inputs 2
+  name Merge34
+  xpos -2688
+  ypos 325
+ }
+ Dot {
+  name Dot70
+  xpos -2654
+  ypos 402
+ }
+push $Ndfb94c00
+ Dot {
+  name Dot66
+  xpos -2372
+  ypos -78
+ }
+ Blur {
+  size {{parent.fakeAmboccWidth.w} {parent.fakeAmboccWidth.h}}
+  name Blur4
+  xpos -2406
+  ypos -31
+ }
+ Grade {
+  white 4
+  name Grade12
+  xpos -2406
+  ypos 14
+ }
+push $Ndf0ee400
+push $Ndf0ee800
+ FilterErode {
+  channels alpha
+  size {{parent.fakeAmboccWidth.w} {parent.fakeAmboccWidth.h}}
+  filter gaussian
+  name FilterErode2
+  selected true
+  xpos -2279
+  ypos 12
+ }
+ Merge2 {
+  inputs 2
+  operation out
+  name Merge25
+  xpos -2279
+  ypos 65
+ }
+ Merge2 {
+  inputs 2
+  operation in
+  name Merge19
+  xpos -2406
+  ypos 65
+ }
+ Unpremult {
+  name Unpremult3
+  xpos -2406
+  ypos 120
+ }
+ Grade {
+  black {{parent.fakeAmbocc.r} {parent.fakeAmbocc.g} {parent.fakeAmbocc.b} 0}
+  name Grade11
+  xpos -2406
+  ypos 146
+ }
+ Premult {
+  name Premult5
+  xpos -2406
+  ypos 172
+ }
+push $Na9e9e400
+ Merge2 {
+  inputs 2
+  name Merge27
+  xpos -2406
+  ypos 254
+ }
+push $Ndfb94c00
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge28
+  xpos -2550
+  ypos 254
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge35
+  xpos -2550
+  ypos 398
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge1
+  xpos -2550
+  ypos 604
+ }
+ Blur {
+  inputs 1+1
+  channels rgb
+  size {{parent.blurEyeBorder}}
+  name Blur3
+  xpos -2550
+  ypos 919
+ }
+ Blur {
+  inputs 1+1
+  channels rgb
+  size {{parent.blurEyeBorderRt}}
+  name Blur8
+  xpos -2550
+  ypos 964
+ }
+push $N62f2dc00
+ Dot {
+  name Dot7
+  xpos -3199
+  ypos -961
+ }
+ Dot {
+  name Dot9
+  xpos -3199
+  ypos 1119
+ }
+ Switch {
+  inputs 2
+  which {{parent.enableCC}}
+  name Switch4
+  xpos -2550
+  ypos 1115
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels rgb
+  name Merge8
+  xpos -2550
+  ypos 1219
+ }
+push $Ndaca6c00
+ Switch {
+  inputs 2
+  which {{parent.addToBaseLayer}}
+  name Switch1
+  xpos -2550
+  ypos 1494
+ }
+ Output {
+  name Output1
+  xpos -2550
+  ypos 2101
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote1
+  label "In case anyone is wondering about this part.\n\nI got the equation for the (unpolarized) reflectance here:\nhttps://en.wikipedia.org/wiki/Fresnel_equations\n\nAnd I'm dividing that by the specific value for straight-on reflection,\n so that the intensity at the front of the eye won't change, \nit will only affect reflections around the sides.\n\nSeems easiest?"
+  note_font_size 12
+  xpos -239
+  ypos 639
+ }
+push $Nfa6d2800
+ ViewMetaData {
+  metadatafilter exr/mb
+  name ViewMetaData1
+  xpos -283
+  ypos -2823
+ }
+push $Nfa6d2800
+ NoOp {
+  name EyeReflMetaData
+  xpos -722
+  ypos -2823
+  addUserKnob {20 User}
+  addUserKnob {6 mblurEnabled l "Motion Blur Enabled" +STARTLINE}
+  mblurEnabled {{"\[metadata exr/mb.motion_blur_enable]"}}
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote2
+  label "In case anyone is wondering about this part.\n\nI found that it seemed to run a little faster/smoother interactively, \nif I did the generic highlight using an expression \ninstead of using a round circular image. \nIt's a smoothstep plus a gaussian... \nwhich is roughly the same as what you're doing \nif you create a round feathered roto, \nthen blur it and add that onto the unblurred version.\n(Which is what we do to the refl image if one chooses that instead.)\n\nSeems to work?"
+  note_font_size 12
+  xpos -346
+  ypos -805
+ }
+push $N5b48c00
+ Dot {
+  name Dot86
+  xpos 1495
+  ypos -832
+ }
+push $N5b48800
+ Switch {
+  inputs 2
+  which {{parent.linkReflBasics}}
+  name Switch8
+  xpos 1486
+  ypos -842
+  disable true
+ }
+end_group

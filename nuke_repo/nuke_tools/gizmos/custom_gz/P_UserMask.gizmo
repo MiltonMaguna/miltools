@@ -1,0 +1,211 @@
+#! C:/Program Files/Nuke13.1v1/nuke-13.1.1.dll -nx
+version 13.1 v1
+Gizmo {
+ inputs 2
+ addUserKnob {20 User}
+ addUserKnob {6 picker_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
+ addUserKnob {26 p_usermask_v03}
+ addUserKnob {41 format l "output format" T Reformat22.format}
+ addUserKnob {26 ""}
+ addUserKnob {41 disable_2 l "disable VectorBlur" T VectorBlur4.disable}
+ addUserKnob {41 disable_1 l P_Matte_View T P_View.disable}
+ addUserKnob {41 matteShape T P_Matte5.matteShape}
+ addUserKnob {41 picker T ColorPicker1.picker}
+ addUserKnob {41 center_1 l center +INVISIBLE T P_Matte5.center}
+ addUserKnob {26 ""}
+ addUserKnob {41 rot_order l "rotation order" T P_Matte5.rot_order}
+ addUserKnob {41 rotate T P_Matte5.rotate}
+ addUserKnob {41 scaling l scale T P_Matte5.scaling}
+ addUserKnob {41 uniform_scale l "uniform scale" T P_Matte5.uniform_scale}
+ addUserKnob {41 pivot +INVISIBLE T P_Matte5.pivot}
+ addUserKnob {41 skew T P_Matte5.skew}
+ addUserKnob {26 ""}
+ addUserKnob {41 falloffType T P_Matte5.falloffType}
+ addUserKnob {41 falloff T P_Matte5.falloff}
+ addUserKnob {41 exp T P_Matte5.exp}
+}
+ Input {
+  inputs 0
+  name MotionVector_if_needed
+  xpos -1272
+  ypos 304
+  number 1
+ }
+set Nc47ba800 [stack 0]
+push $Nc47ba800
+add_layer {motionvector motionvector.red motionvector.green motionvector.blue}
+ ShuffleCopy {
+  inputs 2
+  red red
+  green green
+  blue blue
+  black red
+  white green
+  red2 blue
+  out motionvector
+  out2 motionvector
+  name ShuffleCopy1
+  xpos -1272
+  ypos 381
+ }
+ Shuffle {
+  in motionvector
+  red green
+  green red
+  blue black
+  out motionvector
+  name Shuffle16
+  xpos -1272
+  ypos 498
+ }
+ Dot {
+  name Dot109
+  xpos -1243
+  ypos 670
+ }
+ Input {
+  inputs 0
+  name TECH
+  xpos -585
+  ypos 280
+ }
+set Nc47b9800 [stack 0]
+push $Nc47b9800
+add_layer {P P.X P.Y P.Z P.red P.green P.blue}
+ ShuffleCopy {
+  inputs 2
+  red red
+  green green
+  blue blue
+  black red
+  white green
+  red2 blue
+  out P
+  out2 P
+  name ShuffleCopy2
+  xpos -585
+  ypos 347
+ }
+ Dot {
+  name Dot3
+  xpos -555
+  ypos 401
+ }
+set Nc47b9000 [stack 0]
+ P_Matte {
+  name P_Matte5
+  xpos -585
+  ypos 502
+  in P
+  output alpha
+  matteShape Cube
+  center {{parent.parent.ColorPicker1.picker} {parent.parent.ColorPicker1.picker} {parent.parent.ColorPicker1.picker}}
+  uniform_scale 1
+  falloffType Quadratic
+  falloff 0.34
+  exp 4.25
+ }
+set Nc4824800 [stack 0]
+ Copy {
+  inputs 2
+  channels motionvector
+  name Copy10
+  xpos -585
+  ypos 657
+ }
+ Reformat {
+  scale 0.5
+  name Reformat22
+  xpos -585
+  ypos 735
+ }
+ set C91565800 [stack 0]
+ VectorBlur2 {
+  uv motionvector
+  blur_uv linear
+  blur_type uniform
+  scale 1
+  motion_falloff 0.5
+  name VectorBlur4
+  xpos -585
+  ypos 803
+  disable true
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle1
+  xpos -585
+  ypos 1134
+ }
+push $Nc4824800
+ Dot {
+  name Dot1
+  xpos -417
+  ypos 508
+ }
+clone $C91565800 {
+  xpos -447
+  ypos 729
+  selected false
+ }
+ Dot {
+  name Dot2
+  xpos -417
+  ypos 1269
+ }
+ Switch {
+  inputs 2
+  which 1
+  name P_View
+  xpos -585
+  ypos 1269
+ }
+ Output {
+  name Output1
+  xpos -585
+  ypos 1371
+ }
+ Viewer {
+  frame_range 1001-1107
+  viewerProcess "sRGB (ACES)"
+  name Viewer1
+  xpos -18
+  ypos 1188
+  hide_input true
+ }
+push $Nc47b9000
+clone $C91565800 {
+  xpos -199
+  ypos 401
+  selected false
+ }
+ NoOp {
+  name ColorPicker1
+  xpos -199
+  ypos 506
+  addUserKnob {20 User}
+  addUserKnob {18 picker}
+  picker {0 0 0}
+  addUserKnob {6 picker_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote2
+  label "picker en HD\nPermite mirar el bty \n que corresponda lo que pickeas\ncon el tech. \ny elegir "
+  note_font " Bold"
+  note_font_size 35
+  xpos -78
+  ypos 377
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote69
+  label "P matte full res/\nreformat cubic  para bordes suaves /\nVector blur ultimo para reducir procesamiento en 4k"
+  note_font " Bold"
+  note_font_size 35
+  xpos -908
+  ypos 86
+ }
+end_group

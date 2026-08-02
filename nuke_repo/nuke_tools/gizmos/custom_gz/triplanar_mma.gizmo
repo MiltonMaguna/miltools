@@ -1,0 +1,371 @@
+#! C:/Program Files/Nuke15.1v9/nuke-15.1.9.dll -nx
+version 15.1 v9
+Gizmo {
+ inputs 3
+ addUserKnob {20 User}
+ addUserKnob {6 texture_on_off +STARTLINE}
+ texture_on_off true
+ addUserKnob {7 scale_texture}
+ scale_texture 0.01
+}
+ Input {
+  inputs 0
+  name N
+  xpos -1975
+  ypos 718
+  number 1
+ }
+ Expression {
+  expr0 abs(r)
+  expr1 abs(g)
+  expr2 abs(b)
+  name Expression7
+  xpos -1975
+  ypos 793
+ }
+ Grade {
+  blackpoint 0.7
+  whitepoint 0.71
+  white_clamp true
+  name Grade31
+  xpos -1975
+  ypos 834
+ }
+ Expression {
+  expr3 "(r+g+b) > 0.6"
+  name Expression8
+  xpos -1993
+  ypos 876
+ }
+ Premult {
+  name Premult1
+  xpos -1988
+  ypos 927
+ }
+ EdgeExtend {
+  detailAmount 0
+  premultiply false
+  name EdgeExtend4
+  xpos -1747
+  ypos 1207
+ }
+ Dot {
+  name Dot42
+  xpos -1783
+  ypos 1344
+ }
+set Ne70e0400 [stack 0]
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.blue 0 2 rgba.red 0 0 rgba.blue 0 2 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2 rgba.blue 0 2 rgba.alpha 0 3"
+  name Shuffle14
+  tile_color 0xffff
+  gl_color 0xffff
+  xpos -1746
+  ypos 1535
+ }
+ Input {
+  inputs 0
+  name P
+  xpos -1280
+  ypos 1134
+ }
+ Dot {
+  name Dot43
+  xpos -1246
+  ypos 1229
+ }
+ Multiply {
+  value {{parent.scale_texture}}
+  name Multiply2
+  xpos -1280
+  ypos 1344
+ }
+ Expression {
+  expr0 abs(r)
+  expr1 abs(g)
+  expr2 abs(b)
+  name Expression9
+  xpos -1280
+  ypos 1412
+ }
+ Expression {
+  expr0 r-trunc(r)
+  expr1 g-trunc(g)
+  expr2 b-trunc(b)
+  name Trunc1
+  xpos -1280
+  ypos 1462
+  addUserKnob {20 User}
+  addUserKnob {7 scale R 0 5}
+  scale 1
+ }
+ Dot {
+  name Dot44
+  xpos -1246
+  ypos 1530
+ }
+set Ndad0f800 [stack 0]
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.red 0 0 rgba.red 0 0 black -1 -1 rgba.green 0 1 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.blue 0 2"
+  name Shuffle15
+  tile_color 0xff0000ff
+  gl_color 0xff0000ff
+  xpos -1394
+  ypos 1603
+ }
+set Ndad0e800 [stack 0]
+push $Ndad0f800
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.green 0 1 rgba.green 0 1 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.blue 0 2 black -1 -1 rgba.red 0 0"
+  name Shuffle16
+  tile_color 0xff00ff
+  gl_color 0xff00ff
+  xpos -1280
+  ypos 1601
+ }
+set Ne70fcc00 [stack 0]
+ Shuffle2 {
+  inputs 2
+  fromInput1 {{0} B A}
+  in1 rgb
+  fromInput2 {{1} B A}
+  in2 rgb
+  mappings "4 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.blue 0 2 rgba.red 1 0 rgba.green 0 1 rgba.green 0 1 rgba.red 0 0"
+  name Shuffle17
+  xpos -1394
+  ypos 1732
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge29
+  xpos -1394
+  ypos 1859
+ }
+push 0
+push $Ne70e0400
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.red 0 0 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.red 0 0 rgba.blue 0 2 rgba.red 0 0 rgba.alpha 0 3"
+  name Shuffle18
+  tile_color 0xff0000ff
+  gl_color 0xff0000ff
+  xpos -1992
+  ypos 1535
+ }
+push $Ne70fcc00
+push $Ndad0f800
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.blue 0 2 rgba.blue 0 2 black -1 -1 rgba.green 0 1 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.red 0 0"
+  name Shuffle19
+  tile_color 0xffff
+  gl_color 0xffff
+  xpos -1166
+  ypos 1603
+ }
+set Ndad5e000 [stack 0]
+ Shuffle2 {
+  inputs 2
+  fromInput1 {{0} B A}
+  in1 rgb
+  fromInput2 {{1} B A}
+  in2 rgb
+  mappings "4 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.blue 0 2 rgba.blue 0 2 rgba.green 0 1 rgba.green 1 1 rgba.red 0 0"
+  name Shuffle20
+  xpos -1166
+  ypos 1741
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge35
+  xpos -1166
+  ypos 1848
+ }
+push $Ne70e0400
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.green 0 1 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.green 0 1 rgba.alpha 0 3"
+  name Shuffle21
+  tile_color 0xff00ff
+  gl_color 0xff00ff
+  xpos -1880
+  ypos 1535
+ }
+push $Ndad0e800
+push $Ndad5e000
+ Shuffle2 {
+  inputs 2
+  fromInput1 {{0} B A}
+  in1 rgb
+  fromInput2 {{1} B A}
+  in2 rgb
+  mappings "4 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.blue 0 2 rgba.blue 0 2 rgba.green 0 1 rgba.red 1 0 rgba.red 0 0"
+  name Shuffle22
+  xpos -1273
+  ypos 1745
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge36
+  xpos -1273
+  ypos 1870
+ }
+ Merge2 {
+  inputs 3+1
+  operation screen
+  name Merge37
+  xpos -1252
+  ypos 1990
+ }
+ Input {
+  inputs 0
+  name TEXTURE
+  xpos -1709
+  ypos 2052
+  number 2
+ }
+ CheckerBoard2 {
+  inputs 0
+  format "2048 2048 0 0 2048 2048 1 square_2K"
+  boxsize 100
+  name CheckerBoard2
+  xpos -1867
+  ypos 1932
+ }
+ Roto {
+  curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 2097152}
+    {t x44800000 x44800000}
+    {a pt1x 0 pt1y 0 pt2x 0 pt2y 0 pt3x 0 pt3y 0 pt4x 0 pt4y 0 ptex00 0 ptex01 0 ptex02 0 ptex03 0 ptex10 0 ptex11 0 ptex12 0 ptex13 0 ptex20 0 ptex21 0 ptex22 0 ptex23 0 ptex30 0 ptex31 0 ptex32 0 ptex33 0 ptof1x 0 ptof1y 0 ptof2x 0 ptof2y 0 ptof3x 0 ptof3y 0 ptof4x 0 ptof4y 0 pterr 0 ptrefset 0 ptmot x40800000 ptref 0}
+    {curvegroup Bezier1 512 bezier
+     {{cc
+       {f 8192}
+       {p
+        {xc0800000 xc1600000}
+        {x43f00000 x44aac000}
+        {x40800000 x41600000}
+        {}
+        {x44800000 x44f88000}
+        {}
+        {}
+        {x44bfc000 x44ad0000}
+        {}
+        {}
+        {x4494c000 x44a74000}
+        {}
+        {}
+        {x44978000 x42c40000}
+        {}
+        {}
+        {x444a0000 x43280000}
+        {}
+        {}
+        {x44560000 x44a7c000}
+        {}}}
+      {cc
+       {f 8192}
+       {p
+        {xc0800000 xc1600000}
+        {}
+        {x40800000 x41600000}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}
+        {}}}}
+     {t x447db6db x448936db 0 0 0 0 0 0 0 x3f000000 x3f000000}
+     {a osw x41200000 osf 0 str 1 spx x44800000 spy x44800000 sb 1 ltn x44842000 ltm x44842000 tt x40800000}}}}}}
+  toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 tt 4 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+  toolbar_brush_hardness 0.200000003
+  toolbar_source_transform_scale {1 1}
+  toolbar_source_transform_center {1024 1024}
+  colorOverlay {0 0 0 0}
+  lifetime_type "all frames"
+  lifetime_start 1057
+  lifetime_end 1057
+  motionblur_shutter_offset_type centred
+  source_black_outside true
+  name Roto4
+  xpos -1867
+  ypos 2033
+ }
+ Transform {
+  rotate -90
+  center {1024 1024}
+  name Transform7
+  xpos -1867
+  ypos 2104
+ }
+ Crop {
+  box {0 0 2048 2048}
+  name Crop7
+  xpos -1867
+  ypos 2129
+ }
+ Switch {
+  inputs 2
+  which 1
+  name Switch1
+  xpos -1693
+  ypos 2129
+  disable {{parent.texture_on_off}}
+ }
+ STMap {
+  inputs 2
+  channels rgba
+  uv rgba
+  name STMap3
+  xpos -1252
+  ypos 2129
+ }
+ Output {
+  name Output1
+  xpos -1252
+  ypos 2229
+ }
+end_group

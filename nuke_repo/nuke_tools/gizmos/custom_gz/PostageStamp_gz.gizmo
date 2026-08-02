@@ -1,0 +1,13 @@
+set cut_paste_input [stack 0]
+version 12.1 v4
+push $cut_paste_input
+PostageStamp {
+name PostageStamp19
+tile_color 0xff3232ff
+label "\[value \[topnode].name]\n\[value \[topnode].label]\nv\[value \[topnode].version_render]\n\[value \[topnode].first]-\[value \[topnode].last]"
+selected true
+xpos 7286
+ypos 15680
+hide_input true
+postage_stamp true
+}

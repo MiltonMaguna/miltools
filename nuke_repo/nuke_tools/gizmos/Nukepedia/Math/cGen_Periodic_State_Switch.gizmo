@@ -1,0 +1,40 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Periodic_SS
+ addUserKnob {20 "" Settings}
+ addUserKnob {26 "" "@b;Periodic State Switch"}
+ addUserKnob {7 astate "A State:" R -1000 1000}
+ astate 100
+ addUserKnob {7 bstate "B State:" R -1000 1000}
+ bstate -100
+ addUserKnob {7 balance Balance: R 0 100}
+ balance 30
+ addUserKnob {7 frequency Frequency: R 0 100}
+ frequency 30
+ addUserKnob {7 velo Spacing: R 0 100}
+ velo 30
+ addUserKnob {26 "" ""}
+ addUserKnob {7 result Result: R 0 1}
+ result {{(sin(frame)*frequency/(10*acos(-1)))>((balance-velo)/velo)?astate:bstate x65 0}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 19
+  ypos 13
+ }
+ Output {
+  name Output1
+  xpos 19
+  ypos 39
+ }
+end_group

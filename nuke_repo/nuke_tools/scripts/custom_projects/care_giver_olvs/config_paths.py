@@ -1,0 +1,3 @@
+PATHS = {"renders": "L:\\SS230095 - CARE GIVER OLVS\\05_VFX\\02_VFX\\03_RENDERS\\",
+         "base_projects": "L:\\SS230095 - CARE GIVER OLVS\\05_VFX\\02_VFX\\02_PROJECTS\\",
+         "assets": "L:\\SS230095 - CARE GIVER OLVS\\05_VFX\\02_VFX\\01_ASSETS"}

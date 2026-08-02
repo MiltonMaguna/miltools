@@ -1,0 +1,34 @@
+#! C:/Program Files/Nuke9.0v5/nuke-9.0.5.dll -nx
+version 9.0 v5
+Gizmo {
+inputs 0
+addUserKnob {20 User}
+addUserKnob {41 Seed T Random_Node.Seed}
+addUserKnob {41 Frequency T Random_Node.Frequency}
+addUserKnob {41 Amplitude T Random_Node.Amplitude}
+addUserKnob {41 Offset T Random_Node.Offset}
+addUserKnob {41 Result T Random_Node.Result}
+}
+NoOp {
+inputs 0
+name Random_Node
+selected true
+xpos 616
+ypos -29
+addUserKnob {20 User}
+addUserKnob {3 Seed}
+Seed 1
+addUserKnob {7 Frequency R 0 2}
+Frequency 1
+addUserKnob {7 Amplitude R -1 1}
+Amplitude 1
+addUserKnob {7 Offset}
+addUserKnob {7 Result}
+Result {{(random(Random_Node.Seed,frame*Random_Node.Frequency)*Random_Node.Amplitude)+Random_Node.Offset}}
+}
+Output {
+name Output1
+xpos 616
+ypos 65
+}
+end_group

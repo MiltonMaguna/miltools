@@ -1,0 +1,34 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5012
+Gizmo {
+ addUserKnob { 20 "" Settings }
+ addUserKnob { 26 "" "@b;Random" }
+ addUserKnob { 7 miny "Min Y:" R -100 100 }
+ addUserKnob { 7 maxy "Max Y:" R -100 100 }
+ addUserKnob { 26 "" "" }
+ addUserKnob { 7 result Result: R 0 1 }
+ name Random
+ tile_color 0xff800000
+ name Random
+ label "@s-2 CurveGen"
+ miny 0.1
+ maxy 1
+ result {{(random(frame)*(maxy-miny)+miny) x66 0}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 19
+  ypos 13
+ }
+ Output {
+  name Output1
+  xpos 19
+  ypos 39
+ }
+end_group

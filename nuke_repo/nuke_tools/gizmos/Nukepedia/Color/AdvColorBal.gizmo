@@ -1,0 +1,161 @@
+#! C:/Program Files/Nuke5.0v1/nuke5.0.exe -nx
+version 5.0100
+Gizmo {
+ addUserKnob {20 Parameters}
+ addUserKnob {41 RedSlide l "Sunlight Adjust (Cyan)" T Whitebalance.RedSlide}
+ addUserKnob {41 BlueSlide l "Tungsten Adjust (Yellow)" T Whitebalance.BlueSlide}
+ addUserKnob {41 GreenSlide l "Green Value" T Whitebalance.GreenSlide}
+ addUserKnob {26 "" l "Fine Control"}
+ addUserKnob {41 gamma l Red T Red.gamma}
+ addUserKnob {41 gamma_1 l Green T Green.gamma}
+ addUserKnob {41 gamma_2 l Blue T Blue.gamma}
+ addUserKnob {26 "" l ""}
+ addUserKnob {41 gamma_3 l Cyan T Cyan.gamma}
+ addUserKnob {41 gamma_4 l Magenta T Magenta.gamma}
+ addUserKnob {41 gamma_5 l Yellow T Yellow.gamma}
+ addUserKnob {26 "" l ""}
+ addUserKnob {41 gamma_6 l "Overall Gamma" T OverallGamma.gamma}
+ addUserKnob {41 multiply l Brightness T OverallGamma.multiply}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 41
+  ypos -236
+ }
+ Dot {
+  name Dot1
+  xpos 75
+  ypos -196
+ }
+set N30d72d58 [stack 0]
+ Shuffle {
+  green black
+  name Shuffle3
+  xpos 41
+  ypos -178
+ }
+ Grade {
+  name Magenta
+  xpos 41
+  ypos -151
+ }
+set N3aba8e28 [stack 0]
+push $N30d72d58
+ Shuffle {
+  blue black
+  name Shuffle2
+  xpos 124
+  ypos -178
+ }
+ Grade {
+  name Yellow
+  xpos 124
+  ypos -151
+ }
+set N38dd9008 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge2
+  xpos -47
+  ypos -95
+ }
+ Grade {
+  name Red
+  xpos -47
+  ypos -68
+ }
+push $N30d72d58
+ Shuffle {
+  red black
+  name Shuffle1
+  xpos -45
+  ypos -179
+ }
+ Grade {
+  name Cyan
+  xpos -45
+  ypos -152
+ }
+set N125c09b8 [stack 0]
+push $N38dd9008
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge3
+  xpos 41
+  ypos -97
+ }
+ Grade {
+  name Green
+  xpos 41
+  ypos -70
+ }
+push $N125c09b8
+push $N3aba8e28
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge1
+  xpos 131
+  ypos -97
+ }
+ Grade {
+  name Blue
+  xpos 131
+  ypos -70
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 xred
+  temp_expr0 1
+  temp_name1 xgreen
+  temp_expr1 1
+  temp_name2 xblue
+  temp_expr2 1
+  channel0 {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  expr0 (Ar+Br)*xred
+  channel1 {-rgba.red rgba.green -rgba.blue -rgba.green}
+  expr1 (Ag+Bg)*xgreen
+  channel2 {-rgba.red -rgba.green rgba.blue -rgba.blue}
+  expr2 (Ab+Bb)*xblue
+  channel3 {none none none -rgba.alpha}
+  name MergeExpression1
+  xpos 62
+  ypos -34
+ }
+ MergeExpression {
+  inputs 2
+  channel0 {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  expr0 (Ar+Br)*RedSlide
+  channel1 {-rgba.red rgba.green -rgba.blue -rgba.green}
+  expr1 (Ag+Bg)*GreenSlide
+  channel2 {-rgba.red -rgba.green rgba.blue -rgba.blue}
+  expr2 (Ab+Bb)*BlueSlide
+  channel3 {none none none -rgba.alpha}
+  name Whitebalance
+  selected true
+  xpos 62
+  ypos 3
+  addUserKnob {20 User}
+  addUserKnob {7 RedSlide l "Red Value" R 1 50}
+  RedSlide 1
+  addUserKnob {7 GreenSlide l "Green Value" R 1 50}
+  GreenSlide 1
+  addUserKnob {7 BlueSlide l "Blue Value" R 1 50}
+  BlueSlide 1
+ }
+ Grade {
+  white 1.47165
+  gamma 1.5
+  name OverallGamma
+  xpos 62
+  ypos 30
+ }
+ Output {
+  name Output1
+  xpos 62
+  ypos 80
+ }
+end_group

@@ -1,0 +1,49 @@
+Gizmo {
+ addUserKnob {20 User t "pre-blur luminence for bad 4:2:0 footage to be placed before keys, attempting to help chunky / artifact edges\n"}
+ addUserKnob {7 bluruvx l "blur luma X" t "pre-blur X for bad 4:2:0 footage before keys" R 0 15}
+ bluruvx 5
+ addUserKnob {7 bluruvy l "blur luma Y" t "pre-blur X for bad 4:2:0 footage before keys" R 0 15}
+ bluruvy 2
+ addUserKnob {41 filter T Blur2.filter}
+ addUserKnob {41 quality l "" -STARTLINE T Blur2.quality}
+ addUserKnob {41 crop l "crop to format" T Blur2.crop}
+ addUserKnob {41 mix T Blur2.mix}
+ addUserKnob {26 "" l mask}
+ addUserKnob {41 maskChannelMask l "" -STARTLINE T Blur2.maskChannelMask}
+ addUserKnob {41 maskChannelInput l "" -STARTLINE T Blur2.maskChannelInput}
+ addUserKnob {41 inject -STARTLINE T Blur2.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T Blur2.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T Blur2.fringe}
+ addUserKnob {26 info l "" t "pre-blur luminence for bad 4:2:0 footage to be placed before keys, attempting to help chunky / artifact edges\n" +STARTLINE T "\n420aid v0.1 |  by julian van mil 2010"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -332
+  ypos -65
+ }
+ Colorspace {
+  colorspace_out YCbCr
+  name Colorspace1
+  xpos -332
+  ypos -18
+ }
+ Blur {
+  channels {-rgba.red rgba.green rgba.blue -rgba.alpha}
+  size {{parent.bluruvx i} {parent.bluruvy i}}
+  name Blur2
+  xpos -332
+  ypos 24
+ }
+ Colorspace {
+  colorspace_in YCbCr
+  name Colorspace2
+  xpos -332
+  ypos 76
+ }
+ Output {
+  name Output1
+  xpos -332
+  ypos 121
+ }
+end_group

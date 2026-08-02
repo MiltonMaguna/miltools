@@ -1,0 +1,153 @@
+#! C:/Program Files/Nuke10.0v4/nuke-10.0.4.dll -nx
+version 10.0 v4
+Gizmo {
+ inputs 2
+ addUserKnob {20 Cam_Effects l User}
+ addUserKnob {20 Convolve n 1}
+ addUserKnob {41 disable_1 l disable T Convolve1.disable}
+ addUserKnob {41 Contrastonoff l "Show Contrast" T Contrast.Contrastonoff}
+ addUserKnob {41 saturation T ColorCorrect4.saturation}
+ addUserKnob {41 gamma T ColorCorrect4.gamma}
+ addUserKnob {26 Intensity}
+ addUserKnob {41 white l gain T Grade10.white}
+ addUserKnob {26 ""}
+ addUserKnob {20 endGroup_3 l endGroup n -1}
+ addUserKnob {20 Distort n 1}
+ addUserKnob {41 distortion1 l "Radial Distortion 1" T LensDistortion.distortion1}
+ addUserKnob {41 distortion2 l "Radial Distortion 2" T LensDistortion.distortion2}
+ addUserKnob {26 ""}
+ addUserKnob {26 ChromaticAberration l "Chromatic Aberration"}
+ addUserKnob {20 redscale l "red scale" n 1}
+ redscale 0
+ addUserKnob {41 redxscale l "red x scale" T bl_ChromaticAberation.redxscale}
+ addUserKnob {41 redyscale l "red y scale" T bl_ChromaticAberation.redyscale}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {20 greenscale l "green scale" n 1}
+ greenscale 0
+ addUserKnob {41 greenxscale l "green x scale" T bl_ChromaticAberation.greenxscale}
+ addUserKnob {41 greenyscale l "green y scale" T bl_ChromaticAberation.greenyscale}
+ addUserKnob {20 endGroup_1_1 l endGroup n -1}
+ addUserKnob {20 bluescale l "blue scale" n 1}
+ bluescale 0
+ addUserKnob {41 bluexscale l "blue x scale" T bl_ChromaticAberation.bluexscale}
+ addUserKnob {41 blueyscale l "blue y scale" T bl_ChromaticAberation.blueyscale}
+ addUserKnob {20 endGroup_2 l endGroup n -1}
+}
+ Input {
+  inputs 0
+  name Image
+  xpos 510
+  ypos 422
+ }
+ Dot {
+  name Dot49
+  xpos 544
+  ypos 522
+ }
+set N223c400 [stack 0]
+ Dot {
+  name Dot50
+  xpos 324
+  ypos 522
+ }
+ ColorCorrect {
+  saturation 0.98
+  gamma 0.61
+  name ColorCorrect4
+  selected true
+  xpos 290
+  ypos 614
+ }
+set N227bc00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 104
+  ypos 618
+ }
+ Dot {
+  name Dot1
+  xpos 104
+  ypos 1050
+ }
+ Input {
+  inputs 0
+  name Filter
+  xpos -40
+  ypos 422
+  number 1
+ }
+ Dot {
+  name Dot48
+  xpos -6
+  ypos 714
+ }
+push $N227bc00
+ Convolve2 {
+  inputs 2
+  name Convolve1
+  tile_color 0x434343ff
+  xpos 290
+  ypos 704
+ }
+ Grade {
+  white 0.15
+  name Grade10
+  xpos 290
+  ypos 782
+ }
+push $N223c400
+ Merge2 {
+  inputs 2
+  operation plus
+  output rgb
+  name Merge18
+  xpos 510
+  ypos 782
+  disable {{parent.Convolve1.disable}}
+ }
+ LensDistortion {
+  serializeKnob ""
+  serialiseKnob "22 serialization::archive 9 0 0 0 0 0 0 0 0 0 0 0 0"
+  lensType Anamorphic
+  distortion2 0.01
+  asymmetricDistortion {0 0.01}
+  cardScale {1.010423541 1.010423541 1}
+  a -0.04521953687
+  b 0.03807930276
+  c 0.004976590164
+  name LensDistortion
+  xpos 510
+  ypos 878
+ }
+ bl_ChromaticAberation {
+  name bl_ChromaticAberation
+  xpos 510
+  ypos 926
+  redscale 1
+  redyscale 0.002
+  greenscale 1
+  greenxscale 0.002
+  bluescale 1
+  bluexscale 0.002
+ }
+ Switch {
+  inputs 2
+  which {{parent.Contrast.Contrastonoff}}
+  name Contrast
+  xpos 510
+  ypos 1046
+  addUserKnob {20 User}
+  addUserKnob {6 Contrastonoff l "Show Contrast" +STARTLINE}
+ }
+ Crop {
+  box {0 0 1920 1080}
+  name Crop1
+  xpos 510
+  ypos 1117
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 1214
+ }
+end_group

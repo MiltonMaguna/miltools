@@ -1,0 +1,49 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Wave_Multiplier
+ addUserKnob {20 "" Settings}
+ addUserKnob {26 "" "@b;Wave Multiplier"}
+ addUserKnob {7 aoffset "A Offset:" R 0 10}
+ addUserKnob {7 afrequency "A Frequency:" R 0 50}
+ afrequency 15
+ addUserKnob {7 amagnitude "A Magnitude:" R 0 5000}
+ amagnitude 2.3
+ addUserKnob {7 boffset "B Offset:" R 0 10}
+ addUserKnob {7 bfrequency "B Frequency:" R 0 50}
+ bfrequency 2.5
+ addUserKnob {7 bmagnitude "B Maqnitude:" R 0 5000}
+ bmagnitude 7
+ addUserKnob {7 coffset "C Offset:" R 0 10}
+ addUserKnob {7 cfrequency "C Frequency:" R 0 50}
+ cfrequency 5
+ addUserKnob {7 cmagnitude "C Maqnitude:" R 0 5000}
+ cmagnitude 8
+ addUserKnob {7 mult Multiplier: R 0 10}
+ mult 10
+ addUserKnob {7 div Dividier: R 0 10}
+ div 5
+ addUserKnob {26 "" ""}
+ addUserKnob {7 result Result: R 0 1}
+ result {{(sin((aoffset*acos(-1)/div)+frame*afrequency/(mult*acos(-1)))*amagnitude*sin((boffset*acos(-1)/div)+frame*bfrequency/(mult*acos(-1)))*bmagnitude*sin((coffset*acos(-1)/div)+frame*cfrequency/(mult*acos(-1)))*cmagnitude) x43 0}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 19
+  ypos 13
+ }
+ Output {
+  name Output1
+  xpos 19
+  ypos 39
+ }
+end_group

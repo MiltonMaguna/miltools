@@ -1,0 +1,318 @@
+#! C:/Program Files/Nuke12.1v4/nuke-12.1.4.dll -nx
+version 12.1 v4
+Gizmo {
+ addUserKnob {20 User}
+ addUserKnob {6 Effect_Only t Effect_Only +STARTLINE}
+ Effect_Only true
+ addUserKnob {41 StartBlur T MasterBlur_01.StartBlur}
+ addUserKnob {41 Exponente l exponente T MasterBlur_01.Exponente}
+ addUserKnob {41 Decay T MasterBlur_01.Decay}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 204
+  ypos 203
+ }
+ Dot {
+  name Dot252
+  label INPUT
+  note_font "Verdana Bold"
+  note_font_size 25
+  xpos 234
+  ypos 258
+ }
+set N10443400 [stack 0]
+ Dot {
+  name Dot4
+  xpos 234
+  ypos 325
+ }
+set N10442400 [stack 0]
+ Dot {
+  name Dot1
+  xpos 234
+  ypos 372
+ }
+set N10442000 [stack 0]
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2 black -1 -1 rgba.alpha 0 3"
+  name justFX3
+  label "\[value in1]"
+  xpos 204
+  ypos 409
+ }
+push $N10442000
+ Dot {
+  name Dot5
+  xpos 53
+  ypos 372
+ }
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.alpha 0 3 rgba.alpha 0 3 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2"
+  name all2
+  label "\[value in1]"
+  xpos 23
+  ypos 398
+ }
+ Switch {
+  inputs 2
+  which {{parent.Effect_Only}}
+  name Switch1
+  xpos 204
+  ypos 493
+ }
+ set C10465000 [stack 0]
+ Crop {
+  box {0 0 {width} {height}}
+  crop false
+  name AutoCrop2
+  xpos 204
+  ypos 529
+  addUserKnob {20 Info_1 l Info}
+  addUserKnob {26 Info l "" +STARTLINE T "Automatically crops to input width and height"}
+  addUserKnob {26 ""}
+  addUserKnob {26 _1 l "" +STARTLINE T M.Segat}
+ }
+ Dot {
+  name Dot257
+  xpos 234
+  ypos 604
+ }
+set N10464800 [stack 0]
+ Blur {
+  size {{(parent.Blur42.size)*2*MasterBlur_01.Exponente}}
+  name Blur58
+  xpos 51
+  ypos 1043
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur43.size)*2*MasterBlur_01.Exponente}}
+  name Blur42
+  xpos 51
+  ypos 979
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur44.size)*2*MasterBlur_01.Exponente}}
+  name Blur43
+  xpos 53
+  ypos 926
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur45.size)*2*MasterBlur_01.Exponente}}
+  name Blur44
+  xpos 50
+  ypos 873
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur46.size)*2*MasterBlur_01.Exponente}}
+  name Blur45
+  xpos 54
+  ypos 827
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur47.size)*2*MasterBlur_01.Exponente}}
+  name Blur46
+  xpos 52
+  ypos 774
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur48.size)*2*MasterBlur_01.Exponente}}
+  name Blur47
+  xpos 53
+  ypos 714
+ }
+push $N10464800
+ Blur {
+  size {{(parent.Blur49.size)*2*MasterBlur_01.Exponente}}
+  name Blur48
+  xpos 52
+  ypos 651
+ }
+push $N10464800
+ Blur {
+  size {{parent.MasterBlur_01.StartBlur*MasterBlur_01.Exponente}}
+  name Blur49
+  xpos 53
+  ypos 598
+ }
+push $N10442400
+ Dot {
+  name Dot3
+  xpos -114
+  ypos 325
+ }
+set Nd70bc000 [stack 0]
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 black -1 -1 rgba.alpha 0 3 black -1 -1 rgba.red 0 0 black -1 -1 rgba.green 0 1 black -1 -1 rgba.blue 0 2"
+  name justFX1
+  label "\[value in1]"
+  xpos -144
+  ypos 362
+ }
+push $Nd70bc000
+ Dot {
+  name Dot2
+  xpos -295
+  ypos 325
+ }
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.alpha 0 3 rgba.alpha 0 3 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2"
+  name all1
+  label "\[value in1]"
+  xpos -325
+  ypos 372
+ }
+clone $C10465000 {
+  inputs 2
+  xpos -144
+  ypos 484
+  selected false
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix 0.5
+  name Merge74
+  xpos -144
+  ypos 604
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{parent.Merge74.mix*MasterBlur_01.Decay}}
+  name Merge77
+  xpos -144
+  ypos 657
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge77.mix*MasterBlur_01.Decay}}
+  name Merge78
+  xpos -144
+  ypos 720
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge78.mix*MasterBlur_01.Decay}}
+  name Merge79
+  xpos -144
+  ypos 780
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge79.mix*MasterBlur_01.Decay}}
+  name Merge80
+  xpos -144
+  ypos 833
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge80.mix*MasterBlur_01.Decay}}
+  name Merge81
+  xpos -144
+  ypos 879
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge81.mix*MasterBlur_01.Decay}}
+  name Merge82
+  xpos -144
+  ypos 932
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge82.mix*MasterBlur_01.Decay}}
+  name Merge83
+  xpos -144
+  ypos 985
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix {{Merge83.mix*MasterBlur_01.Decay}}
+  name Merge93
+  xpos -144
+  ypos 1049
+ }
+set Nd712ac00 [stack 0]
+ Grade {
+  white 0.111
+  black_clamp false
+  name Grade94
+  xpos -144
+  ypos 1090
+ }
+ Dot {
+  name OUTPUT_1
+  label OUTPUT
+  note_font "Verdana Bold"
+  note_font_size 35
+  xpos -114
+  ypos 1152
+ }
+ Output {
+  name Output1
+  xpos -114
+  ypos 1252
+ }
+ Remove {
+  inputs 0
+  name Remove2
+  xpos 426
+  ypos 508
+ }
+push $Nd712ac00
+ Viewer {
+  frame_range 1006-1036
+  fps 30
+  viewerProcess "sRGB (ACES)"
+  name Viewer1
+  xpos 164
+  ypos 1156
+ }
+push $N10443400
+ Dot {
+  name Dot255
+  xpos 373
+  ypos 458
+ }
+ Remove {
+  name Remove1
+  xpos 343
+  ypos 646
+ }
+ NoOp {
+  name MasterBlur_01
+  selected true
+  xpos 343
+  ypos 711
+  addUserKnob {20 User}
+  addUserKnob {7 StartBlur R 0 20}
+  StartBlur 1
+  addUserKnob {7 Exponente l exponente t "Default 1.15" R 0 5}
+  Exponente 1.15
+  addUserKnob {7 Decay t "Default 1.55\n" R 0 5}
+  Decay 1.55
+ }
+end_group

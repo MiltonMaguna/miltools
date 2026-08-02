@@ -1,0 +1,944 @@
+#! C:/Program Files/Nuke14.0v4/nuke-14.0.4.dll -nx
+version 14.0 v4
+Gizmo {
+ inputs 3
+ tile_color 0xcccccc00
+ addUserKnob {20 z_channel}
+ addUserKnob {26 z_channel_v61 l z_channel_v6.1 -STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {26 reformat l Reformat}
+ addUserKnob {41 disable_4 l Off T Reformat1.disable}
+ addUserKnob {41 format l "output format" T Reformat1.format}
+ addUserKnob {41 resize l "resize type" T Reformat1.resize}
+ addUserKnob {20 depth l Depth}
+ addUserKnob {6 znorm l Depth=1/z t "Invert the depth if your input is Nuke ScanlineRender style 1/Z" +STARTLINE}
+ znorm true
+ addUserKnob {6 hard l "Disable Hard Edges" -STARTLINE}
+ hard true
+ addUserKnob {26 zedge l "Edge Extend"}
+ addUserKnob {6 disable_5 l Disable +STARTLINE}
+ addUserKnob {41 growTexture l "Edge Extend" T colourEdge1.growTexture}
+ addUserKnob {41 blurGrain l "Edge Blur" T colourEdge1.blurGrain}
+ addUserKnob {41 shrinkMatte l "Shrink Matte" T colourEdge1.shrinkMatte}
+ addUserKnob {41 alphaToWhite l "Alpha To White" T colourEdge1.alphaToWhite}
+ addUserKnob {41 quality l Quality T colourEdge1.quality}
+ addUserKnob {26 "" -STARTLINE T "             "}
+ addUserKnob {41 invertMatte l "Invert Matte" -STARTLINE T colourEdge1.invertMatte}
+ addUserKnob {26 ""}
+ addUserKnob {26 ShowZdepth}
+ addUserKnob {41 disable_3 l "Show ZDepth" T Switch1.disable}
+ addUserKnob {41 value l "Multiply zDepth" T Multiply1.value}
+ addUserKnob {20 mb l "Motion Blur"}
+ addUserKnob {41 disable_2 l "Disable MB" T VectorBlur3.disable}
+ addUserKnob {41 disable_1 l "Invert MB Channel" -STARTLINE T SwitchMB.disable}
+ addUserKnob {41 mv_presets l "mv presets" T VectorBlur3.mv_presets}
+ addUserKnob {41 blur_uv l "blur uv" T VectorBlur3.blur_uv}
+ addUserKnob {41 blur_type l "blur type" T VectorBlur3.blur_type}
+ addUserKnob {41 scale l "motion amount" T VectorBlur3.scale}
+ addUserKnob {41 soft_lines l "soft lines" T VectorBlur3.soft_lines}
+ addUserKnob {41 blur_inside l "blur inside" -STARTLINE T VectorBlur3.blur_inside}
+ addUserKnob {41 normalize -STARTLINE T VectorBlur3.normalize}
+}
+ StickyNote {
+  inputs 0
+  name StickyNote6
+  label "Tomar alpha del beauty y unpremult"
+  note_font " Bold"
+  note_font_size 35
+  xpos 2110
+  ypos 929
+ }
+ Input {
+  inputs 0
+  name motionvector
+  xpos 1246
+  ypos -323
+  number 1
+ }
+ Dot {
+  name Dot118
+  xpos 1280
+  ypos -277
+ }
+set Nae2f3c00 [stack 0]
+add_layer {motionvector motionvector.red motionvector.green motionvector.blue}
+ Shuffle {
+  red green
+  green red
+  blue black
+  out motionvector
+  name Shuffle8
+  xpos 1246
+  ypos -213
+ }
+ Blur {
+  size 3
+  name Blur5
+  label "Size \[value size]"
+  xpos 1246
+  ypos -187
+ }
+push $Nae2f3c00
+ Dot {
+  name Dot28
+  xpos 1170
+  ypos -277
+ }
+ Shuffle {
+  blue black
+  out motionvector
+  name Shuffle4
+  xpos 1136
+  ypos -213
+ }
+ Dot {
+  name Dot29
+  xpos 1170
+  ypos -102
+ }
+ Switch {
+  inputs 2
+  which 1
+  name SwitchMB
+  xpos 1246
+  ypos -105
+  disable true
+ }
+ Dot {
+  name Dot119
+  xpos 1280
+  ypos -17
+ }
+set Nae311800 [stack 0]
+ Reformat {
+  scale 0.5
+  filter impulse
+  name Reformat1
+  xpos 949
+  ypos -20
+ }
+ set Cae311c00 [stack 0]
+ Input {
+  inputs 0
+  name BTY
+  xpos 501
+  ypos -312
+ }
+ Copy {
+  inputs 2
+  channels motionvector
+  name Copy1
+  xpos 501
+  ypos -32
+ }
+ Dot {
+  name Dot18
+  xpos 535
+  ypos 509
+ }
+set Nae336c00 [stack 0]
+ Dot {
+  name Dot116
+  xpos 535
+  ypos 780
+ }
+set Nae337000 [stack 0]
+ Dot {
+  name Dot14
+  label "In alpha beauty desenfocado"
+  note_font "Verdana Bold"
+  note_font_size 15
+  xpos 1714
+  ypos 780
+ }
+ Dot {
+  name Dot15
+  xpos 1714
+  ypos 851
+ }
+ Dot {
+  name Dot11
+  xpos 1851
+  ypos 851
+ }
+set Nae337c00 [stack 0]
+ Dot {
+  name Dot12
+  xpos 1851
+  ypos 947
+ }
+push $Nae337c00
+push $Nae311800
+ Input {
+  inputs 0
+  name zdepth
+  xpos 1470
+  ypos -322
+  number 2
+ }
+ Dot {
+  name Dot117
+  xpos 1504
+  ypos -264
+ }
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Shuffle10
+  label "\[value in]"
+  xpos 1470
+  ypos -218
+ }
+set Nae35cc00 [stack 0]
+ Dot {
+  name Dot22
+  xpos 1613
+  ypos -86
+ }
+push $Nae35cc00
+ Expression {
+  channel0 rgba
+  expr0 1/r
+  name Expression4
+  xpos 1470
+  ypos -142
+ }
+ Switch {
+  inputs 2
+  which 1
+  name Switch3
+  xpos 1470
+  ypos -89
+  disable {{parent.znorm}}
+ }
+ Copy {
+  inputs 2
+  channels motionvector
+  name Copy4
+  xpos 1470
+  ypos -32
+ }
+clone $Cae311c00 {
+  xpos 1470
+  ypos 36
+  selected false
+ }
+ VectorBlur2 {
+  uv motionvector
+  mv_presets Arnold
+  blur_uv linear
+  scale 1
+  motion_falloff 0.5
+  name VectorBlur3
+  tile_color 0xcc804e00
+  xpos 1470
+  ypos 79
+  disable true
+ }
+ Remove {
+  channels motionvector
+  name Remove1
+  xpos 1471
+  ypos 134
+ }
+set N14857000 [stack 0]
+push $Nae336c00
+push $N14857000
+ Dot {
+  name Dot21
+  xpos 1995
+  ypos 143
+ }
+ Expression {
+  temp_name0 num
+  temp_expr0 0.000011
+  expr3 r>num?1:r
+  name Expression2
+  xpos 1961
+  ypos 188
+ }
+ Expression {
+  temp_name0 value
+  temp_expr0 0.0001
+  expr3 a<0.0001?0:a
+  name Expression6
+  xpos 1961
+  ypos 227
+ }
+ Group {
+  inputs 2
+  name colourEdge1
+  selected true
+  xpos 1961
+  ypos 506
+  disable {{parent.disable_5}}
+  addUserKnob {20 User l ColourEdge}
+  addUserKnob {14 blurGrain l "Edge Blur " t "Blur the Depth edge" R 0 100}
+  addUserKnob {14 growTexture l "Edge Extend" t "Expands the Depth edge" R 0 100}
+  growTexture 4
+  addUserKnob {14 shrinkMatte l "Shrink Matte" t "Adjusts the point from which the texture grows.  Values are not constrained to +-20." R -20 20}
+  shrinkMatte 1
+  addUserKnob {7 alphaToWhite l "Alpha To White" t "Lifts the alpha to white" R 0 0.99999}
+  addUserKnob {4 quality l Quality M {fast better best "" ""}}
+  addUserKnob {26 "" -STARTLINE T "             "}
+  addUserKnob {6 invertMatte l "Invert Matte" -STARTLINE}
+  invertMatte true
+ }
+  Input {
+   inputs 0
+   name Mask
+   xpos 1025
+   ypos -12
+   number 1
+  }
+  Dot {
+   name Dot1
+   xpos 1059
+   ypos 123
+  }
+set N1488c400 [stack 0]
+  Dot {
+   name Dot2
+   xpos 949
+   ypos 123
+  }
+  Invert {
+   channels rgba
+   name Invert1
+   xpos 915
+   ypos 157
+  }
+push $N1488c400
+  Switch {
+   inputs 2
+   which {{invertMatte i}}
+   name Switch1
+   xpos 1025
+   ypos 157
+  }
+  Grade {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   whitepoint {{1-alphaToWhite i}}
+   white_clamp true
+   name Grade1
+   xpos 1025
+   ypos 204
+  }
+  FilterErode {
+   channels rgba
+   size {{-shrinkMatte.w} {-shrinkMatte.h}}
+   name FilterErode1
+   xpos 1025
+   ypos 267
+  }
+  Grade {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   whitepoint 0.99
+   black_clamp false
+   white_clamp true
+   name Grade6
+   xpos 1025
+   ypos 368
+  }
+set N1488dc00 [stack 0]
+  Dot {
+   name Dot4
+   xpos 1059
+   ypos 932
+  }
+push $N1488dc00
+  Input {
+   inputs 0
+   name RGB
+   xpos -329
+   ypos 195
+  }
+  Shuffle {
+   alpha white
+   name Shuffle1
+   xpos -329
+   ypos 376
+  }
+set N148c8800 [stack 0]
+  Merge2 {
+   inputs 2
+   operation stencil
+   name Merge1
+   xpos -135
+   ypos 376
+  }
+  Dot {
+   name Dot3
+   xpos -101
+   ypos 423
+  }
+set N148c9000 [stack 0]
+  Blur {
+   channels rgba
+   size {{growTexture.w} {growTexture.h}}
+   maskChannelMask -rgba.alpha
+   name Blur2
+   xpos -135
+   ypos 457
+  }
+  Unpremult {
+   name Unpremult1
+   xpos -135
+   ypos 534
+  }
+  Expression {
+   expr3 a==0?0:1
+   name Expression2
+   xpos -135
+   ypos 581
+  }
+  ColorCorrect {
+   name ColorCorrect1
+   xpos -135
+   ypos 628
+  }
+  Blur {
+   channels rgba
+   size {{blurGrain.w} {blurGrain.h}}
+   maskChannelMask -rgba.alpha
+   name Blur1
+   xpos -135
+   ypos 681
+  }
+  Dot {
+   name Dot17
+   xpos -101
+   ypos 756
+  }
+set N148f4800 [stack 0]
+  Dot {
+   name Dot15
+   xpos -101
+   ypos 836
+  }
+set N148f4c00 [stack 0]
+push $N148c9000
+  Dot {
+   name Dot6
+   xpos 52
+   ypos 423
+  }
+set N148f5000 [stack 0]
+  Blur {
+   channels rgba
+   size {{growTexture.w*.5 x1 72.7} {growTexture.h*.5 x1 64.662}}
+   maskChannelMask -rgba.alpha
+   name Blur3
+   xpos 18
+   ypos 456
+  }
+  Unpremult {
+   name Unpremult2
+   xpos 18
+   ypos 504
+  }
+set N148f5800 [stack 0]
+  Expression {
+   expr3 a==0?0:1
+   name Expression1
+   xpos 18
+   ypos 551
+  }
+set N148f5c00 [stack 0]
+  FilterErode {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   size {{parent.Blur3.size.w/2} {parent.Blur3.size.h/2}}
+   filter quadratic
+   name FilterErode4
+   xpos 244
+   ypos 545
+  }
+  Premult {
+   name Premult6
+   xpos 244
+   ypos 606
+  }
+  Merge2 {
+   inputs 2
+   operation under
+   name Merge5
+   xpos 244
+   ypos 830
+  }
+push $N148f5000
+  Dot {
+   name Dot7
+   xpos 416
+   ypos 423
+  }
+set N1492cc00 [stack 0]
+  Blur {
+   channels rgba
+   size {{growTexture.w*.25} {growTexture.h*.25}}
+   maskChannelMask -rgba.alpha
+   name Blur4
+   xpos 382
+   ypos 460
+  }
+  Unpremult {
+   name Unpremult3
+   xpos 382
+   ypos 504
+  }
+set N1492d400 [stack 0]
+  Expression {
+   expr3 a==0?0:1
+   name Expression3
+   xpos 382
+   ypos 551
+  }
+set N1492d800 [stack 0]
+  FilterErode {
+   channels alpha
+   size {{parent.Blur4.size.w/2} {parent.Blur4.size.h/2}}
+   filter quadratic
+   name FilterErode3
+   xpos 583
+   ypos 545
+  }
+  Premult {
+   name Premult5
+   xpos 583
+   ypos 606
+  }
+  Merge2 {
+   inputs 2
+   operation under
+   name Merge7
+   xpos 583
+   ypos 830
+  }
+push $N1492cc00
+  Dot {
+   name Dot8
+   xpos 759
+   ypos 423
+  }
+  Blur {
+   channels rgba
+   size {{growTexture.w*.125} {growTexture.h*.125}}
+   maskChannelMask -rgba.alpha
+   name Blur5
+   xpos 725
+   ypos 457
+  }
+  Unpremult {
+   name Unpremult4
+   xpos 725
+   ypos 504
+  }
+set N149e5000 [stack 0]
+  Expression {
+   expr3 a==0?0:1
+   name Expression4
+   xpos 725
+   ypos 551
+  }
+set N149e5400 [stack 0]
+  FilterErode {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   size {{parent.Blur5.size.w/2} {parent.Blur5.size.h/2}}
+   filter quadratic
+   name FilterErode2
+   xpos 934
+   ypos 543
+  }
+  Premult {
+   name Premult1
+   xpos 934
+   ypos 606
+  }
+  Merge2 {
+   inputs 2
+   operation under
+   name Merge9
+   xpos 934
+   ypos 830
+  }
+  Dot {
+   name Dot18
+   xpos 968
+   ypos 877
+  }
+push $N148f4800
+push $N148f5800
+  Dot {
+   name Dot9
+   xpos -17
+   ypos 510
+  }
+  Dot {
+   name Dot10
+   xpos -17
+   ypos 646
+  }
+push $N148f5c00
+  Dot {
+   name Dot20
+   xpos 52
+   ypos 598
+  }
+set N14a15000 [stack 0]
+  Merge2 {
+   inputs 2
+   operation from
+   Achannels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   Bchannels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   output {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   name Merge2
+   xpos 18
+   ypos 632
+  }
+  Grade {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   gamma 0.005
+   black_clamp false
+   name Grade2
+   xpos 18
+   ypos 695
+  }
+push $N14a15000
+  Dot {
+   name Dot19
+   xpos 162
+   ypos 598
+  }
+  Merge2 {
+   inputs 2
+   operation stencil
+   name Merge11
+   xpos 128
+   ypos 703
+  }
+  Merge2 {
+   inputs 2
+   operation under
+   name Merge6
+   xpos 128
+   ypos 750
+  }
+push $N1492d400
+  Dot {
+   name Dot11
+   xpos 347
+   ypos 510
+  }
+  Dot {
+   name Dot12
+   xpos 347
+   ypos 646
+  }
+push $N1492d800
+  Dot {
+   name Dot21
+   xpos 416
+   ypos 598
+  }
+set N14a45000 [stack 0]
+  Merge2 {
+   inputs 2
+   operation from
+   Achannels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   Bchannels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   output {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   name Merge3
+   xpos 382
+   ypos 632
+  }
+  Grade {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   gamma 0.005
+   black_clamp false
+   name Grade3
+   xpos 382
+   ypos 695
+  }
+push $N14a45000
+  Dot {
+   name Dot23
+   xpos 526
+   ypos 598
+  }
+  Merge2 {
+   inputs 2
+   operation stencil
+   name Merge12
+   xpos 492
+   ypos 703
+  }
+  Merge2 {
+   inputs 2
+   operation under
+   name Merge8
+   xpos 492
+   ypos 750
+  }
+push $N149e5000
+  Dot {
+   name Dot13
+   xpos 690
+   ypos 510
+  }
+  Dot {
+   name Dot14
+   xpos 690
+   ypos 646
+  }
+push $N149e5400
+  Dot {
+   name Dot24
+   xpos 759
+   ypos 598
+  }
+set N14a75000 [stack 0]
+  Merge2 {
+   inputs 2
+   operation from
+   Achannels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   Bchannels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   output {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   name Merge4
+   xpos 725
+   ypos 632
+  }
+  Grade {
+   channels {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   gamma 0.005
+   black_clamp false
+   name Grade4
+   xpos 725
+   ypos 695
+  }
+push $N14a75000
+  Dot {
+   name Dot25
+   xpos 869
+   ypos 598
+  }
+  Merge2 {
+   inputs 2
+   operation stencil
+   name Merge13
+   xpos 835
+   ypos 703
+  }
+  Merge2 {
+   inputs 2
+   operation under
+   name Merge10
+   xpos 835
+   ypos 750
+  }
+  Dot {
+   name Dot22
+   xpos 869
+   ypos 797
+  }
+  Dot {
+   name Dot16
+   xpos -3
+   ypos 797
+  }
+push $N148f4c00
+  Switch {
+   inputs 3
+   which {{quality}}
+   name Switch2
+   xpos -135
+   ypos 871
+  }
+push $N148c8800
+  Dot {
+   name Dot5
+   xpos -295
+   ypos 927
+  }
+  Keymix {
+   inputs 3
+   name Keymix1
+   xpos -135
+   ypos 918
+  }
+  Output {
+   name Output1
+   xpos -135
+   ypos 1092
+  }
+ end_group
+set Nae2fc580 [stack 0]
+ Merge2 {
+  inputs 2
+  operation max
+  name Merge1
+  xpos 1961
+  ypos 589
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 mask.a
+  name Copy5
+  xpos 1961
+  ypos 842
+  disable {{parent.hard}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy14
+  xpos 1961
+  ypos 938
+  disable {{parent.hard}}
+ }
+ Unpremult {
+  channels mask
+  name Unpremult7
+  xpos 1961
+  ypos 994
+  disable {{parent.hard}}
+ }
+set N14acec00 [stack 0]
+push $N14acec00
+ Copy {
+  inputs 2
+  from0 mask.a
+  to0 rgba.alpha
+  name Copy15
+  xpos 1961
+  ypos 1061
+  disable {{parent.hard}}
+ }
+ Premult {
+  name Premult1
+  xpos 1961
+  ypos 1128
+  disable {{parent.hard}}
+ }
+ Dot {
+  name Dot16
+  label "Out alpha del bty\npero con los bordes solidos"
+  note_font "Verdana Bold"
+  note_font_size 20
+  xpos 1995
+  ypos 1219
+ }
+ Dot {
+  name Dot17
+  xpos 1995
+  ypos 1392
+ }
+push $N14857000
+ Switch {
+  inputs 2
+  which 1
+  name Switch2
+  xpos 1471
+  ypos 1389
+ }
+ Shuffle {
+  out depth
+  name Shuffle2
+  label "\[value in]"
+  xpos 1471
+  ypos 1452
+ }
+ Dot {
+  name Dot125
+  xpos 1505
+  ypos 1585
+ }
+set N14b12800 [stack 0]
+push $Nae337000
+ Copy {
+  inputs 2
+  channels depth
+  name Copy8
+  xpos 501
+  ypos 1570
+ }
+push $N14b12800
+ Dot {
+  name Dot1
+  xpos 1505
+  ypos 1815
+ }
+ Shuffle {
+  in depth
+  name Shuffle1
+  xpos 768
+  ypos 1811
+ }
+ Multiply {
+  value 100
+  name Multiply1
+  xpos 768
+  ypos 1872
+ }
+ Switch {
+  inputs 2
+  which 1
+  name Switch1
+  xpos 501
+  ypos 1878
+ }
+ Output {
+  name Output1
+  xpos 501
+  ypos 2102
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote4
+  label "Para Chars donde el alpha del bty tiene demasiado\nmotion blur y no coincide bien con el Zdepth,\nreemplazar el copy alpha por estos 2 expression\n, y dilatar el alpha segun necesidad."
+  note_font "Calibri Bold"
+  note_font_size 35
+  xpos 2110
+  ypos 120
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote5
+  label "<< edge extend en z"
+  note_font " Bold"
+  note_font_size 35
+  xpos 2099
+  ypos 491
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote2
+  label "prender el motionblur en z >>"
+  note_font " Bold"
+  note_font_size 35
+  xpos 971
+  ypos 128
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote1
+  label "si el motionvector =>\nesta alrevez"
+  note_font " Bold"
+  note_font_size 35
+  xpos 781
+  ypos -226
+ }
+push $Nae2fc580
+push 0
+ Viewer {
+  inputs 2
+  frame_range 1001-1063
+  fps 25
+  input_number 1
+  name Viewer1
+  xpos 2631
+  ypos 1531
+  hide_input true
+ }
+end_group

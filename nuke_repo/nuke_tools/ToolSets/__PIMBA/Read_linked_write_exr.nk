@@ -1,0 +1,17 @@
+set cut_paste_input [stack 0]
+version 13.1 v2
+Read {
+inputs 0
+file_type exr
+file "\[value Write_exr1.file]"
+localizationPolicy off
+first {{root.first_frame}}
+last {{root.last_frame}}
+origset true
+on_error checkerboard
+version 127
+name Read15
+selected true
+xpos 11489
+ypos 8069
+}

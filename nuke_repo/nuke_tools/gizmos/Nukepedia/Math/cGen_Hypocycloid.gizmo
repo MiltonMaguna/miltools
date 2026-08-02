@@ -1,0 +1,42 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Hypocycloid
+ addUserKnob {20 "" User}
+ addUserKnob {26 "" "@b;Hypocycloid"}
+ addUserKnob {3 points Points:}
+ points 10
+ addUserKnob {14 scale Scale:}
+ scale 200
+ addUserKnob {12 offset Offset:}
+ offset {320 240}
+ addUserKnob {7 fc "Frame Cycle:" R 1 1000}
+ fc 25
+ addUserKnob {3 time INVISIBLE}
+ time {{frame*velo*acos(-1)/fc}}
+ addUserKnob {7 velo Velocity: R 0 10}
+ velo 0.506
+ addUserKnob {26 "" ""}
+ addUserKnob {12 result Result:}
+ result {{"((scale.w/points)*((points -1)*cos(time)+cos((points-1)*time))+offset.x)" i} {((scale.h/points)*((points-1)*sin(time)+sin((points-1)*time))+offset.y) i}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 130
+  ypos 62
+ }
+ Output {
+  name Output1
+  xpos 130
+  ypos 88
+ }
+end_group

@@ -1,0 +1,58 @@
+set cut_paste_input [stack 0]
+version 13.1 v2
+BackdropNode {
+inputs 0
+name BackdropNode12
+tile_color 0x284b52ff
+label "<center>blur bg"
+note_font_size 50
+selected true
+xpos 11782
+ypos 1179
+bdwidth 208
+bdheight 975
+}
+push $cut_paste_input
+Dot {
+name Dot40
+selected true
+xpos 11894
+ypos 1270
+}
+FilterErode {
+channels rgba
+size 56
+name FilterErode1
+selected true
+xpos 11860
+ypos 1522
+}
+FilterErode {
+channels rgba
+size {{(parent.FilterErode1.size)*-1}}
+name FilterErode2
+selected true
+xpos 11860
+ypos 1555
+}
+Blur {
+size 24
+name Blur15
+label "Size \[value size]"
+selected true
+xpos 11860
+ypos 1620
+}
+Grade {
+gamma 1.0057
+name Grade11
+selected true
+xpos 11860
+ypos 1699
+}
+Dot {
+name Dot31
+selected true
+xpos 11894
+ypos 2065
+}

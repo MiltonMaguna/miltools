@@ -1,0 +1,175 @@
+#! C:/Program Files/Nuke6.3v1/Nuke6.3.exe -nx
+version 6.3 v1
+Gizmo {
+ inputs 2
+ tile_color 0xc0e6ff
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 User}
+ addUserKnob {26 ChannelPick l Red}
+ addUserKnob {41 blackpoint T GradeR.blackpoint}
+ addUserKnob {41 whitepoint T GradeR.whitepoint}
+ addUserKnob {41 gamma T GradeR.gamma}
+ addUserKnob {26 ChannelPick_2 l Green}
+ addUserKnob {41 blackpoint_1 l blackpoint T GradeG.blackpoint}
+ addUserKnob {41 whitepoint_1 l whitepoint T GradeG.whitepoint}
+ addUserKnob {41 gamma_1 l gamma T GradeG.gamma}
+ addUserKnob {26 ChannelPick_1 l Blue}
+ addUserKnob {41 blackpoint_2 l blackpoint T GradeB.blackpoint}
+ addUserKnob {41 whitepoint_2 l whitepoint T GradeB.whitepoint}
+ addUserKnob {41 gamma_2 l gamma T GradeB.gamma}
+ addUserKnob {26 blur l Blur}
+ addUserKnob {41 size T Blur1.size}
+ addUserKnob {41 filter T Blur1.filter}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 827
+  ypos -343
+ }
+ Blur {
+  name Blur1
+  xpos 827
+  ypos -301
+ }
+ set Ca89fd10 [stack 0]
+ Dot {
+  name Dot3
+  xpos 861
+  ypos -243
+ }
+set Na8a0040 [stack 0]
+ Shuffle {
+  green red
+  blue red
+  name Shuffle1
+  xpos 724
+  ypos -184
+ }
+ Input {
+  inputs 0
+  name Input2
+  xpos 291
+  ypos -57
+  number 1
+ }
+clone $Ca89fd10 {
+  xpos 419
+  ypos -63
+  selected false
+ }
+ Dot {
+  name Dot4
+  xpos 530
+  ypos -56
+ }
+set Na8a0d00 [stack 0]
+ Shuffle {
+  green red
+  blue red
+  name Shuffle2
+  xpos 592
+  ypos -115
+ }
+ Difference {
+  inputs 2
+  name Difference1
+  xpos 724
+  ypos -121
+ }
+ Grade {
+  channels alpha
+  name GradeR
+  xpos 724
+  ypos 52
+ }
+set Naac0590 [stack 0]
+push $Na8a0040
+ Shuffle {
+  red green
+  blue green
+  name Shuffle3
+  xpos 827
+  ypos -182
+ }
+push $Na8a0d00
+ Shuffle {
+  red green
+  blue green
+  name Shuffle4
+  xpos 589
+  ypos -59
+ }
+ Difference {
+  inputs 2
+  name Difference2
+  xpos 827
+  ypos -65
+ }
+ Grade {
+  channels alpha
+  name GradeG
+  xpos 827
+  ypos 55
+ }
+ ChannelMerge {
+  inputs 2
+  operation plus
+  name ChannelMerge1
+  xpos 724
+  ypos 138
+ }
+push $Na8a0040
+ Shuffle {
+  red blue
+  green blue
+  name Shuffle5
+  xpos 931
+  ypos -181
+ }
+push $Na8a0d00
+ Shuffle {
+  red blue
+  green blue
+  name Shuffle6
+  xpos 591
+  ypos -2
+ }
+ Difference {
+  inputs 2
+  name Difference3
+  xpos 931
+  ypos -8
+ }
+ Grade {
+  channels alpha
+  name GradeB
+  xpos 931
+  ypos 56
+ }
+ ChannelMerge {
+  inputs 2
+  operation plus
+  name ChannelMerge2
+  xpos 931
+  ypos 201
+ }
+ Dot {
+  name Dot5
+  xpos 965
+  ypos 275
+ }
+ Output {
+  name Output1
+  xpos 931
+  ypos 341
+ }
+push $Naac0590
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos 724
+  ypos -85
+ }
+end_group

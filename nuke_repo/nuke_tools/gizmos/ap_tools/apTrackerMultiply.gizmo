@@ -1,0 +1,91 @@
+Group {
+ name TrackerMultiply
+ help "TrackerMultiply multiplies the effects of Tracker and Transform nodes by a specified value.\n\nUseful for dissolving a tracked footage into their original transformations.\n\nPlug in your footage in src and any tracker or node with normal transformation controls (scale, rotate, translate) as a tracker, and changing this node's \"value\" will multiply the effects of the Transform or Tracker pluged in, and apply it to the source."
+ label "x \[value ratio]"
+ selected true
+ addUserKnob {20 TrackerMultiply}
+ addUserKnob {41 ratio l value t "0 sticks to tracker0.\n1 sticks to tracker1.\nIntermediate values make a weighted average between both." T Calculator.ratio}
+ addUserKnob {6 translateOn l translate t "If disabled, takes the value from the tracker." +STARTLINE}
+ translateOn true
+ addUserKnob {6 scaleOn l scale t "If disabled, takes the value from the tracker." -STARTLINE}
+ scaleOn true
+ addUserKnob {6 rotateOn l rotate t "If disabled, takes the value from the tracker." -STARTLINE}
+ rotateOn true
+ addUserKnob {26 TrackerSettings l "<b>Tracker Settings</b>"}
+ addUserKnob {41 invert_matrix l invert T TransformTrack.invert_matrix}
+ addUserKnob {41 filter T TransformTrack.filter}
+ addUserKnob {41 clamp -STARTLINE T TransformTrack.clamp}
+ addUserKnob {41 black_outside l "black outside" -STARTLINE T TransformTrack.black_outside}
+ addUserKnob {41 motionblur T TransformTrack.motionblur}
+ addUserKnob {41 shutter T TransformTrack.shutter}
+ addUserKnob {41 shutteroffset l "shutter offset" T TransformTrack.shutteroffset}
+ addUserKnob {41 shuttercustomoffset l "" -STARTLINE T TransformTrack.shuttercustomoffset}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {20 ResultTransformations l "Resulting Transformations" n 1}
+ ResultTransformations 0
+ addUserKnob {41 translate T TransformTrack.translate}
+ addUserKnob {41 rotate T TransformTrack.rotate}
+ addUserKnob {41 scale T TransformTrack.scale}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {26 copyright l "" +STARTLINE T "apTrackerMultiply v0.1.1 - © Adrian Pueyo, 2015"}
+}
+ Input {
+  inputs 0
+  name Inputsrc
+  xpos 0
+  ypos 77
+ }
+ Transform {
+  translate {{"\[if \{\[value parent.translateOn]\} \{return parent.Calculator.translate\} else \{return parent.Calculator.posA\}]\n" x12 -52} {"\[if \{\[value parent.translateOn]\} \{return parent.Calculator.translate\} else \{return parent.Calculator.posA\}]\n" x12 69}}
+  rotate {{"\[if \{\[value parent.rotateOn]\} \{return parent.Calculator.rotate\} else \{return parent.Calculator.rotA\}]"}}
+  scale {{"\[if \{\[value parent.scaleOn]\} \{return parent.Calculator.scale\} else \{return parent.Calculator.scaA\}]\n"}}
+  center {{parent.Calculator.ctrA} {parent.Calculator.ctrA}}
+  name TransformTrack
+  xpos 0
+  ypos 201
+ }
+ Output {
+  name Output1
+  xpos 0
+  ypos 300
+ }
+ Input {
+  inputs 0
+  name Inputtracker
+  xpos 126
+  ypos 77
+  number 1
+ }
+ NoOp {
+  inputs 0
+  name Calculator
+  selected true
+  xpos -133
+  ypos 200
+  addUserKnob {20 Calc}
+  addUserKnob {26 inputs l <b>Inputs</b>}
+  addUserKnob {20 trackA n 1}
+  trackA 0
+  addUserKnob {12 posA}
+  posA {{parent.input1.translate} {parent.input1.translate}}
+  addUserKnob {14 scaA R 0 100}
+  scaA {{parent.input1.scale}}
+  addUserKnob {7 rotA R 0 360}
+  rotA {{parent.input1.rotate}}
+  addUserKnob {12 ctrA}
+  ctrA {{parent.input1.center} {parent.input1.center}}
+  addUserKnob {20 endGroup_2 l endGroup n -1}
+  addUserKnob {26 outputs l <b>Outputs</b>}
+  addUserKnob {7 ratio l value R 0 1.2}
+  ratio 1
+  addUserKnob {12 translate}
+  translate {{posA.x*ratio} {posA.y*ratio}}
+  addUserKnob {14 scale R 0 100}
+  scale {{scaA*ratio+1*(1-ratio)}}
+  addUserKnob {7 rotate R 0 360}
+  rotate {{rotA*ratio}}
+  addUserKnob {12 center}
+  center {{ctrA} {ctrA}}
+ }
+end_group

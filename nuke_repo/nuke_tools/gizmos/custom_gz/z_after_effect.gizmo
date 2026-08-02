@@ -1,0 +1,315 @@
+#! C:/Program Files/Nuke11.3v2/nuke-11.3.2.dll -nx
+version 11.3 v2
+Gizmo {
+ inputs 2
+ addUserKnob {20 User}
+ addUserKnob {41 Multiply T Multiply1.value}
+}
+ Input {
+  inputs 0
+  name BTY
+  selected true
+  xpos 506
+  ypos -375
+ }
+ Reformat {
+  name Reformat1
+  xpos 506
+  ypos -335
+ }
+ Dot {
+  name Dot2
+  xpos 540
+  ypos -270
+ }
+set N1ea73800 [stack 0]
+ Dot {
+  name Dot3
+  xpos 684
+  ypos -270
+ }
+ Dot {
+  name Dot1
+  xpos 684
+  ypos -109
+ }
+ Input {
+  inputs 0
+  name TECH
+  xpos 285
+  ypos -371
+  number 1
+ }
+ Dot {
+  name Dot4
+  xpos 319
+  ypos -219
+ }
+push $N1ea73800
+ Group {
+  inputs 2
+  name Group1
+  xpos 506
+  ypos -223
+  addUserKnob {20 User}
+  addUserKnob {41 format l "output format" T Reformat23.format}
+  addUserKnob {26 ""}
+  addUserKnob {41 disable_1 l "Invert MB Channel" T SwitchMB.disable}
+ }
+  Input {
+   inputs 0
+   name BTY
+   xpos -590
+   ypos -298
+  }
+  Dot {
+   name Dot116
+   xpos -556
+   ypos 354
+  }
+set N1ea72400 [stack 0]
+  Input {
+   inputs 0
+   name TECH
+   xpos 180
+   ypos -298
+   number 1
+  }
+  Dot {
+   name Dot117
+   xpos 214
+   ypos -222
+  }
+set N5ae03c00 [stack 0]
+  Dot {
+   name Dot118
+   xpos -6
+   ypos -222
+  }
+set N5ae03800 [stack 0]
+add_layer {motionvector motionvector.red motionvector.green motionvector.blue}
+  Shuffle {
+   in motionvector
+   red green
+   green red
+   blue black
+   out motionvector
+   name Shuffle8
+   xpos -40
+   ypos -130
+  }
+push $N5ae03800
+  Dot {
+   name Dot1
+   xpos -116
+   ypos -222
+  }
+  Shuffle {
+   in motionvector
+   blue black
+   out motionvector
+   name Shuffle1
+   xpos -150
+   ypos -132
+  }
+  Dot {
+   name Dot2
+   xpos -116
+   ypos -46
+  }
+  Switch {
+   inputs 2
+   which 1
+   name SwitchMB
+   xpos -40
+   ypos -50
+   disable true
+  }
+  Dot {
+   name Dot119
+   xpos -6
+   ypos 18
+  }
+push $N5ae03c00
+  Shuffle {
+   in depth
+   name Shuffle10
+   label "\[value in]"
+   xpos 180
+   ypos -136
+  }
+  Expression {
+   channel0 rgba
+   expr0 1/r
+   name Expression4
+   xpos 180
+   ypos -82
+  }
+  Copy {
+   inputs 2
+   channels motionvector
+   name Copy4
+   xpos 180
+   ypos 1
+  }
+  VectorBlur2 {
+   uv motionvector
+   blur_uv linear
+   blur_type uniform
+   scale 1
+   motion_falloff 0.5
+   name VectorBlur3
+   xpos 180
+   ypos 152
+  }
+  Reformat {
+   filter Impulse
+   name Reformat23
+   xpos 180
+   ypos 254
+  }
+  Copy {
+   inputs 2
+   from0 rgba.alpha
+   to0 rgba.alpha
+   name Copy6
+   xpos 180
+   ypos 344
+  }
+  Dot {
+   name Dot120
+   xpos 214
+   ypos 450
+  }
+set Nfddfa000 [stack 0]
+  Dot {
+   name Dot121
+   xpos 104
+   ypos 450
+  }
+  EdgeBlur {
+   size 2
+   name EdgeBlur3
+   label "\[value size]"
+   xpos 70
+   ypos 481
+  }
+  Dot {
+   name Dot122
+   xpos 104
+   ypos 642
+  }
+push $Nfddfa000
+  Dot {
+   name Dot123
+   xpos 324
+   ypos 450
+  }
+  EdgeBlur {
+   size 5
+   name EdgeBlur4
+   label "\[value size]"
+   xpos 290
+   ypos 484
+  }
+  Grade {
+   channels alpha
+   white 99999
+   white_clamp true
+   name Grade11
+   xpos 290
+   ypos 536
+  }
+  Dot {
+   name Dot124
+   xpos 324
+   ypos 594
+  }
+push $Nfddfa000
+  EdgeBlur {
+   size 10
+   name EdgeBlur5
+   label "\[value size]"
+   xpos 180
+   ypos 481
+  }
+  Unpremult {
+   name Unpremult5
+   xpos 180
+   ypos 542
+  }
+  Multiply {
+   inputs 1+1
+   value 0
+   invert_mask true
+   name Multiply11
+   xpos 180
+   ypos 584
+  }
+  Merge2 {
+   inputs 2
+   bbox B
+   name Merge23
+   xpos 180
+   ypos 638
+  }
+set N6da13400 [stack 0]
+push $N6da13400
+  Copy {
+   inputs 2
+   from0 rgba.red
+   to0 depth.Z
+   name Copy9
+   selected true
+   xpos 180
+   ypos 719
+  }
+  Dot {
+   name Dot125
+   xpos 214
+   ypos 978
+  }
+push $N1ea72400
+  Dot {
+   name Dot3
+   xpos -556
+   ypos 819
+  }
+  Copy {
+   inputs 2
+   channels depth
+   name Copy8
+   xpos -590
+   ypos 961
+  }
+  Output {
+   name Output1
+   xpos -590
+   ypos 1070
+  }
+ end_group
+ Shuffle {
+  in depth
+  name Shuffle2
+  xpos 509
+  ypos -172
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge1
+  xpos 509
+  ypos -113
+ }
+ Multiply {
+  value 100
+  name Multiply1
+  xpos 509
+  ypos -44
+ }
+ Output {
+  name Output1
+  xpos 509
+  ypos 56
+ }
+end_group

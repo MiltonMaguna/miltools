@@ -1,0 +1,123 @@
+#! /usr/local/Nuke6.3v7/Nuke6.3 -nx
+version 6.3 v7
+Gizmo {
+ addUserKnob {20 VFX}
+ addUserKnob {7 edginess}
+ addUserKnob {7 dynamic}
+ addUserKnob {7 magical}
+ addUserKnob {7 happy}
+ addUserKnob {7 tweak}
+ addUserKnob {7 Fruity2 l fruity}
+ addUserKnob {6 Splitthedifference l "Split The Difference   " +STARTLINE}
+ Splitthedifference true
+ addUserKnob {6 PixelFk l "Pixel Fk " -STARTLINE}
+ addUserKnob {4 version l "   version" -STARTLINE M {English Spanish French Klingon Esperanto Hindi Swahili Tagalog Arabic Japaneese Chineese Sanskrit Latin "" "" "" "" ""}}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {7 better}
+ better {{1-((cheaper+faster)*.5)+(curve*.5)}}
+ addUserKnob {7 faster}
+ faster {{1-((better+cheaper)*.5)+(curve*.5)}}
+ addUserKnob {7 cheaper}
+ cheaper {{1-((better+faster)*.5)+(curve*.5)}}
+ addUserKnob {4 expandBudget l "Expand Budget:" M {No "No Way" "Forget About It" "You're Joking" "You're Dreaming" "Ha, Ha, Ha, Ha - good one!" "" ""}}
+ addUserKnob {4 Deadline l "   Deadline" -STARTLINE M {decrease "decrease more" "decrease a lot more" impossible laughable "" ""}}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {26 rdunn l "by rdunn"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 0
+  ypos -113
+ }
+set N6e4e670 [stack 0]
+push $N6e4e670
+ Glow {
+  brightness {{parent.edginess i}}
+  saturation {{parent.edginess i}}
+  name Glow3
+  xpos 153
+  ypos -77
+ }
+ Glow {
+  brightness {{parent.dynamic i}}
+  saturation {{parent.dynamic i}}
+  name Glow2
+  xpos 153
+  ypos -51
+ }
+ Glow {
+  brightness {{parent.magical i}}
+  saturation {{parent.magical i}}
+  name Glow1
+  xpos 153
+  ypos -25
+ }
+ Glow {
+  brightness {{parent.happy i}}
+  saturation {{parent.happy i}}
+  name Glow4
+  xpos 153
+  ypos 1
+ }
+ Glow {
+  brightness {{parent.tweak i}}
+  saturation {{parent.tweak i}}
+  name Glow6
+  xpos 153
+  ypos 27
+ }
+ Glow {
+  brightness {{parent.Fruity2 i}}
+  saturation {{parent.Fruity2 i}}
+  name Glow7
+  xpos 153
+  ypos 53
+ }
+ Glow {
+  brightness {{parent.happy i}}
+  saturation {{parent.happy i}}
+  name Glow5
+  xpos 153
+  ypos 104
+ }
+ Grade {
+  white {1.25 1 0.6600000262 1}
+  black_clamp false
+  mix {{parent.happy i}}
+  name Grade1
+  xpos 153
+  ypos 130
+ }
+ Dissolve {
+  inputs 2
+  which 0.5
+  name Dissolve1
+  xpos 0
+  ypos 181
+  disable {{"parent.Splitthedifference != 1" i}}
+ }
+ Transform {
+  scale 400
+  center {{width/2 i} {height/2 i}}
+  filter Impulse
+  name Transform1
+  selected true
+  xpos 0
+  ypos 219
+  disable {{"parent.PixelFk !=1" i}}
+ }
+set N74133c0 [stack 0]
+ Output {
+  name Output1
+  xpos 0
+  ypos 300
+ }
+push $N74133c0
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos 159
+  ypos 259
+ }
+end_group

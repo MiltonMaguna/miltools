@@ -1,0 +1,203 @@
+#! C:/Program Files/Nuke12.1v4/nuke-12.1.4.dll -nx
+version 12.1 v4
+Gizmo {
+ addUserKnob {20 User}
+ addUserKnob {3 Repeat_Pixels t "Amount of pixels to repeat"}
+ Repeat_Pixels 100
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {26 Info l "" +STARTLINE T "Mirrors the edges as needed.\n\nUseful for adding camera shakes or small extensions.\n\nM.Segat"}
+}
+ StickyNote {
+  inputs 0
+  name StickyNote1
+  label "Mirrorea bordes para camera shakes\n\n-M.Segat"
+  note_font " Bold"
+  note_font_size 35
+  xpos 748
+  ypos 665
+ }
+ Input {
+  inputs 0
+  name Input1
+  xpos 206
+  ypos 410
+ }
+ Dot {
+  name Dot236
+  xpos 236
+  ypos 510
+ }
+set Nb6f23c00 [stack 0]
+ Dot {
+  name Dot259
+  xpos 146
+  ypos 510
+ }
+ Crop {
+  box {0 0 {width} {height}}
+  crop false
+  name Crop13
+  xpos 116
+  ypos 697
+ }
+ Dot {
+  name Dot190
+  xpos 146
+  ypos 851
+ }
+push $Nb6f23c00
+ Crop {
+  box {0 0 {width} {height}}
+  name Crop4
+  xpos 206
+  ypos 547
+ }
+ Dot {
+  name Dot219
+  xpos 236
+  ypos 583
+ }
+set Nbc76cc00 [stack 0]
+ Dot {
+  name Dot248
+  xpos 346
+  ypos 583
+ }
+set Nbc667c00 [stack 0]
+ Dot {
+  name Dot231
+  xpos 456
+  ypos 583
+ }
+set N670a4000 [stack 0]
+ Dot {
+  name Dot233
+  xpos 555
+  ypos 583
+ }
+set Nb6399c00 [stack 0]
+ Dot {
+  name Dot234
+  xpos 662
+  ypos 583
+ }
+ Transform {
+  translate {0 {-height}}
+  scale {1 -1}
+  center {{width/2} {height/2}}
+  name Transform7
+  xpos 632
+  ypos 609
+ }
+ Dot {
+  name Dot235
+  xpos 662
+  ypos 791
+ }
+push $Nb6399c00
+ Transform {
+  translate {0 {height}}
+  scale {1 -1}
+  center {{width/2} {height/2}}
+  name Transform8
+  xpos 525
+  ypos 617
+ }
+ Dot {
+  name Dot237
+  xpos 555
+  ypos 754
+ }
+push $N670a4000
+ Transform {
+  translate {{-width} 0}
+  scale {-1 1}
+  center {{width/2} {height/2}}
+  name Transform6
+  xpos 426
+  ypos 617
+ }
+ Dot {
+  name Dot232
+  xpos 456
+  ypos 697
+ }
+push $Nbc667c00
+ Transform {
+  translate {{width} 0}
+  scale {-1 1}
+  center {{width/2} {height/2}}
+  name Transform5
+  xpos 319
+  ypos 618
+ }
+ Dot {
+  name Dot191
+  xpos 349
+  ypos 660
+ }
+push $Nbc76cc00
+ Merge2 {
+  inputs 2
+  name Merge47
+  xpos 208
+  ypos 661
+ }
+ Merge2 {
+  inputs 2
+  name Merge48
+  xpos 208
+  ypos 698
+ }
+ Merge2 {
+  inputs 2
+  name Merge50
+  xpos 208
+  ypos 755
+ }
+ Merge2 {
+  inputs 2
+  name Merge82
+  xpos 208
+  ypos 792
+ }
+ Merge2 {
+  inputs 2
+  operation under
+  name Merge100
+  xpos 208
+  ypos 852
+ }
+ Crop {
+  box {{-(m_EdgeMirror.How_much_to_repeat.Repeat_Pixels)} {-(m_EdgeMirror.How_much_to_repeat.Repeat_Pixels)} {width+(m_EdgeMirror.How_much_to_repeat.Repeat_Pixels)} {height+(m_EdgeMirror.How_much_to_repeat.Repeat_Pixels)}}
+  crop false
+  name Crop1
+  xpos 208
+  ypos 883
+ }
+set N202d6000 [stack 0]
+ Output {
+  name Output1
+  xpos 208
+  ypos 974
+ }
+push $N202d6000
+ Viewer {
+  frame_range 1001-1046
+  fps 30
+  viewerProcess "sRGB (ACES)"
+  name Viewer1
+  xpos 206
+  ypos 434
+ }
+ NoOp {
+  inputs 0
+  name How_much_to_repeat
+  selected true
+  xpos 362
+  ypos 881
+  addUserKnob {20 User}
+  addUserKnob {3 Repeat_Pixels t "The amout of pixels to extend the edges"}
+  Repeat_Pixels {{parent.Repeat_Pixels}}
+ }
+end_group
