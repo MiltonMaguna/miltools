@@ -1,0 +1,44 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Star
+ addUserKnob {20 "" User}
+ addUserKnob {26 "" "@b;Star"}
+ addUserKnob {3 points Points:}
+ points 5
+ addUserKnob {7 curv Curvature: R 0 10}
+ curv 2
+ addUserKnob {14 scale Scale:}
+ scale {150 150}
+ addUserKnob {12 offset Offset:}
+ offset {320 240}
+ addUserKnob {7 fc "Frame Cycle:" R 1 1000}
+ fc 30
+ addUserKnob {7 velo Velocity: R 0 10}
+ velo 0.606
+ addUserKnob {3 time INVISIBLE}
+ time {{frame*velo*points*acos(-1)/fc i}}
+ addUserKnob {26 "" ""}
+ addUserKnob {12 result Result:}
+ result {{((1-points)*cos(time)+curv*points*cos(((1/points)-1)*time))*(scale.w/(points*curv))+offset.x i} {((1-points)*sin(time)+curv*points*sin(((1/points)-1)*time))*(scale.h/(points*curv))+offset.y}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 130
+  ypos 62
+ }
+ Output {
+  name Output1
+  xpos 130
+  ypos 88
+ }
+end_group

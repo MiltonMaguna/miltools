@@ -1,0 +1,282 @@
+Group {
+ name apKeyer
+ help "Simple Keyer with straightforward color picking and extended gamma controls.\n\napKeyer v0.1 - adrianpueyo.com, 2016."
+ tile_color 0xff00ff
+ selected true
+ addUserKnob {20 apKeyer}
+ addUserKnob {41 in l input T Shuffle1.in}
+ addUserKnob {41 output T CopyA.to0}
+ addUserKnob {6 invert t "Invert the resulting alpha?" -STARTLINE}
+ addUserKnob {4 operation t "red, green, blue = use that channel\nscreen = substract that channel from others\nluminance = use CIE luminance value\nsaturation = use color saturation\nmax, min = max or min of red, green, blue." M {"red keyer" "green keyer" "blue keyer" redscreen greenscreen bluescreen "luminance key" "saturation key" "max keyer" "min keyer" "" ""}}
+ operation "luminance key"
+ addUserKnob {18 black t "Black point on your key. You can use the color picker.\n(Note: in Saturation mode, only use the picker)"}
+ black 0
+ addUserKnob {18 white t "White point on your key. You can use the color picker.\n(Note: in Saturation mode, only use the picker)"}
+ white 1
+ addUserKnob {26 divider l "" +STARTLINE}
+ addUserKnob {7 gamma t "Reduce to fill blacks without clamping (normal gamma)."}
+ gamma 1
+ addUserKnob {7 invGamma l "inv. gamma" t "Reduce to fill whites without clamping (inversed gamma)."}
+ invGamma 1
+ addUserKnob {26 copyright l "" +STARTLINE T "\napKeyer v0.1 - adrianpueyo.com, 2016."}
+}
+ Constant {
+  inputs 0
+  channels rgb
+  format "1 1 0 0 1 1 1 SampleMe"
+  name Constant1px
+  xpos 388
+  ypos 260
+  postage_stamp false
+ }
+set N8bdad760 [stack 0]
+ Dot {
+  name Dot11
+  xpos 512
+  ypos 263
+ }
+ Expression {
+  expr0 parent.black.r
+  expr1 parent.black.g
+  expr2 parent.black.b
+  name ExpressionBlack
+  xpos 478
+  ypos 283
+ }
+ Colorspace {
+  colorspace_in sRGB
+  illuminant_in ACES
+  colorspace_out HSV
+  illuminant_out ACES
+  name ColorspaceSB
+  xpos 478
+  ypos 309
+ }
+push $N8bdad760
+ Expression {
+  expr0 parent.white.r
+  expr1 parent.white.g
+  expr2 parent.white.b
+  name ExpressionWhite
+  xpos 388
+  ypos 284
+ }
+ Colorspace {
+  colorspace_in sRGB
+  illuminant_in ACES
+  colorspace_out HSV
+  illuminant_out ACES
+  name ColorspaceSW
+  xpos 388
+  ypos 308
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos 0
+  ypos 128
+ }
+set N8bdea2b0 [stack 0]
+ Shuffle {
+  in rgb
+  name Shuffle1
+  xpos 0
+  ypos 152
+ }
+ Dot {
+  name Dot7
+  xpos 34
+  ypos 176
+ }
+set N8bdfb3c0 [stack 0]
+ Dot {
+  name Dot3
+  xpos 237
+  ypos 176
+ }
+set N97c03580 [stack 0]
+ Dot {
+  name Dot9
+  xpos 330
+  ypos 176
+ }
+ Colorspace {
+  colorspace_in sRGB
+  illuminant_in ACES
+  colorspace_out HSV
+  illuminant_out ACES
+  name ColorspaceS
+  xpos 296
+  ypos 224
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha green
+  name ShuffleS
+  xpos 296
+  ypos 248
+ }
+ Grade {
+  channels alpha
+  blackpoint {{"\[python nuke.toNode('ColorspaceSB').sample('green',1,\\ 1)]"}}
+  white_clamp true
+  name GradeSB
+  xpos 296
+  ypos 272
+  disable {{parent.white.r!=parent.white.g||parent.white.r!=parent.white.b||parent.white.g!=parent.white.b}}
+ }
+ Grade {
+  channels alpha
+  blackpoint {{"\[python nuke.toNode('ColorspaceSB').sample('green',1,\\ 1)]"}}
+  whitepoint {{"\[python nuke.toNode('ColorspaceSW').sample('green',1,\\ 1)]"}}
+  white_clamp true
+  name GradeS
+  xpos 296
+  ypos 304
+  disable {{parent.white.r==parent.white.g==parent.white.b==1}}
+ }
+push $N97c03580
+ Expression {
+  expr3 operation==8?max(r,g,b):min(r,g,b)
+  name ExpressionMaxMin
+  xpos 203
+  ypos 248
+ }
+ Grade {
+  channels alpha
+  blackpoint {{operation==8?max(parent.black.r,parent.black.g,parent.black.b):min(parent.black.r,parent.black.g,parent.black.b)}}
+  whitepoint {{operation==8?max(parent.white.r,parent.white.g,parent.white.b):min(parent.white.r,parent.white.g,parent.white.b)}}
+  white_clamp true
+  name GradeMaxMin
+  xpos 203
+  ypos 272
+ }
+push $N8bdfb3c0
+ Grade {
+  blackpoint {{parent.black} {parent.black} {parent.black} {parent.black}}
+  whitepoint {{parent.white} {parent.white} {parent.white} {parent.white}}
+  black_clamp false
+  name GradeRGB
+  xpos 0
+  ypos 194
+ }
+set N97c5d770 [stack 0]
+ Dot {
+  name Dot12
+  xpos 144
+  ypos 197
+ }
+ Colorspace {
+  colorspace_in sRGB
+  illuminant_in ACES
+  colorspace_out YPbPr
+  illuminant_out ACES
+  name ColorspaceY
+  xpos 110
+  ypos 215
+ }
+ Clamp {
+  channels {rgba.red -rgba.green -rgba.blue none}
+  name ClampY
+  xpos 110
+  ypos 240
+ }
+push $N97c5d770
+ Expression {
+  channel0 alpha
+  expr0 operation==0?clamp(r):operation==1?clamp(g):operation==2?clamp(b):operation==3?clamp(-r+g+b):operation==4?clamp(r-g+b):clamp(r+g-b)
+  name ExpressionRGB
+  xpos 0
+  ypos 216
+ }
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 rgba.alpha
+  name CopyY
+  xpos 0
+  ypos 240
+  disable {{operation!=6}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name CopyMaxMin
+  xpos 0
+  ypos 272
+  disable {{operation!=8&&operation!=9}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name CopyS
+  xpos 0
+  ypos 304
+  disable {{operation!=7}}
+ }
+ Invert {
+  channels alpha
+  name Invert1
+  xpos 0
+  ypos 336
+  disable {{parent.invGamma==1}}
+ }
+ Gamma {
+  channels alpha
+  value {{parent.invGamma}}
+  name GammaInv
+  xpos 102
+  ypos 336
+  disable {{parent.invGamma==1}}
+ }
+ Invert {
+  channels alpha
+  name Invert2
+  xpos 199
+  ypos 336
+  disable {{parent.invGamma==1}}
+ }
+ Gamma {
+  channels alpha
+  value {{parent.gamma}}
+  name Gamma
+  xpos 199
+  ypos 368
+  disable {{parent.gamma==1}}
+ }
+ Invert {
+  channels alpha
+  name Invert3
+  xpos 102
+  ypos 368
+  disable {{!parent.invert}}
+ }
+push $N8bdea2b0
+ Dot {
+  name Dot8
+  xpos -55
+  ypos 131
+ }
+ Dot {
+  name Dot6
+  xpos -55
+  ypos 375
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name CopyA
+  xpos 0
+  ypos 368
+ }
+ Output {
+  name Output
+  xpos 0
+  ypos 400
+ }
+end_group

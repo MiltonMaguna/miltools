@@ -1,0 +1,38 @@
+###
+### dg ©2006
+### diogogirondi@gmail.com
+### curveGens v1.2
+### Nuke 4.5.27
+###
+version 4.5027
+Gizmo {
+ inputs 0
+ tile_color 0xff800000
+ label "@s-2 CurveGen"
+ name Spiral
+ addUserKnob {20 "" User}
+ addUserKnob {26 "" "@b;Spiral"}
+ addUserKnob {14 scale Scale:}
+ scale 2
+ addUserKnob {12 offset Offset:}
+ offset {320 240}
+ addUserKnob {7 spiral Spiral: R 0 100}
+ spiral 60
+ addUserKnob {7 velo Velocity: R 0 1000}
+ velo 10
+ addUserKnob {26 "" ""}
+ addUserKnob {12 result Result:}
+ result {{(scale.w*frame*cos(frame*acos(-1)*velo/spiral))+offset.x i} {(scale.h*frame*sin(frame*acos(-1)*velo/spiral))+offset.y}}
+}
+push 0
+ NoOp {
+  name NoOp1
+  xpos 130
+  ypos 62
+ }
+ Output {
+  name Output1
+  xpos 130
+  ypos 88
+ }
+end_group

@@ -1,0 +1,104 @@
+#! C:/Program Files/Nuke8.0v2/nuke-8.0.v2.dll -nx
+version 8.0 v2
+Gizmo {
+ inputs 3
+ addUserKnob {20 User}
+ addUserKnob {6 HighLightMap l "High Light Map" +STARTLINE}
+ addUserKnob {41 size T Blur1.size}
+ addUserKnob {41 filter T Blur1.filter}
+ addUserKnob {41 mix T Blur1.mix}
+}
+ Input {
+  inputs 0
+  name Keyer
+  xpos 60
+  ypos -407
+  number 2
+ }
+ Dot {
+  name Dot3
+  xpos 94
+  ypos -279
+ }
+set N2ab6b6c0 [stack 0]
+ Blur {
+  name Blur1
+  xpos 60
+  ypos -245
+ }
+ Premult {
+  name Premult1
+  xpos 60
+  ypos -193
+ }
+ Dot {
+  name Dot5
+  xpos 95
+  ypos -141
+ }
+set N2ab6ced0 [stack 0]
+ Dot {
+  name Dot6
+  xpos 311
+  ypos -141
+ }
+ Input {
+  inputs 0
+  name Mask
+  xpos 202
+  ypos -91
+  number 1
+ }
+push $N2ab6ced0
+ Input {
+  inputs 0
+  name Src
+  xpos 228
+  ypos -407
+ }
+ Dot {
+  name Dot1
+  xpos 262
+  ypos -198
+ }
+ Merge2 {
+  inputs 2+1
+  operation plus
+  name Merge1
+  xpos 60
+  ypos -91
+ }
+ Dot {
+  name Dot7
+  xpos 94
+  ypos -47
+ }
+ Switch {
+  inputs 2
+  which {{HighLightMap}}
+  name Switch1
+  xpos 277
+  ypos -50
+ }
+ Output {
+  name Output1
+  xpos 277
+  ypos 15
+ }
+push $N2ab6b6c0
+ Dot {
+  name Dot2
+  xpos 431
+  ypos -279
+ }
+ Premult {
+  name Premult2
+  xpos 397
+  ypos -189
+ }
+ Dot {
+  name Dot4
+  xpos 431
+  ypos -102
+ }
+end_group

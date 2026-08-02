@@ -1,0 +1,1256 @@
+Group {
+ name mtOpticalGloom
+ inputs 3
+ tile_color 0xffbf00ff
+ note_font "Verdana Bold"
+ note_font_size 12
+ addUserKnob {20 User l mtOpticalGloom}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T AchoPijo.useGPUIfAvailable}
+ addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T AchoPijo.vectorize}
+ addUserKnob {41 channels T Convolve2.channels}
+ addUserKnob {26 spaceFirst l " " T "  "}
+ addUserKnob {4 modeConvolution l Mode M {pings diffusion ""}}
+ addUserKnob {6 effectonly l "effect only" -STARTLINE}
+ addUserKnob {6 fixBbox l fixBBox t "you need to have the bbox covering the full resolution. Check this to autocrop the src input and correctly apply the effect" -STARTLINE}
+ addUserKnob {7 power l Power R 0.01 2}
+ power 0.5
+ addUserKnob {7 lumaBlack l Tolerance t "Only works with Ping mode"}
+ lumaBlack 0.5
+ addUserKnob {7 lumaWhite l "src White " t "Only works with ping mode"}
+ lumaWhite 1
+ addUserKnob {26 space07 l " " T " "}
+ addUserKnob {41 "waveDispersion_Dispersion mult" l "Dispersion mult" T "AchoPijo.waveDispersion_Dispersion mult"}
+ addUserKnob {7 dispsat l "Dispersion sat" R 0.1 3}
+ dispsat 1
+ addUserKnob {7 postblur l "post blur" R 0 5}
+ addUserKnob {26 space01 l " " T " "}
+ addUserKnob {26 text l "Diaphragm Options"}
+ addUserKnob {26 space02 l " " T " "}
+ addUserKnob {4 pulldownMode l Mode M {regular absolute negative ""}}
+ pulldownMode absolute
+ addUserKnob {6 showkernel l "show kernel" -STARTLINE}
+ addUserKnob {26 space04_1 l " " T " "}
+ addUserKnob {4 filterType l filter M {bladed disc "" "" ""}}
+ addUserKnob {7 double l "aspect Ratio"}
+ double 1.5
+ addUserKnob {3 double_1 l blades}
+ double_1 5
+ addUserKnob {7 double_2 l roundness}
+ double_2 0.2
+ addUserKnob {7 double_4 l "inner size"}
+ double_4 0.8
+ addUserKnob {7 double_5 l "inner feather"}
+ double_5 1
+ addUserKnob {7 double_6 l "inner brightness"}
+ double_6 0.5
+ addUserKnob {26 space03 l " " T " "}
+ addUserKnob {7 double_7 l "pre scale" R 0.01 1.1}
+ double_7 1
+ addUserKnob {7 double_12 l variation R 0 10}
+ addUserKnob {7 double_11 l "var scale" R 2 300}
+ double_11 100
+ addUserKnob {7 double_8 l "var mix"}
+ addUserKnob {26 ""}
+ addUserKnob {26 space04 l " " T ""}
+ addUserKnob {7 double_9 l "post scale" R 0.1 2}
+ double_9 1
+ addUserKnob {7 double_10 l "post rotation" R 0 360}
+ addUserKnob {26 space50 l " " T " "}
+ addUserKnob {26 ""}
+ addUserKnob {7 mixOptical l mix}
+ mixOptical 1
+ addUserKnob {20 info}
+ addUserKnob {26 infoText l " " T "mtOpticalGloom v1.1 - Miguel Torija"}
+ addUserKnob {26 text_2 l " " T " "}
+ addUserKnob {26 text_1 l " " T "Use it to create nice cool pings-glints or some soft diffusion on a more realistic way.\n\n"}
+ addUserKnob {26 text_4 l "  " T "Modify your own Diaphragm or use an alternative one\nto replicate (the tool its not totally physically acurate) \nthe gloom effect that would happend throught it."}
+ addUserKnob {26 text_5 l " " T " "}
+ addUserKnob {26 text_3 l " " T "- I recommend using very low values on mix when using the diffusion mode.\n\n- It could be kind of slow, consider using the effect only checkbox,\nprecomp after and merge it with a plus.\n\n- When using altDiaphragm, try to use square formats, such as 1024x1024."}
+}
+ Input {
+  inputs 0
+  name SRC
+  xpos 621
+  ypos -653
+ }
+ Dot {
+  name INPUT_SRC
+  label INPUT_SRC
+  xpos 655
+  ypos -512
+ }
+set Ncee4d400 [stack 0]
+ Crop {
+  box {0 0 {parent.NoOp2.double} {parent.NoOp2.double_1}}
+  name Crop3
+  xpos 714
+  ypos -424
+ }
+ AdjBBox {
+  name AdjBBox1
+  xpos 714
+  ypos -400
+ }
+set Ncee4dc00 [stack 0]
+push $Ncee4d400
+ Switch {
+  inputs 2
+  which {{fixBbox}}
+  name Switch9
+  xpos 622
+  ypos -300
+ }
+ Dot {
+  name Dot101
+  xpos 656
+  ypos 2600
+ }
+set Nc56ce400 [stack 0]
+ Dot {
+  name Dot107
+  xpos 656
+  ypos 3031
+ }
+set Nc56ce800 [stack 0]
+ Constant {
+  inputs 0
+  color 1
+  name Constant15
+  xpos -344
+  ypos 2894
+ }
+ Input {
+  inputs 0
+  name mask
+  xpos -189
+  ypos 2806
+  number 2
+ }
+ Switch {
+  inputs 2
+  which {{"!\[exists parent.input2]"}}
+  name Switch3
+  xpos -189
+  ypos 2918
+ }
+set Nc56cf400 [stack 0]
+ Dot {
+  name Dot11
+  xpos -155
+  ypos 3274
+ }
+ Reformat {
+  inputs 0
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  filter impulse
+  name Reformat13
+  xpos -1448
+  ypos 2024
+ }
+ Roto {
+  output alpha
+  cliptype none
+  curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 2097152}
+    {t x44700000 x43f00000}
+    {a pt1x 0 pt1y 0 pt2x 0 pt2y 0 pt3x 0 pt3y 0 pt4x 0 pt4y 0 ptex00 0 ptex01 0 ptex02 0 ptex03 0 ptex10 0 ptex11 0 ptex12 0 ptex13 0 ptex20 0 ptex21 0 ptex22 0 ptex23 0 ptex30 0 ptex31 0 ptex32 0 ptex33 0 ptof1x 0 ptof1y 0 ptof2x 0 ptof2y 0 ptof3x 0 ptof3y 0 ptof4x 0 ptof4y 0 pterr 0 ptrefset 0 ptmot x40800000 ptref 0}
+    {curvegroup Ellipse1 512 bezier
+     {{cc
+       {f 8192}
+       {px x447cc000
+        {xc38dcc92 0}
+        {x44002000 xbf800000}
+        {x438dcc92 0}
+        {0 xc38d85e1}
+        {x44804000 x43ffc000}
+        {0 x438d85e0}
+        {x438dcc92 0}
+        {x44002000 x44800000}
+        {xc38dcc92 0}
+        {0 x438d85e0}
+        {xbf800000 x43ffc000}
+        {0 xc38d85e1}}}
+      {cc
+       {f 8192}
+       {p
+        {{{x447cc000 xc38dcc92}}
+      {{x447cc000 0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 0}}}
+        {{{x447cc000 x438dcc92}}
+      {{x447cc000 0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 xc38d85e1}}}
+        {{{x447cc000 0}}
+      {{x447cc000 0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 x438d85e0}}}
+        {{{x447cc000 x438dcc92}}
+      {{x447cc000 0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 0}}}
+        {{{x447cc000 xc38dcc92}}
+      {{x447cc000 0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 x438d85e0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 0}}}
+        {{{x447cc000 0}}
+      {{x447cc000 xc38d85e1}}}}}}
+     {tx x447cc000 x44002000 x43ffc000}
+     {a osw x41200000 osf 0 str 1 spx x44700000 spy x43f00000 sb 1 ltn x447cc000 ltm x447cc000 tt x40e00000}}}}}}
+  toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 tt 4 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 tt 5 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 tt 6 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 tt 7 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+  toolbar_brush_hardness 0.200000003
+  toolbar_source_transform_scale {1 1}
+  toolbar_source_transform_center {960 480}
+  colorOverlay {0 0 0 0}
+  lifetime_type "all frames"
+  lifetime_start 1011
+  lifetime_end 1011
+  motionblur_shutter_offset_type centred
+  source_black_outside true
+  name Roto1
+  xpos -1448
+  ypos 2082
+ }
+ Transform {
+  scale 0.7
+  center {512 512}
+  name Transform6
+  xpos -1448
+  ypos 2118
+ }
+ Blur {
+  size 250
+  name Blur2
+  label "Size: \[value size]"
+  xpos -1448
+  ypos 2153
+ }
+ Crop {
+  box {0 0 {parent.NoOp1.double} {parent.NoOp1.double_1}}
+  name Crop7
+  xpos -1448
+  ypos 2206
+ }
+ Dot {
+  name Dot99
+  xpos -1414
+  ypos 2365
+ }
+ Reformat {
+  inputs 0
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  filter impulse
+  name Reformat1
+  xpos -940
+  ypos -2332
+ }
+ Noise {
+  size {{parent.double_11}}
+  zoffset {{parent.double_12}}
+  gamma 0.4
+  center {960 480}
+  name Noise1
+  xpos -940
+  ypos -2288
+ }
+ Dot {
+  name Dot20
+  xpos -906
+  ypos -2221
+ }
+ Constant {
+  inputs 0
+  color 0.25
+  name Constant5
+  xpos -1185
+  ypos -2869
+ }
+ Reformat {
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  filter impulse
+  name Reformat2
+  xpos -1185
+  ypos -2771
+ }
+ Dot {
+  name Dot33
+  xpos -1151
+  ypos -2716
+ }
+set Nc5755400 [stack 0]
+ ZDefocus2 {
+  channels rgb
+  useGPUIfAvailable false
+  math direct
+  output "filter shape setup"
+  blur_dof false
+  aspect {{parent.double}}
+  blades {{parent.double_1}}
+  roundness {{parent.double_2}}
+  inner_size {{parent.double_4}}
+  inner_feather {{parent.double_5}}
+  inner_brightness {{parent.double_6}}
+  name ZDefocusDISC
+  xpos -1025
+  ypos -2626
+ }
+push $Nc5755400
+ ZDefocus2 {
+  channels rgb
+  useGPUIfAvailable false
+  math direct
+  output "filter shape setup"
+  blur_dof false
+  filter_type bladed
+  aspect {{parent.double}}
+  blades {{parent.double_1}}
+  roundness {{parent.double_2}}
+  inner_size {{parent.double_4}}
+  inner_feather {{parent.double_5}}
+  inner_brightness {{parent.double_6}}
+  name ZDefocusBLADED
+  xpos -1368
+  ypos -2630
+ }
+ Switch {
+  inputs 2
+  which {{filterType}}
+  name Switch7
+  xpos -1185
+  ypos -2567
+ }
+ Shuffle {
+  alpha white
+  name Shuffle3
+  label "\[value in]"
+  xpos -1185
+  ypos -2513
+ }
+ Reformat {
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  filter impulse
+  black_outside true
+  name Reformat15
+  xpos -1185
+  ypos -2432
+ }
+ Transform {
+  scale {{parent.double_7}}
+  center {512 512}
+  name Pre_Transform
+  xpos -1185
+  ypos -2359
+ }
+ Crop {
+  box {0 0 1024 1024}
+  name Crop1
+  xpos -1185
+  ypos -2305
+ }
+set Nc58c3400 [stack 0]
+ Dot {
+  name Dot31
+  xpos -1036
+  ypos -2302
+ }
+ Multiply {
+  inputs 1+1
+  value 0
+  name Multiply1
+  xpos -1070
+  ypos -2230
+ }
+push $Nc58c3400
+ Dissolve {
+  inputs 2
+  which {{parent.double_8}}
+  name Dissolve2
+  xpos -1185
+  ypos -2230
+ }
+ Input {
+  inputs 0
+  name altDiaphragm
+  xpos -1698
+  ypos -2825
+  number 1
+ }
+ Dot {
+  name INPUT_SRC2
+  label INPUT_KERNEL
+  xpos -1664
+  ypos -2285
+ }
+ Dot {
+  name Dot109
+  xpos -1664
+  ypos -2088
+ }
+ Switch {
+  inputs 2
+  which {{"!\[exists parent.input1]"}}
+  name Switch4
+  xpos -1185
+  ypos -2091
+ }
+ Remove {
+  operation keep
+  channels rgba
+  name Remove1
+  xpos -1185
+  ypos -1987
+ }
+ Dot {
+  name Dot1
+  xpos -1151
+  ypos -1877
+ }
+set Nc58ef800 [stack 0]
+ Dot {
+  name Dot79
+  xpos -1151
+  ypos -1805
+ }
+set Nc58efc00 [stack 0]
+ FFT {
+  channels rgba
+  normalize_input true
+  center_kernel true
+  name TechnoDance
+  xpos -1185
+  ypos -1733
+ }
+ Dot {
+  name Dot28
+  xpos -1151
+  ypos -1648
+ }
+set Nc590e400 [stack 0]
+ Dot {
+  name Dot30
+  xpos -996
+  ypos -1648
+ }
+ Dot {
+  name Dot100
+  xpos -996
+  ypos -1545
+ }
+push $Nc590e400
+ Expression {
+  expr0 abs(r)
+  expr1 abs(g)
+  expr2 abs(b)
+  name Expression2
+  xpos -1185
+  ypos -1617
+ }
+push $Nc590e400
+ Dot {
+  name Dot29
+  xpos -1340
+  ypos -1648
+ }
+ Clamp {
+  name Clamp1
+  xpos -1374
+  ypos -1554
+ }
+ Switch {
+  inputs 3
+  which {{pulldownMode}}
+  name SwitchModes
+  xpos -1185
+  ypos -1548
+ }
+ Crop {
+  box {0 0 {parent.NoOp1.double} {parent.NoOp1.double_1}}
+  name Crop2
+  xpos -1185
+  ypos -1388
+ }
+ Transform {
+  translate {{width/2} 0}
+  center {0 {height/2}}
+  name Transform3
+  xpos -1185
+  ypos -1364
+ }
+ Dot {
+  name Dot17
+  xpos -1151
+  ypos -1291
+ }
+set Nc5938800 [stack 0]
+ Dot {
+  name Dot18
+  xpos -1289
+  ypos -1291
+ }
+ Mirror {
+  Horizontal true
+  name Mirror1
+  xpos -1323
+  ypos -1259
+ }
+ Transform {
+  translate {1 0}
+  center {513 512}
+  name Transform4
+  xpos -1323
+  ypos -1235
+ }
+ Crop {
+  box {0 0 {parent.NoOp1.double} {parent.NoOp1.double_1}}
+  name Crop8
+  xpos -1323
+  ypos -1211
+ }
+ Dot {
+  name Dot19
+  xpos -1289
+  ypos -1167
+ }
+push $Nc5938800
+ Merge2 {
+  inputs 2
+  operation max
+  name Merge24
+  xpos -1185
+  ypos -1170
+ }
+ Crop {
+  box {0 0 {parent.NoOp1.double} {parent.NoOp1.double_1}}
+  name Crop4
+  xpos -1185
+  ypos -1099
+ }
+ Transform {
+  rotate {{parent.double_10}}
+  scale {{parent.double_9}}
+  center {{width/2} {height/2}}
+  name Post_Transform
+  xpos -1185
+  ypos -1075
+ }
+ Crop {
+  box {0 0 {parent.NoOp1.double} {parent.NoOp1.double_1}}
+  name Crop9
+  xpos -1185
+  ypos -1051
+ }
+ Dot {
+  name Dot81
+  xpos -1151
+  ypos -607
+ }
+set Nc5969000 [stack 0]
+ Dot {
+  name Dot89
+  xpos -1151
+  ypos 1079
+ }
+set Nc5969400 [stack 0]
+ Dot {
+  name Dot90
+  xpos -949
+  ypos 1079
+ }
+ Expression {
+  expr0 (x+0.5)/width
+  expr1 (y+0.5)/height
+  expr2 0
+  expr3 0
+  name Expression1
+  xpos -983
+  ypos 1222
+ }
+ Dot {
+  name Dot96
+  xpos -949
+  ypos 1476
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {1 0 0 0}
+  color_panelDropped true
+  name Constant14
+  xpos -1633
+  ypos -680
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat9
+  xpos -1633
+  ypos -608
+ }
+push $Nc5969000
+ Dot {
+  name Dot82
+  xpos -1428
+  ypos -607
+ }
+ Saturation {
+  saturation 0
+  name Saturation3
+  xpos -1462
+  ypos -531
+ }
+ Dot {
+  name Dot80
+  xpos -1428
+  ypos -438
+ }
+set Nc5997800 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge25
+  xpos -1633
+  ypos -441
+ }
+ Dot {
+  name Dot27
+  xpos -1599
+  ypos 306
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {1 0.225 0 0}
+  color_panelDropped true
+  name Constant13
+  xpos -1743
+  ypos -680
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat8
+  xpos -1743
+  ypos -608
+ }
+push $Nc5997800
+ Dot {
+  name Dot83
+  xpos -1428
+  ypos -330
+ }
+set Nc5a03000 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge26
+  xpos -1743
+  ypos -333
+ }
+ Dot {
+  name Dot26
+  xpos -1709
+  ypos 564
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {1 1 0 0}
+  name Constant12
+  xpos -1853
+  ypos -680
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat7
+  xpos -1853
+  ypos -608
+ }
+push $Nc5a03000
+ Dot {
+  name Dot84
+  xpos -1428
+  ypos -233
+ }
+set Nc5a26800 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge28
+  xpos -1853
+  ypos -236
+ }
+ Dot {
+  name Dot25
+  xpos -1819
+  ypos 749
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {0 1 0 0}
+  color_panelDropped true
+  name Constant9
+  xpos -1963
+  ypos -680
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat6
+  xpos -1963
+  ypos -608
+ }
+push $Nc5a26800
+ Dot {
+  name Dot85
+  xpos -1428
+  ypos -138
+ }
+set Nc5a4a000 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge30
+  xpos -1963
+  ypos -141
+ }
+ Dot {
+  name Dot24
+  xpos -1929
+  ypos 964
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {0 1 1 0}
+  color_panelDropped true
+  name Constant8
+  xpos -2073
+  ypos -680
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat5
+  xpos -2073
+  ypos -608
+ }
+push $Nc5a4a000
+ Dot {
+  name Dot86
+  xpos -1428
+  ypos -45
+ }
+set Nc5a4b800 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge32
+  xpos -2073
+  ypos -48
+ }
+ Dot {
+  name Dot23
+  xpos -2039
+  ypos 1140
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {0 0 1 0}
+  color_panelDropped true
+  name Constant7
+  xpos -2201
+  ypos -680
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat4
+  xpos -2201
+  ypos -608
+ }
+push $Nc5a4b800
+ Dot {
+  name Dot87
+  xpos -1428
+  ypos 57
+ }
+set Nc5a79000 [stack 0]
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge34
+  xpos -2201
+  ypos 54
+ }
+ Dot {
+  name Dot22
+  xpos -2167
+  ypos 1293
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {0.224999994 0 1 0}
+  name Constant6
+  xpos -2323
+  ypos -679
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp1.double}}
+  box_height {{parent.NoOp1.double_1}}
+  box_fixed true
+  name Reformat3
+  xpos -2323
+  ypos -607
+ }
+push $Nc5a79000
+ Dot {
+  name Dot88
+  xpos -1428
+  ypos 159
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge35
+  xpos -2323
+  ypos 156
+ }
+ Dot {
+  name Dot21
+  xpos -2289
+  ypos 1476
+ }
+push $Nc5969400
+ Dot {
+  name Dot95
+  xpos -1151
+  ypos 1224
+ }
+ BlinkScript {
+  inputs 9
+  recompileCount 44
+  KernelDescription "2 \"waveDispersion\" iterate pixelWise 9df64090b3a32a0be4712f814698ec8c3e5c2e05f6c0b38a09361b6a2e2c818f 10 \"src\" Read Random \"srcV\" Read Random \"srcB\" Read Random \"srcC\" Read Random \"srcG\" Read Random \"srcY\" Read Random \"srcO\" Read Random \"srcR\" Read Random \"STMap\" Read Point \"dst\" Write Point 2 \"count\" Int 1 DwAAAA== \"Dispersion mult\" Float 1 AACAPw== 2 \"count\" 1 1 \"multiplier\" 1 1 42 \"srcconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcVconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcBconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcCconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcGconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcYconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcOconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"srcRconstEdgeColor\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"resolution\" Int 2 1 AAAAAAAAAAA= \"outputFinal\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputViolet\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputBlue\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputCyan\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputGreen\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputYellow\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputOrange\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"outputRed\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"rainbow\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"UV\" Float 2 1 AAAAAAAAAAA= \"UVoffset\" Float 2 1 AAAAAAAAAAA= \"UVout\" Float 2 1 AAAAAAAAAAA= \"UVviolet\" Float 2 1 AAAAAAAAAAA= \"UVblue\" Float 2 1 AAAAAAAAAAA= \"UVcyan\" Float 2 1 AAAAAAAAAAA= \"UVgreen\" Float 2 1 AAAAAAAAAAA= \"UVyellow\" Float 2 1 AAAAAAAAAAA= \"UVorange\" Float 2 1 AAAAAAAAAAA= \"UVred\" Float 2 1 AAAAAAAAAAA= \"violetRef\" Float 1 1 AAAAAA== \"blueRef\" Float 1 1 AAAAAA== \"cyanRef\" Float 1 1 AAAAAA== \"greenRef\" Float 1 1 AAAAAA== \"yellowRef\" Float 1 1 AAAAAA== \"orangeRef\" Float 1 1 AAAAAA== \"redRef\" Float 1 1 AAAAAA== \"violetScale\" Float 1 1 AAAAAA== \"blueScale\" Float 1 1 AAAAAA== \"cyanScale\" Float 1 1 AAAAAA== \"greenScale\" Float 1 1 AAAAAA== \"yellowScale\" Float 1 1 AAAAAA== \"orangeScale\" Float 1 1 AAAAAA== \"redScale\" Float 1 1 AAAAAA=="
+  kernelSource "kernel waveDispersion : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom, eEdgeConstant> src; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcV; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcB; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcC; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcG; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcY; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcO; // the input image\n  Image<eRead, eAccessRandom, eEdgeConstant> srcR; // the input image\n\n  Image<eRead, eAccessPoint, eEdgeClamped> STMap;\n\n \n  Image<eWrite> dst; // the output image\n\n  param:\n    // This parameter is made available to the user.\n       \n    int count;\n    float multiplier;\n\n\n  local:\n    // This local variable is not exposed to the user.\n\n    int2 resolution;\n\n    float4 outputFinal;\n\n    float4 outputViolet;\n    float4 outputBlue;\n    float4 outputCyan;\n    float4 outputGreen;\n    float4 outputYellow;\n    float4 outputOrange;\n    float4 outputRed;\n\n    float4 rainbow;\n\n    float2 UV;\n    float2 UVoffset;\n    float2 UVout;\n\n    float2 UVviolet;\n    float2 UVblue;\n    float2 UVcyan;\n    float2 UVgreen;\n    float2 UVyellow;\n    float2 UVorange;\n    float2 UVred;\n\n    // Refractive Index.\n    float violetRef;\n    float blueRef;\n    float cyanRef;\n    float greenRef;\n    float yellowRef;\n    float orangeRef;\n    float redRef;\n\n    // Refractive scaling.\n    float violetScale;\n    float blueScale;\n    float cyanScale;\n    float greenScale;\n    float yellowScale;\n    float orangeScale;\n    float redScale;\n\n\n  // In define(), parameters can be given labels and default values.\n  void define() \{\n    defineParam(count, \"count\", 15);\n    defineParam(multiplier, \"Dispersion mult\", 1.0f); \n  \}\n\n  // The init() function is run before any calls to process().\n  // Local variables can be initialized here.\n  void init() \{\n   \n    resolution.x = src.bounds.width();\n    resolution.y = src.bounds.height();\n\n    rainbow = 7.00f;\n    violetRef = 2.00f;\n    blueRef = 1.68f;\n    cyanRef = 1.51f;\n    greenRef = 1.37f;\n    yellowRef = 1.28f;\n    orangeRef = 1.22f;\n    redRef = 1.00f;\n\n  \}\n\n  void process(int2 pos) \{\n\n\n    UV.x = STMap().x ;\n    UV.y = STMap().y ;\n\n    UVoffset.x = STMap().x - 0.5f;\n    UVoffset.y = STMap().y - 0.5f;\n\n    // Refractive scaling.\n    float violetScale = violetRef * multiplier;\n    float blueScale  = blueRef * multiplier;\n    float cyanScale  = cyanRef * multiplier;\n    float greenScale  = greenRef * multiplier;\n    float yellowScale  = yellowRef * multiplier;\n    float orangeScale  = orangeRef * multiplier;\n    float redScale  = redRef * multiplier;\n\n    for(int i = 0; i < count; i++)\{\n\n\n      UVviolet.x = ((UV.x+ (( (UVoffset.x / violetScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVviolet.y = ((UV.y+ (( (UVoffset.y / violetScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputViolet += bilinear(srcV, UVviolet.x, UVviolet.y);\n\n    \}\n\n    outputViolet = outputViolet/count;\n\n    for(int i = 0; i < count; i++)\{\n\n\n      UVblue.x = ((UV.x+ (( (UVoffset.x / blueScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVblue.y = ((UV.y+ (( (UVoffset.y / blueScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputBlue += bilinear(srcB, UVblue.x, UVblue.y);\n\n    \}\n\n    outputBlue = outputBlue/count;\n\n    for(int i = 0; i < count; i++)\{\n\n\n      UVcyan.x = ((UV.x+ (( (UVoffset.x / cyanScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVcyan.y = ((UV.y+ (( (UVoffset.y / cyanScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputCyan += bilinear(srcC, UVcyan.x, UVcyan.y);\n\n    \}\n\n    outputCyan = outputCyan/count;\n\n    for(int i = 0; i < count; i++)\{\n\n\n      UVgreen.x = ((UV.x+ (( (UVoffset.x / greenScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVgreen.y = ((UV.y+ (( (UVoffset.y / greenScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputGreen += bilinear(srcG, UVgreen.x, UVgreen.y);\n\n    \}\n\n    outputGreen = outputGreen/count;\n\n    for(int i = 0; i < count; i++)\{\n\n\n      UVyellow.x = ((UV.x+ (( (UVoffset.x / yellowScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVyellow.y = ((UV.y+ (( (UVoffset.y / yellowScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputYellow += bilinear(srcY, UVyellow.x, UVyellow.y);\n\n    \}\n\n    outputYellow = outputYellow/count;\n     \n    for(int i = 0; i < count; i++)\{\n\n\n      UVorange.x = ((UV.x+ (( (UVoffset.x / orangeScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVorange.y = ((UV.y+ (( (UVoffset.y / orangeScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputOrange += bilinear(srcO, UVorange.x, UVorange.y);\n\n    \}\n\n    outputOrange = outputOrange/count;\n\n    for(int i = 0; i < count; i++)\{\n\n\n      UVred.x = ((UV.x+ (( (UVoffset.x / redScale)+0.5f)-UV.x)*(float(i)/count)  )    *resolution.x-.5f);\n      UVred.y = ((UV.y+ (( (UVoffset.y / redScale)+0.5f )-UV.y)*(float(i)/count)  )    *resolution.y-.5f);\n\n      outputRed += bilinear(srcR, UVred.x, UVred.y);\n\n    \}\n\n    outputRed = outputRed/count;\n\n    outputFinal = ((outputViolet + outputBlue + outputCyan +outputYellow + outputOrange + outputRed)/rainbow);\n\n    // Write the result to the output image\n\n\n    dst() = outputFinal;\n  \}\n\};"
+  rebuild ""
+  "waveDispersion_Dispersion mult" 0.5
+  rebuild_finalise ""
+  name AchoPijo
+  xpos -1185
+  ypos 1467
+ }
+ Crop {
+  box {0 0 {parent.NoOp1.double} {parent.NoOp1.double_1}}
+  name Crop6
+  xpos -1185
+  ypos 2107
+ }
+ Blur {
+  size {{parent.postblur}}
+  name Blur1
+  label "Size: \[value size]"
+  xpos -1188
+  ypos 2163
+ }
+ ColorCorrect {
+  saturation {{dispsat}}
+  gain {{power}}
+  name ColorCorrect1
+  xpos -1188
+  ypos 2279
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge36
+  xpos -1188
+  ypos 2362
+ }
+ Dot {
+  name Dot16
+  xpos -1154
+  ypos 2629
+ }
+ Dot {
+  name Dot98
+  xpos -1154
+  ypos 3164
+ }
+set Nc5ac9000 [stack 0]
+ Dot {
+  name Dot32
+  xpos -88
+  ypos 3167
+ }
+push $Nc56ce800
+ Dot {
+  name Dot12
+  xpos 482
+  ypos 3031
+ }
+set Nc5ac9800 [stack 0]
+ Dot {
+  name Dot14
+  xpos 372
+  ypos 3031
+ }
+set Nc5ac9c00 [stack 0]
+push $Nc56cf400
+push $Nc56ce400
+ Dot {
+  name Dot104
+  xpos 128
+  ypos 2600
+ }
+set Nc5b24000 [stack 0]
+ Dot {
+  name Dot105
+  xpos -53
+  ypos 2600
+ }
+set Nc5b24400 [stack 0]
+ Keyer {
+  operation "luminance key"
+  range {{lumaBlack} {lumaWhite} 1 1}
+  name Keyer5
+  xpos -87
+  ypos 2709
+ }
+ Dot {
+  name Dot106
+  xpos -54
+  ypos 2782
+ }
+push $Nc5b24000
+ Unpremult {
+  name Unpremult7
+  xpos 94
+  ypos 2712
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  bbox B
+  name Copy2
+  xpos 93
+  ypos 2773
+ }
+ Premult {
+  name Premult3
+  xpos 93
+  ypos 2836
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge40
+  xpos 93
+  ypos 2918
+ }
+ Switch {
+  inputs 2
+  which {{modeConvolution}}
+  name Switch2
+  xpos 94
+  ypos 3028
+ }
+ Convolve {
+  inputs 2
+  channels rgb
+  normalize false
+  name Convolve2
+  xpos 94
+  ypos 3164
+ }
+set Nc5b4c400 [stack 0]
+push $Nc5ac9c00
+ Dot {
+  name Dot13
+  xpos 372
+  ypos 3274
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix1
+  xpos 94
+  ypos 3265
+ }
+ Dot {
+  name Dot15
+  xpos 128
+  ypos 3359
+ }
+push $Nc5b4c400
+push $Nc5ac9800
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge39
+  xpos 448
+  ypos 3161
+ }
+ Switch {
+  inputs 2
+  which {{modeConvolution}}
+  name Switch6
+  xpos 448
+  ypos 3356
+ }
+set Nc5b4d800 [stack 0]
+ Merge2 {
+  inputs 2
+  operation from
+  name Merge37
+  xpos 622
+  ypos 3356
+ }
+set Nc5b4dc00 [stack 0]
+ Dot {
+  name Dot103
+  xpos 907
+  ypos 3359
+ }
+push $Nc56ce400
+ Dot {
+  name Dot102
+  xpos 907
+  ypos 2600
+ }
+set Nc5b7c400 [stack 0]
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge38
+  xpos 873
+  ypos 2943
+ }
+push $Nc58ef800
+ Dot {
+  name Dot2
+  xpos -547
+  ypos -1877
+ }
+ Dot {
+  name Dot4
+  xpos -547
+  ypos 3884
+ }
+ Shuffle {
+  alpha white
+  name Shuffle2
+  label "\[value in]"
+  xpos -581
+  ypos 3968
+ }
+push $Nc5ac9000
+ Dot {
+  name Dot3
+  xpos -1154
+  ypos 3778
+ }
+ EXPTool {
+  red 1
+  green 1
+  blue 1
+  name Exposure1
+  xpos -1188
+  ypos 3827
+ }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  label "\[value in]"
+  xpos -1188
+  ypos 3914
+ }
+ Dot {
+  name Dot5
+  xpos -1154
+  ypos 4056
+ }
+push $Nc5b24400
+ Dot {
+  name Dot7
+  xpos -422
+  ypos 2600
+ }
+ Dot {
+  name Dot6
+  xpos -422
+  ypos 3880
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  name Constant1
+  xpos 1468
+  ypos 3329
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.NoOp2.double}}
+  box_height {{parent.NoOp2.double_1}}
+  box_fixed true
+  name Reformat10
+  xpos 1468
+  ypos 3452
+ }
+push $Nc5b7c400
+ Dot {
+  name Dot10
+  xpos 1194
+  ypos 2600
+ }
+ Switch {
+  inputs 2
+  which {{effectonly}}
+  name Switch8
+  xpos 1160
+  ypos 3452
+ }
+ Dot {
+  name Dot9
+  xpos 1194
+  ypos 3719
+ }
+push $Nc5b4dc00
+push $Nc5b4d800
+ Dot {
+  name Dot108
+  xpos 482
+  ypos 3440
+ }
+ Switch {
+  inputs 2
+  which {{effectonly}}
+  name Switch1
+  xpos 622
+  ypos 3437
+ }
+ Dissolve {
+  inputs 2
+  which {{1-mixOptical}}
+  name Dissolve1
+  xpos 622
+  ypos 3710
+ }
+ Dot {
+  name INPUT_SRC1
+  label OUTPUT_SRC
+  xpos 656
+  ypos 3882
+ }
+set Nc5bc9400 [stack 0]
+ Dot {
+  name Dot8
+  xpos -250
+  ypos 3882
+ }
+ ContactSheet {
+  inputs 4
+  rows 2
+  columns 2
+  center true
+  colorder RightLeft
+  name ContactSheet2
+  xpos -456
+  ypos 4053
+ }
+push $Nc5bc9400
+ Switch {
+  inputs 2
+  which {{showkernel}}
+  name Switch5
+  xpos 622
+  ypos 4053
+ }
+ Output {
+  name Output1
+  xpos 622
+  ypos 4219
+ }
+ StickyNote {
+  inputs 0
+  name StickyNote1
+  label "Perfect place for a precomp"
+  note_font "Verdana Bold"
+  note_font_size 20
+  xpos -1292
+  ypos 2529
+ }
+push $Nc58efc00
+ NoOp {
+  name NoOp1
+  xpos -944
+  ypos -1808
+  addUserKnob {20 User}
+  addUserKnob {7 double}
+  double {{width}}
+  addUserKnob {7 double_1}
+  double_1 {{height}}
+ }
+push $Ncee4d400
+ Dot {
+  name Dot34
+  xpos 765
+  ypos -512
+ }
+ NoOp {
+  name NoOp2
+  xpos 849
+  ypos -515
+  addUserKnob {20 User}
+  addUserKnob {7 double}
+  double {{width}}
+  addUserKnob {7 double_1}
+  double_1 {{height}}
+ }
+push $Ncee4dc00
+ Viewer {
+  frame_range 1001-1040
+  viewerProcess "sRGB (ACES)"
+  name Viewer1
+  xpos 94
+  ypos 3377
+ }
+end_group

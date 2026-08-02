@@ -1,0 +1,25 @@
+{
+    "paths": {
+        "gizmos": true,
+        "icons": true,
+        "scripts": true,
+        "scripts_menumaker": true,
+        "scripts_nukesurvivalkit": true,
+        "scripts_nodegraph_utils": true,
+        "scripts_stamps": true,
+        "scripts_stamps_core": true,
+        "toolsets": true,
+        "plugins": true,
+        "cattery_depthanything": true,
+        "cattery_vitmatte": true
+    },
+    "menu": {
+        "defaults_nodes": true,
+        "shortcuts": true,
+        "callbacks": true,
+        "pimba_tools": true,
+        "nuke_grab": true,
+        "cattery_menu": true
+    },
+    "extra_plugin_paths": []
+}

@@ -1,0 +1,440 @@
+Gizmo {
+ name apHeatDistortion
+ inputs 2
+ help "apHeatDistortion v1.3 by Adrian Pueyo\nadrianpueyo.com, 2016"
+ addUserKnob {20 apHeatDistortion t "Create awesome heat distortion."}
+ addUserKnob {41 channels T Remove1.channels}
+ addUserKnob {41 size T HDistController.size}
+ addUserKnob {41 strength T HDistController.strength}
+ addUserKnob {41 speed T HDistController.speed}
+ addUserKnob {41 wind T HDistController.wind}
+ addUserKnob {41 complexity T HDistController.complexity}
+ addUserKnob {4 alphaOutput l "alpha output" M {original "alpha input" "dispersion mask"}}
+ addUserKnob {26 copyright l "" +STARTLINE T "\napHeatDistortion v1.3 - adrianpueyo.com, 2016"}
+ addUserKnob {20 Dispersion}
+ addUserKnob {41 activateDispersion l "activate dispersion" T HDistController.activateDispersion}
+ addUserKnob {41 falloff T HDistController.falloff}
+ addUserKnob {41 min T HDistController.min}
+ addUserKnob {41 max T HDistController.max}
+ addUserKnob {41 softness l soft T HDistController.softness}
+}
+ NoOp {
+  inputs 0
+  name HDistController
+  xpos 230
+  ypos 119
+  addUserKnob {20 HDistController}
+  addUserKnob {14 size t "Noise size." R 0 200}
+  size 50
+  addUserKnob {7 strength t "Amount of distortion to produce." R 0 100}
+  strength 10
+  addUserKnob {7 speed t "Speed of the noise vibration/evolution." R -50 50}
+  speed 5
+  addUserKnob {12 wind t "Moving speed of the heat distortion."}
+  wind {0 0.5}
+  addUserKnob {7 complexity t "0 means simple, 1 means complex."}
+  complexity 0.5
+  addUserKnob {20 Dispersion}
+  addUserKnob {6 activateDispersion l "activate dispersion" t "Activate a dispersion effect through the Heat Distortion mask." +STARTLINE}
+  addUserKnob {7 falloff R 0 4}
+  falloff 1.5
+  addUserKnob {7 min t "Minimum level of haze through the mask input."}
+  addUserKnob {7 max t "Minimum level of haze through the mask input."}
+  max 1
+  addUserKnob {14 softness l soft t "Preblur of the noise mask before applying the dispersion." R 0 100}
+  softness 15
+ }
+ Input {
+  inputs 0
+  name Inputmask
+  xpos -420
+  ypos -211
+  number 1
+ }
+set N32564300 [stack 0]
+ Dot {
+  name Dot12
+  xpos -386
+  ypos 825
+ }
+ Input {
+  inputs 0
+  name Inputimg
+  xpos 122
+  ypos -398
+ }
+ Dot {
+  name Dot10
+  xpos 156
+  ypos -359
+ }
+set N31a761b0 [stack 0]
+ Dot {
+  name Dot15
+  xpos -276
+  ypos -359
+ }
+ Remove {
+  name Remove1
+  xpos -310
+  ypos -326
+ }
+set N31a6bc80 [stack 0]
+ Expression {
+  channel0 rgba
+  expr0 1
+  name Expression5
+  label White
+  xpos -310
+  ypos -257
+ }
+push $N32564300
+ Switch {
+  inputs 2
+  which {{"!\[exists parent.input1]"}}
+  name Switch1
+  xpos -310
+  ypos -211
+ }
+ Dot {
+  name Dot6
+  xpos -276
+  ypos -19
+ }
+set N31a62950 [stack 0]
+ Dot {
+  name Dot5
+  xpos -276
+  ypos 324
+ }
+push $N31a62950
+push $N31a6bc80
+ Dot {
+  name Dot13
+  xpos -503
+  ypos -319
+ }
+ Noise {
+  output alpha
+  size {{HDistController.size} {HDistController.size}}
+  zoffset {{frame*HDistController.speed/100}}
+  lacunarity 3
+  translate {{frame*HDistController.wind.x} {frame*HDistController.wind.y}}
+  center {960 540}
+  name NoiseX
+  xpos -537
+  ypos -164
+  addUserKnob {20 User}
+  addUserKnob {7 windY l "wind y" R -10 10}
+  windY 1
+  addUserKnob {7 windX l "wind x" R -10 10}
+  windX 8
+ }
+ Expression {
+  expr3 2*a-.28
+  name Expression3
+  label BothWays
+  xpos -537
+  ypos -132
+ }
+ ChannelMerge {
+  inputs 2
+  operation multiply
+  name ChannelMerge1
+  xpos -537
+  ypos -31
+ }
+ Dot {
+  name Dot4
+  xpos -503
+  ypos 65
+ }
+push $N31a62950
+push $N31a6bc80
+ Dot {
+  name Dot14
+  xpos -166
+  ypos -319
+ }
+ Noise {
+  output alpha
+  size {{HDistController.size} {HDistController.size}}
+  zoffset {{-frame*HDistController.speed/100-10}}
+  lacunarity 3
+  translate {{frame*HDistController.wind.x} {frame*HDistController.wind.y}}
+  center {960 540}
+  name NoiseY
+  xpos -200
+  ypos -166
+  addUserKnob {20 User}
+  addUserKnob {7 windY l "wind y" R -10 10}
+  windY 1
+  addUserKnob {7 windX l "wind x" R -10 10}
+  windX 8
+ }
+ Expression {
+  expr3 2*a-.28
+  name Expression4
+  label BothWays
+  xpos -200
+  ypos -134
+ }
+ ChannelMerge {
+  inputs 2
+  operation multiply
+  name ChannelMerge2
+  xpos -200
+  ypos -31
+ }
+ MergeExpression {
+  inputs 2
+  expr0 Aa
+  expr1 Ba
+  expr2 0
+  expr3 0
+  name MergeExpression1
+  label "UV Channels"
+  xpos -200
+  ypos 58
+ }
+ Multiply {
+  channels {rgba.red rgba.green -rgba.blue none}
+  value {{HDistController.strength}}
+  name Multiply1
+  label Strength
+  xpos -200
+  ypos 90
+ }
+ Blur {
+  channels rgba
+  size {{width/(pow(HDistController.complexity,2.5)*2048+10)}}
+  name Blur5
+  label Complexity
+  xpos -200
+  ypos 132
+ }
+ Dot {
+  name Dot1
+  xpos -166
+  ypos 196
+ }
+set N325e6c00 [stack 0]
+ Expression {
+  expr0 abs(r)/HDistController.strength
+  expr1 abs(g)/HDistController.strength
+  name Expression1
+  xpos -200
+  ypos 243
+ }
+ Expression {
+  expr0 hypot(r,g)
+  expr1 hypot(r,g)
+  expr2 hypot(r,g)
+  name Expression2
+  xpos -200
+  ypos 267
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos -200
+  ypos 317
+ }
+ Grade {
+  channels rgba
+  black {{HDistController.min}}
+  white {{HDistController.max}}
+  unpremult rgba.alpha
+  name Grade1
+  xpos -200
+  ypos 349
+ }
+ Blur {
+  channels rgba
+  size {{HDistController.softness}}
+  name Blur13
+  label "Size: \[value size]"
+  xpos -200
+  ypos 381
+ }
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Shuffle2
+  xpos -200
+  ypos 413
+ }
+ Dot {
+  name Dot3
+  xpos -166
+  ypos 466
+ }
+ Dot {
+  name Dot2
+  xpos 12
+  ypos 466
+ }
+set N24ae5ff0 [stack 0]
+ Dot {
+  name Dot11
+  xpos 12
+  ypos 793
+ }
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N24ae5ff0
+push $N325e6c00
+push $N31a761b0
+ ShuffleCopy {
+  inputs 2
+  red red
+  green green
+  out forward
+  name ShuffleCopy1
+  xpos 122
+  ypos 193
+ }
+ IDistort {
+  channels {{{parent.Remove1.channels}}}
+  uv forward
+  name IDistort1
+  xpos 122
+  ypos 227
+ }
+ Dot {
+  name Dot8
+  xpos 156
+  ypos 401
+ }
+set N24a9af80 [stack 0]
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 1
+  name Blur4
+  xpos 122
+  ypos 459
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 2
+  mix {{Blur4.mix/HDistController.falloff}}
+  name Blur7
+  xpos 122
+  ypos 491
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 4
+  mix {{Blur7.mix/HDistController.falloff}}
+  name Blur8
+  xpos 122
+  ypos 523
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 8
+  mix {{Blur8.mix/HDistController.falloff}}
+  name Blur9
+  xpos 122
+  ypos 555
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 16
+  mix {{Blur9.mix/HDistController.falloff}}
+  name Blur10
+  xpos 122
+  ypos 587
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 32
+  mix {{Blur10.mix/HDistController.falloff}}
+  name Blur11
+  xpos 122
+  ypos 619
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 64
+  mix {{Blur11.mix/HDistController.falloff}}
+  name Blur12
+  xpos 122
+  ypos 651
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 128
+  mix {{Blur12.mix/HDistController.falloff}}
+  name Blur1
+  xpos 122
+  ypos 683
+ }
+ Blur {
+  inputs 1+1
+  channels {{{parent.IDistort1.channels}}}
+  size 256
+  mix {{Blur1.mix/HDistController.falloff}}
+  name Blur2
+  xpos 122
+  ypos 715
+ }
+push $N24a9af80
+ Dot {
+  name Dot9
+  xpos 266
+  ypos 401
+ }
+ Dot {
+  name Dot7
+  xpos 266
+  ypos 765
+ }
+ Switch {
+  inputs 2
+  which {{HDistController.activateDispersion}}
+  name SwitchDispersion
+  xpos 122
+  ypos 762
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy2
+  xpos 122
+  ypos 786
+  disable {{"! (parent.alphaOutput==2)"}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy3
+  xpos 122
+  ypos 818
+  disable {{"! (parent.alphaOutput==1)"}}
+ }
+ Output {
+  name Output1
+  xpos 122
+  ypos 850
+ }
+end_group

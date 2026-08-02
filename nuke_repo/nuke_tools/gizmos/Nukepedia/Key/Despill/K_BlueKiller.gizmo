@@ -1,0 +1,249 @@
+#! /Applications/Nuke6.0v3/NukeX6.0v3.app/../Nuke6.0v3.app/Contents/MacOS/Nuke6.0v3 -nx
+version 6.0 v3
+Gizmo {
+ help "==========================================\nBlueKiller  v1.0       11_08_11\n==========================================\n\nIt provides an advance spill suppres and a rough alpha channel\n\n==========================================\n feel free to contact me at niccolo.barbero@gmail.com\n=========================================="
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 User}
+ addUserKnob {26 BlueKiller l "" +STARTLINE T "BlueKiller_v01\n"}
+ addUserKnob {26 spill l "" +STARTLINE T "mix between channel based spill and expression based spill"}
+ addUserKnob {41 which T Dissolve1.which}
+ addUserKnob {26 info l "" +STARTLINE T "<<--channel (less croma abberation)\n-->>expression (more spill and more abberation)"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -36
+  ypos -292
+ }
+set N2f754350 [stack 0]
+ Dot {
+  name Dot1
+  xpos -2
+  ypos 483
+ }
+ Expression {
+  expr2 "b > (r+g)/2 ? (r+g)/2 : b"
+  name Expression1
+  xpos -36
+  ypos 804
+ }
+set N2f7d8720 [stack 0]
+push $N2f754350
+ Dot {
+  name Dot4
+  xpos -728
+  ypos -117
+ }
+set N2f737bf0 [stack 0]
+ Shuffle {
+  red black
+  green black
+  blue red
+  alpha black
+  name r_to_b
+  xpos -481
+  ypos -15
+ }
+push $N2f737bf0
+ Shuffle {
+  red black
+  green black
+  alpha black
+  name B1
+  xpos -327
+  ypos -21
+ }
+set N2f741710 [stack 0]
+ Merge2 {
+  inputs 2
+  operation min
+  name Min2
+  xpos -471
+  ypos 82
+ }
+push $N2f741710
+push $N2f737bf0
+ Shuffle {
+  red black
+  green black
+  blue green
+  alpha black
+  name g_to_b
+  xpos -170
+  ypos -20
+ }
+ Merge2 {
+  inputs 2
+  operation min
+  name Max3
+  xpos -209
+  ypos 69
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  name Max4
+  xpos -324
+  ypos 176
+ }
+set N2f764d30 [stack 0]
+push $N2f737bf0
+ Shuffle {
+  red blue
+  green black
+  blue black
+  alpha black
+  name Shuffle8
+  xpos -1048
+  ypos -10
+ }
+push $N2f737bf0
+ Shuffle {
+  green black
+  blue black
+  alpha black
+  name R1
+  xpos -1254
+  ypos -4
+ }
+set N2f775e20 [stack 0]
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge3
+  xpos -1058
+  ypos 92
+ }
+ Shuffle {
+  red black
+  green black
+  blue red
+  alpha black
+  name Shuffle9
+  xpos -1058
+  ypos 162
+ }
+push $N2f737bf0
+ Shuffle {
+  red black
+  green blue
+  blue black
+  alpha black
+  name Shuffle10
+  xpos -884
+  ypos -20
+ }
+push $N2f737bf0
+ Shuffle {
+  red black
+  blue black
+  alpha black
+  name G1
+  xpos -762
+  ypos -15
+ }
+set N2f798fe0 [stack 0]
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge4
+  xpos -825
+  ypos 89
+ }
+ Shuffle {
+  red black
+  green black
+  blue green
+  alpha black
+  name Shuffle11
+  xpos -825
+  ypos 160
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  name Max5
+  xpos -902
+  ypos 213
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Min3
+  xpos -902
+  ypos 276
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha blue
+  name Shuffle12
+  xpos -902
+  ypos 857
+ }
+ Matrix {
+  channels alpha
+  matrix {
+      {1 2 1}
+      {2 3 2}
+      {1 2 1}
+    }
+  normalize true
+  name Matrix2
+  xpos -903
+  ypos 939
+ }
+ Dot {
+  name Dot3
+  xpos -869
+  ypos 1086
+ }
+push $N2f7d8720
+push $N2f775e20
+push $N2f798fe0
+ Merge2 {
+  inputs 2
+  operation plus
+  name Plus2
+  xpos -779
+  ypos 567
+ }
+push $N2f764d30
+ Merge2 {
+  inputs 2
+  operation plus
+  name Plus3
+  tile_color 0x74b6ffff
+  xpos -292
+  ypos 567
+ }
+ Dissolve {
+  inputs 2
+  which 0.5
+  name Dissolve1
+  xpos -292
+  ypos 965
+ }
+ ShuffleCopy {
+  inputs 2
+  in2 rgb
+  name ShuffleCopy1
+  xpos -292
+  ypos 1075
+ }
+ Output {
+  name Output1
+  xpos -292
+  ypos 1221
+ }
+ Viewer {
+  inputs 2
+  input_process false
+  name Viewer1
+  selected true
+  xpos -292
+  ypos 591
+ }
+end_group

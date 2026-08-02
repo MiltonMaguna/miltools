@@ -1,0 +1,69 @@
+#! C:/Program Files/Nuke6.3v1/Nuke6.3.exe -nx
+version 6.3 v1
+Gizmo {
+ tile_color 0xff0000ff
+ label "(frame \[value holdFrame])"
+ help "dg_CameraHold\nNode holds animation for input Camera.\n'Current' sets holdFrame knob to current frame value.\n'Create Dependent Frame Hold' knob creates FrameHold node connected to this CameraHold node."
+ note_font Verdana
+ lock_connections true
+ mapsize {0.15 0.15}
+ addUserKnob {20 User l "Hold Frame"}
+ addUserKnob {41 holdFrame T Camera2.holdFrame}
+ addUserKnob {41 current -STARTLINE T Camera2.current}
+ addUserKnob {26 ""}
+ addUserKnob {22 createFrameHold l "Create Dependent Frame Hold" T "tn=nuke.thisNode()\nparentStr = 'root'\nif nuke.thisParent().Class()!='Root':\n\tparentStr = nuke.thisParent().name()\nfh = nuke.runIn(parentStr, 'nuke.Node(\"FrameHold\")')\nfh.setName(nuke.thisNode().name()+\"_FrameHold1\")\nfh.setXYpos(tn.xpos()+120,tn.ypos())\nfh.knob('first_frame').setExpression(tn.name()+'.holdFrame')\n\n" +STARTLINE}
+}
+ Camera2 {
+  inputs 0
+  useMatrix true
+  matrix {
+      {{parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)}}
+      {{parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)}}
+      {{parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)}}
+      {{parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)} {parent.Camera2.world_matrix(Camera2.holdFrame)}}
+    }
+  focal {{parent.Camera2.focal(Camera2.holdFrame) i}}
+  haperture {{parent.Camera2.haperture(Camera2.holdFrame) i}}
+  vaperture {{parent.Camera2.vaperture(Camera2.holdFrame) i}}
+  near {{parent.Camera2.near(Camera2.holdFrame) i}}
+  far {{parent.Camera2.far(Camera2.holdFrame) i}}
+  win_translate {{parent.Camera2.win_translate(Camera2.holdFrame) i} {parent.Camera2.win_translate(Camera2.holdFrame) i}}
+  win_scale {{parent.Camera2.win_scale(Camera2.holdFrame) i} {parent.Camera2.win_scale(Camera2.holdFrame) i}}
+  winroll {{parent.Camera2.winroll(Camera2.holdFrame) i}}
+  focal_point {{parent.Camera2.focal_point(Camera2.holdFrame) i}}
+  fstop {{parent.Camera2.fstop(Camera2.holdFrame) i}}
+  name holdCam
+  xpos 416
+  ypos -22
+ }
+ Output {
+  name Output1
+  xpos 406
+  ypos 206
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos 271
+  ypos -174
+ }
+ Camera2 {
+  focal {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  haperture {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  vaperture {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  near {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  far {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  win_translate {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\\[0\\]\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i} {"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\\[1\\]\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  win_scale {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\\[0\\]\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i} {"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\\[1\\]\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  winroll {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  focal_point {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  fstop {{"\[python -execlocal n=nuke.thisGroup().input(0)\\nif\\ n:\\n\\ \\ \\ while\\ n.Class()==\\\"Dot\\\":\\n\\ \\ \\ \\ \\ \\ n=n.input(0)\\n\\ \\ \\ \\ \\ \\ if\\ not\\ n:\\n\\ \\ \\ \\ \\ \\ \\ \\ \\ break\\n\\ \\ \\ if\\ n:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ n.knob(nuke.thisKnob().name()).value()\\n\\ \\ \\ else:\\n\\ \\ \\ \\ \\ \\ ret\\ =\\ 0\\nelse:\\n\\ \\ \\ ret\\ =\\ 0]" i}}
+  name Camera2
+  xpos 281
+  ypos -22
+  addUserKnob {20 User}
+  addUserKnob {3 holdFrame}
+  holdFrame 1
+  addUserKnob {22 current -STARTLINE T "nuke.thisNode().knob(\"holdFrame\").setValue(nuke.frame())"}
+ }
+end_group

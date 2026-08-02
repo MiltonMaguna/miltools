@@ -1,0 +1,894 @@
+#! C:/Program Files/Nuke6.3v4/Nuke6.3.exe -nx
+version 6.3 v4
+Gizmo {
+ inputs 3
+ help "in_3DMirror\nProduce reflections generating a specular copy of the main Nuke Camera respect to one plane(Mirror surface).\nAlso have fresnel control of the reflections.\n\nv1.0\nby Luca Mignardi\n(For any questions, comments or suggestions please email info@lookinvfx.com)"
+ tile_color 0x7f46ff
+ addUserKnob {20 in_3dMirror l in-3dMirror}
+ addUserKnob {41 format T ConstantFormat.format}
+ addUserKnob {41 samples T ScanlineReflection.samples}
+ addUserKnob {26 Fresnel_1 l "Fresnel Reflection"}
+ addUserKnob {6 Fresnel_sw l "Fresnel ON/OFF" -STARTLINE}
+ Fresnel_sw true
+ addUserKnob {6 view_fr_map l "View Fresnel map" -STARTLINE}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {19 Fresnel_Falloff l "Falloff effect"}
+ Fresnel_Falloff 1
+ addUserKnob {7 blur l Blur R 0 100}
+ addUserKnob {20 CCGroup l INVISIBLE +INVISIBLE n 1}
+ addUserKnob {20 CC_fr_map l "CC Fresnel map" n 1}
+ addUserKnob {41 blackpoint T CC_Fresnel_Map.blackpoint}
+ addUserKnob {41 whitepoint T CC_Fresnel_Map.whitepoint}
+ addUserKnob {41 black l lift T CC_Fresnel_Map.black}
+ addUserKnob {41 white l gain T CC_Fresnel_Map.white}
+ addUserKnob {41 multiply T CC_Fresnel_Map.multiply}
+ addUserKnob {41 add l offset T CC_Fresnel_Map.add}
+ addUserKnob {41 gamma T CC_Fresnel_Map.gamma}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {26 divider1 l "" -STARTLINE}
+ addUserKnob {26 text l "" +STARTLINE T "in_3dMirror v1.0 | Luca Mignardi | 2012"}
+ addUserKnob {22 Button l Lookin t "Visit lookinvfx.com for other Nuke Tools" T "import os\nimport sys\n\ntry:\n    import subprocess\n    def _run(cmd, shell, wait):\n        opener = subprocess.Popen(cmd, shell=shell)\n        if wait:\n            opener.wait()\n        return opener.pid\nexcept ImportError:\n    import popen2\n    def _run(cmd, shell, wait):\n        opener = popen2.Popen3(cmd)\n        if wait:\n            opener.wait()\n        return opener.pid\n\ndef _open(url, wait=0):\n    if sys.platform == \"darwin\":\n        cmd = \[\"open\", url]\n    elif hasattr(os, \"startfile\"):\n        return os.startfile(url)\n    elif os.environ.has_key(\"KDE_FULL_SESSION\") or os.environ.has_key(\"KDE_MULTIHEAD\") or \\\n        os.environ.has_key(\"GNOME_DESKTOP_SESSION_ID\") or os.environ.has_key(\"GNOME_KEYRING_SOCKET\"):\n        cmd = \[\"xdg-open\", url]\n    else:\n        raise OSError, \"Desktop not supported.\"\n\n    return _run(cmd, 0, wait)\n\n_open('http://www.lookinvfx.com/tools/')" +STARTLINE}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0x69634aff
+  label Fresnel
+  note_font_size 42
+  xpos 816
+  ypos 923
+  bdwidth 3220
+  bdheight 402
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x885c5cff
+  label "Relative Normals"
+  note_font_size 30
+  xpos 33
+  ypos 739
+  bdwidth 540
+  bdheight 508
+ }
+ NoOp {
+  inputs 0
+  name RotData
+  xpos 73
+  ypos 871
+  addUserKnob {20 "" l User}
+  addUserKnob {6 invertxmatrix -STARTLINE}
+  addUserKnob {6 invertymatrix -STARTLINE}
+  addUserKnob {6 invertzmatrix -STARTLINE}
+  addUserKnob {26 ""}
+  addUserKnob {6 negx -STARTLINE}
+  negx true
+  addUserKnob {6 negy -STARTLINE}
+  negy true
+  addUserKnob {6 negz -STARTLINE}
+  addUserKnob {13 rotate}
+  rotate {{CameraMaster.rotate.x i} {CameraMaster.rotate.y i} {CameraMaster.rotate.z i}}
+  addUserKnob {26 ""}
+  addUserKnob {1 alphaexpr}
+  alphaexpr (negy?-1:1)*rotate.y/360.0*(2*PI)
+  addUserKnob {1 betaexpr}
+  betaexpr (negz?-1:1)*rotate.z/360.0*(2*PI)
+  addUserKnob {1 gammaexpr}
+  gammaexpr (negx?-1:1)*rotate.x/360.0*(2*PI)
+  addUserKnob {26 ""}
+  addUserKnob {7 alpha}
+  alpha {{"\[knob alphaexpr]" i}}
+  addUserKnob {7 beta}
+  beta {{"\[knob betaexpr]" i}}
+  addUserKnob {7 gamma}
+  gamma {{"\[knob gammaexpr]" i}}
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos 290
+  ypos -126
+ }
+ Dot {
+  name Dot7
+  xpos 324
+  ypos -42
+ }
+ NoOp {
+  name NoOp1
+  label CameraMain
+  xpos 290
+  ypos 69
+  addUserKnob {20 User}
+  addUserKnob {52 tests T "read = nuke.selectedNode()\n\nprint read" +STARTLINE}
+ }
+ Dot {
+  name Dot6
+  xpos 324
+  ypos 498
+ }
+ Input {
+  inputs 0
+  name obj_scn
+  xpos 840
+  ypos -128
+  number 1
+ }
+ Dot {
+  name Dot5
+  xpos 874
+  ypos -42
+ }
+ NoOp {
+  name NoOp3
+  label Scene
+  xpos 840
+  ypos 67
+ }
+ Dot {
+  name Dot4
+  xpos 874
+  ypos 330
+ }
+set N2ac83610 [stack 0]
+ Shuffle {
+  inputs 0
+  in2 rgba
+  red white
+  alpha white
+  black red
+  white green
+  red2 blue
+  green2 alpha
+  out mask
+  out2 rgba
+  name Shuffle3
+  xpos 620
+  ypos 183
+ }
+ Input {
+  inputs 0
+  name mirror
+  xpos 400
+  ypos -128
+  number 2
+ }
+ Dot {
+  name Dot2
+  xpos 434
+  ypos -42
+ }
+ NoOp {
+  name NoOp2
+  label CardMirror
+  xpos 400
+  ypos 65
+ }
+ ApplyMaterial {
+  inputs 2
+  name ApplyMaterial1
+  xpos 400
+  ypos 183
+ }
+ Scene {
+  inputs 2
+  name Scene1
+  xpos 410
+  ypos 306
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  name ConstantFormat
+  xpos 622
+  ypos 497
+ }
+set N2ac84c60 [stack 0]
+add_layer {incidences incidences.red incidences.green incidences.blue incidences.alpha}
+ ScanlineRender {
+  inputs 3
+  samples {{parent.ScanlineReflection.samples i}}
+  output_motion_vectors_type accurate
+  output_shader_vectors true
+  N_channel incidences
+  name ScanlineMatte
+  xpos 400
+  ypos 591
+ }
+set N2ac84f90 [stack 0]
+ Dot {
+  name Dot8
+  xpos 434
+  ypos 842
+ }
+set N2ac852c0 [stack 0]
+ Shuffle {
+  in incidences
+  name Shuffle4
+  xpos 219
+  ypos 839
+ }
+ ColorMatrix {
+  matrix {
+      {1 0 0}
+      {0 {"cos( \[value RotData.gamma] )" i} {"-1 * sin( \[value RotData.gamma] )" i}}
+      {0 {"sin( \[value RotData.gamma] )" i} {"cos( \[value RotData.gamma] )" i}}
+    }
+  invert {{"\[value RotData.invertxmatrix]" i}}
+  name ColorMatrix10
+  label "ROLL  X\ngamma"
+  xpos 219
+  ypos 863
+ }
+ ColorMatrix {
+  matrix {
+      {{"cos( \[value RotData.alpha] )" i} 0 {"sin( \[value RotData.alpha] )" i}}
+      {0 1 0}
+      {{"-1 * sin( \[value RotData.alpha] )" i} 0 {"cos( \[value RotData.alpha] )" i}}
+    }
+  invert {{"\[value RotData.invertymatrix]" i}}
+  name ColorMatrix11
+  label "Pitch  Y\nalpha"
+  xpos 219
+  ypos 911
+ }
+ ColorMatrix {
+  matrix {
+      {{"cos( \[value RotData.beta] )" i} {"-1 * sin( \[value RotData.beta] )" i} 0}
+      {{"sin( \[value RotData.beta] )" i} {"cos( \[value RotData.beta] )" i} 0}
+      {0 0 1}
+    }
+  invert {{"\[value RotData.invertzmatrix]"}}
+  name ColorMatrix12
+  label "Yaw  Z\nbeta"
+  xpos 219
+  ypos 959
+ }
+set N2ac85f80 [stack 0]
+ Shuffle {
+  red blue
+  green blue
+  alpha blue
+  name Shuffle1
+  xpos 219
+  ypos 1049
+ }
+ Dot {
+  name Dot3
+  label Link
+  note_font_size 30
+  xpos 253
+  ypos 1176
+ }
+set N2b056e10 [stack 0]
+ PostageStamp {
+  name fresnel1
+  xpos 1009
+  ypos 1701
+  hide_input true
+  postage_stamp true
+ }
+push $N2ac85f80
+push $N2ac852c0
+ ShuffleCopy {
+  inputs 2
+  in rgb
+  alpha alpha2
+  black red
+  white green
+  red2 blue
+  green2 black
+  out2 incidences
+  name ShuffleCopy1
+  xpos 400
+  ypos 971
+ }
+ Dot {
+  name Dot1
+  xpos 434
+  ypos 1613
+ }
+ Shuffle {
+  in mask
+  name Shuffle2
+  xpos 606
+  ypos 1610
+ }
+push $N2b056e10
+ PostageStamp {
+  name fresnel
+  xpos 1034
+  ypos 957
+  hide_input true
+  postage_stamp true
+ }
+set N2b057e00 [stack 0]
+ Invert {
+  name Invert1
+  xpos 1034
+  ypos 1081
+ }
+ Grade {
+  channels rgba
+  gamma 0.25
+  name CC_Fresnel_Map
+  xpos 1034
+  ypos 1135
+ }
+ Clamp {
+  name Clamp1
+  xpos 1034
+  ypos 1193
+ }
+push $N2b057e00
+ Dot {
+  name Dot23
+  xpos 1537
+  ypos 984
+ }
+set N2b058ac0 [stack 0]
+ Dot {
+  name Dot26
+  xpos 1736
+  ypos 984
+ }
+set N2b058df0 [stack 0]
+ Dot {
+  name Dot28
+  xpos 1942
+  ypos 984
+ }
+set N2b059120 [stack 0]
+ Dot {
+  name Dot30
+  xpos 2141
+  ypos 984
+ }
+set N2b059450 [stack 0]
+ Dot {
+  name Dot12
+  xpos 2336
+  ypos 984
+ }
+set N2b059780 [stack 0]
+ Dot {
+  name Dot13
+  xpos 2524
+  ypos 983
+ }
+set N2b059ab0 [stack 0]
+ Dot {
+  name Dot14
+  xpos 2729
+  ypos 983
+ }
+set N2b059de0 [stack 0]
+ Dot {
+  name Dot15
+  xpos 2925
+  ypos 983
+ }
+set N2b05a110 [stack 0]
+ Dot {
+  name Dot16
+  xpos 3125
+  ypos 983
+ }
+set N2b05a440 [stack 0]
+ Dot {
+  name Dot17
+  xpos 3327
+  ypos 983
+ }
+set N2b05a770 [stack 0]
+ Dot {
+  name Dot18
+  xpos 3525
+  ypos 983
+ }
+set N2b05aaa0 [stack 0]
+ Dot {
+  name Dot19
+  xpos 3723
+  ypos 982
+ }
+set N317abe60 [stack 0]
+ Dot {
+  name Dot21
+  xpos 3915
+  ypos 982
+ }
+ Grade {
+  channels rgba
+  blackpoint 0.9
+  white_clamp true
+  name Grade8
+  xpos 3881
+  ypos 1109
+ }
+ Axis2 {
+  inputs 0
+  rotate {{root.CardMirror.rotate.x*2*cos(root.CardMirror.rotate.y/(180/pi)) i} {root.CardMirror.rotate.y*2 i} {curve i}}
+  scaling {1 1 -1}
+  pivot {{root.CardMirror.translate.x i} {root.CardMirror.translate.y i} {root.CardMirror.translate.z i}}
+  name Axis1
+  xpos 960
+  ypos 354
+ }
+ Camera2 {
+  translate {{root.CameraMaster.translate.x i} {root.CameraMaster.translate.y i} {root.CameraMaster.translate.z i}}
+  rotate {{root.CameraMaster.rotate.x i} {root.CameraMaster.rotate.y i} {root.CameraMaster.rotate.z i}}
+  focal {{CameraMaster.focal i}}
+  name CameraMirror
+  xpos 960
+  ypos 474
+ }
+push $N2ac83610
+push $N2ac84c60
+ ScanlineRender {
+  inputs 3
+  antialiasing medium
+  output_motion_vectors_type accurate
+  name ScanlineReflection
+  xpos 840
+  ypos 591
+ }
+ Dot {
+  name Dot10
+  xpos 874
+  ypos 1051
+ }
+set N317ace50 [stack 0]
+ Dot {
+  name Dot11
+  xpos 1333
+  ypos 1051
+ }
+set N317ad4b0 [stack 0]
+ Dot {
+  name Dot24
+  xpos 1443
+  ypos 1051
+ }
+set N317ad7e0 [stack 0]
+ Dot {
+  name Dot27
+  xpos 1645
+  ypos 1051
+ }
+set N317adb10 [stack 0]
+ Dot {
+  name Dot29
+  xpos 1848
+  ypos 1051
+ }
+set N317ade40 [stack 0]
+ Dot {
+  name Dot31
+  xpos 2047
+  ypos 1051
+ }
+set N317ae170 [stack 0]
+ Dot {
+  name Dot20
+  xpos 2245
+  ypos 1051
+ }
+set N317ae4a0 [stack 0]
+ Dot {
+  name Dot22
+  xpos 2433
+  ypos 1050
+ }
+set N317ae7d0 [stack 0]
+ Dot {
+  name Dot59
+  xpos 2638
+  ypos 1050
+ }
+set N317aeb00 [stack 0]
+ Dot {
+  name Dot60
+  xpos 2834
+  ypos 1050
+ }
+set N317aee30 [stack 0]
+ Dot {
+  name Dot61
+  xpos 3034
+  ypos 1050
+ }
+set N317af160 [stack 0]
+ Dot {
+  name Dot63
+  xpos 3236
+  ypos 1050
+ }
+set N317af490 [stack 0]
+ Dot {
+  name Dot64
+  xpos 3434
+  ypos 1050
+ }
+set N317af7c0 [stack 0]
+ Dot {
+  name Dot66
+  xpos 3632
+  ypos 1049
+ }
+set N317afaf0 [stack 0]
+ Dot {
+  name Dot68
+  xpos 3824
+  ypos 1049
+ }
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*10 i}}
+  name Blur10
+  xpos 3790
+  ypos 1109
+ }
+push $N317abe60
+ Grade {
+  channels rgba
+  blackpoint 0.8
+  whitepoint 0.9
+  white_clamp true
+  name Grade7
+  xpos 3689
+  ypos 1109
+ }
+push $N317afaf0
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*9 i}}
+  name Blur9
+  xpos 3598
+  ypos 1109
+ }
+push $N2b05aaa0
+ Grade {
+  channels rgba
+  blackpoint 0.7
+  whitepoint 0.8
+  white_clamp true
+  name Grade6
+  xpos 3491
+  ypos 1109
+ }
+push $N317af7c0
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*8 i}}
+  name Blur8
+  xpos 3400
+  ypos 1109
+ }
+push $N2b05a770
+ Grade {
+  channels rgba
+  blackpoint 0.6
+  whitepoint 0.7
+  white_clamp true
+  name Grade5
+  xpos 3293
+  ypos 1109
+ }
+push $N317af490
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*7 i}}
+  name Blur7
+  xpos 3202
+  ypos 1108
+ }
+push $N2b05a440
+ Grade {
+  channels rgba
+  blackpoint 0.5
+  whitepoint 0.6
+  white_clamp true
+  name Grade4
+  xpos 3091
+  ypos 1109
+ }
+push $N317af160
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*6 i}}
+  name Blur6
+  xpos 3000
+  ypos 1109
+ }
+push $N2b05a110
+ Grade {
+  channels rgba
+  blackpoint 0.4
+  whitepoint 0.5
+  white_clamp true
+  name Grade3
+  xpos 2891
+  ypos 1109
+ }
+push $N317aee30
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*5 i}}
+  name Blur5
+  xpos 2800
+  ypos 1109
+ }
+push $N2b059de0
+ Grade {
+  channels rgba
+  blackpoint 0.3
+  whitepoint 0.4
+  white_clamp true
+  name Grade2
+  xpos 2695
+  ypos 1109
+ }
+push $N317aeb00
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*4 i}}
+  name Blur4
+  xpos 2604
+  ypos 1109
+ }
+push $N2b059ab0
+ Grade {
+  channels rgba
+  blackpoint 0.2
+  whitepoint 0.3
+  white_clamp true
+  name Grade1
+  xpos 2490
+  ypos 1109
+ }
+push $N317ae7d0
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*3 i}}
+  name Blur3
+  xpos 2399
+  ypos 1109
+ }
+push $N2b059780
+ Grade {
+  channels rgba
+  blackpoint 0.1
+  whitepoint 0.2
+  white_clamp true
+  name Grade13
+  xpos 2302
+  ypos 1109
+ }
+push $N317ae4a0
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10*2 i}}
+  name Blur2
+  xpos 2211
+  ypos 1109
+ }
+push $N2b059450
+ Grade {
+  channels rgba
+  blackpoint 0.075
+  whitepoint 0.1
+  white_clamp true
+  name Grade14
+  xpos 2107
+  ypos 1109
+ }
+push $N317ae170
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10 i}}
+  name Blur14
+  xpos 2013
+  ypos 1109
+ }
+push $N2b059120
+ Grade {
+  channels rgba
+  blackpoint 0.05
+  whitepoint 0.075
+  white_clamp true
+  name Grade11
+  xpos 1908
+  ypos 1109
+ }
+push $N317ade40
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10/4*3 i}}
+  name Blur13
+  xpos 1814
+  ypos 1109
+ }
+push $N2b058df0
+ Grade {
+  channels rgba
+  blackpoint 0.025
+  whitepoint 0.05
+  white_clamp true
+  name Grade10
+  xpos 1702
+  ypos 1109
+ }
+push $N317adb10
+ Blur {
+  channels {{{parent.Blur11.channels}}}
+  size {{blur/10/4*2 i}}
+  name Blur12
+  xpos 1611
+  ypos 1109
+ }
+push $N2b058ac0
+ Grade {
+  channels rgba
+  whitepoint 0.025
+  white_clamp true
+  name Grade9
+  xpos 1503
+  ypos 1109
+ }
+push $N317ad7e0
+ Blur {
+  channels rgba
+  size {{blur/10/4 i}}
+  name Blur11
+  xpos 1409
+  ypos 1107
+ }
+push $N317ad4b0
+ Dot {
+  name Dot25
+  xpos 1333
+  ypos 1179
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix11
+  xpos 1409
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix12
+  xpos 1611
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix13
+  xpos 1814
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix14
+  xpos 2013
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix2
+  xpos 2211
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix3
+  xpos 2399
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix4
+  xpos 2604
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix5
+  xpos 2800
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix6
+  xpos 3000
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix7
+  xpos 3202
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix8
+  xpos 3400
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix9
+  xpos 3598
+  ypos 1171
+ }
+ Keymix {
+  inputs 3
+  bbox B
+  name Keymix10
+  xpos 3790
+  ypos 1171
+ }
+ Dot {
+  name Dot32
+  xpos 3824
+  ypos 1272
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  mix {{Fresnel_Falloff i}}
+  name Merge1
+  xpos 1034
+  ypos 1269
+ }
+push $N317ace50
+ Switch {
+  inputs 2
+  which {{Fresnel_sw i}}
+  name Switch1
+  xpos 840
+  ypos 1269
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge2
+  xpos 840
+  ypos 1610
+ }
+ Switch {
+  inputs 2
+  which {{view_fr_map i}}
+  name Switch2
+  xpos 840
+  ypos 1725
+ }
+ Output {
+  name Output1
+  xpos 840
+  ypos 1802
+ }
+push $N2ac84f90
+ Viewer {
+  frame 10
+  input_process false
+  name Viewer1
+  selected true
+  xpos 620
+  ypos 1867
+ }
+end_group

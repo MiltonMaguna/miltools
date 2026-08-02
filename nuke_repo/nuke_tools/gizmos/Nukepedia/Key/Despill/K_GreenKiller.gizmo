@@ -1,0 +1,263 @@
+#! /Applications/Nuke6.0v3/NukeX6.0v3.app/../Nuke6.0v3.app/Contents/MacOS/Nuke6.0v3 -nx
+version 6.0 v3
+Gizmo {
+ help "==========================================\nGreenKiller  v1.0       11_08_11\n==========================================\n\nIt provides an advance spill suppres and a rough alpha channel\n\n==========================================\n feel free to contact me at niccolo.barbero@gmail.com\n=========================================="
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 User}
+ addUserKnob {26 GreenKiller l "" +STARTLINE T "GreenKiller_v01\n"}
+ addUserKnob {26 spill l "" +STARTLINE T "mix between channel based spill and expression based spill"}
+ addUserKnob {41 which T Dissolve1.which}
+ addUserKnob {26 info l "" +STARTLINE T "<<--channel (less croma abberation)\n-->>expression (more spill and more abberation)"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -36
+  ypos -110
+ }
+ Dot {
+  name Dot1
+  xpos -2
+  ypos -70
+ }
+set N2ea50e40 [stack 0]
+ Dot {
+  name Dot2
+  xpos -778
+  ypos -12
+ }
+set N2ea53740 [stack 0]
+ Shuffle {
+  red black
+  green red
+  blue black
+  alpha black
+  name Shuffle4
+  xpos -945
+  ypos 67
+ }
+push $N2ea53740
+ Shuffle {
+  red black
+  blue black
+  alpha black
+  name G
+  xpos -812
+  ypos 70
+ }
+set N2ea5ef00 [stack 0]
+ Merge2 {
+  inputs 2
+  operation min
+  name Min
+  xpos -873
+  ypos 146
+ }
+push $N2ea5ef00
+push $N2ea53740
+ Shuffle {
+  red black
+  green blue
+  blue black
+  alpha black
+  name Shuffle1
+  xpos -696
+  ypos 70
+ }
+ Merge2 {
+  inputs 2
+  operation min
+  name Max
+  xpos -766
+  ypos 147
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  name Max1
+  xpos -812
+  ypos 198
+ }
+set N2ea81bb0 [stack 0]
+push $N2ea53740
+ Shuffle {
+  red green
+  green black
+  blue black
+  alpha black
+  name Shuffle2
+  xpos -1051
+  ypos 79
+ }
+push $N2ea53740
+ Shuffle {
+  green black
+  blue black
+  alpha black
+  name R
+  xpos -1295
+  ypos 106
+ }
+set N2ea93270 [stack 0]
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge1
+  xpos -1051
+  ypos 133
+ }
+ Shuffle {
+  red black
+  green red
+  blue black
+  alpha black
+  name Shuffle5
+  xpos -1051
+  ypos 190
+ }
+push $N2ea53740
+ Shuffle {
+  red black
+  green black
+  blue green
+  alpha black
+  name Shuffle3
+  xpos -469
+  ypos 81
+ }
+push $N2ea53740
+ Shuffle {
+  red black
+  green black
+  alpha black
+  name B
+  xpos -271
+  ypos 66
+ }
+set N2eab6780 [stack 0]
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge2
+  xpos -462
+  ypos 130
+ }
+ Shuffle {
+  red black
+  green blue
+  blue black
+  alpha black
+  name Shuffle6
+  xpos -462
+  ypos 197
+ }
+ Merge2 {
+  inputs 2
+  operation max
+  name Max2
+  xpos -903
+  ypos 262
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Min1
+  xpos -903
+  ypos 415
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha green
+  name Shuffle7
+  xpos -894
+  ypos 700
+ }
+ Matrix {
+  channels alpha
+  matrix {
+      {1 2 1}
+      {2 3 2}
+      {1 2 1}
+    }
+  normalize true
+  name Matrix1
+  xpos -894
+  ypos 762
+ }
+set N2eaeab10 [stack 0]
+ Dot {
+  name Dot3
+  xpos -860
+  ypos 928
+ }
+push $N2ea50e40
+ Expression {
+  expr1 g>(r+b)/2?(r+b)/2:g
+  name Expression1
+  xpos -36
+  ypos 613
+ }
+push $N2eab6780
+push $N2ea81bb0
+push $N2ea93270
+ Merge2 {
+  inputs 2
+  operation plus
+  name Plus
+  xpos -812
+  ypos 623
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Plus1
+  xpos -271
+  ypos 694
+ }
+ HueCorrect {
+  hue {sat {curve 1 1 1 0.9233831167 1 1 1}
+    lum {curve 1 1 1 1.218905449 1 1 1}
+    red {}
+    green {curve 1 1 1 0.9343284369 1 1 1}
+    blue {}
+    r_sup {}
+    g_sup {curve 1 1 1 0.8139303923 1 1 1}
+    b_sup {}
+    sat_thrsh {}}
+  name HueCorrect1
+  xpos -271
+  ypos 754
+ }
+ Dissolve {
+  inputs 2
+  which 0.5
+  name Dissolve1
+  xpos -271
+  ypos 845
+ }
+ ShuffleCopy {
+  inputs 2
+  in2 rgb
+  name ShuffleCopy1
+  xpos -271
+  ypos 925
+ }
+set N3181b870 [stack 0]
+ Output {
+  name Output1
+  xpos -271
+  ypos 1064
+ }
+push $N2eaeab10
+push $N3181b870
+ Viewer {
+  inputs 2
+  input_process false
+  name Viewer1
+  xpos -271
+  ypos 718
+ }
+end_group

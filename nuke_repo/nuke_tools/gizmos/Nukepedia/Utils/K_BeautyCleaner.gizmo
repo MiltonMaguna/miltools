@@ -1,0 +1,208 @@
+#! /EDI/apps/64_bit/common/opt/Nuke6.1v1/Nuke6.1 -nx
+version 6.1 v1
+Gizmo {
+ help "==========================================\nBeautyCleaner  v1.0       10_09_10\n==========================================\n\nIt helps to have a classic beauty clean up\n Expecially designed to clean models or actors skin and face \n\n==========================================\nfeel free to contact me at niccolo.barbero@gmail.com\n=========================================="
+ addUserKnob {20 User}
+ addUserKnob {26 Beauty}
+ addUserKnob {26 ""}
+ addUserKnob {26 RED_channel_blur}
+ addUserKnob {41 size T R_Blur.size}
+ addUserKnob {26 GREEN_channel_blur}
+ addUserKnob {41 size_1 l size T G_Blur.size}
+ addUserKnob {26 BLU_channel_blur}
+ addUserKnob {41 size_2 l size T B_blur.size}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 185
+  ypos -14
+ }
+set N6002eb0 [stack 0]
+ Shuffle {
+  green black
+  blue black
+  alpha black
+  name Shuffle6
+  xpos -161
+  ypos 183
+ }
+set N6072450 [stack 0]
+push $N6072450
+ Blur {
+  channels {rgba.red -rgba.green -rgba.blue}
+  size 2
+  name R_Blur
+  xpos -361
+  ypos 176
+ }
+set N76b6410 [stack 0]
+ Merge2 {
+  inputs 2
+  operation min
+  Achannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  output {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  name Min4
+  xpos -161
+  ypos 334
+ }
+set N606c810 [stack 0]
+push $N606c810
+push $N76b6410
+push $N6072450
+ Merge2 {
+  inputs 2
+  operation max
+  Achannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  output {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  name Max4
+  xpos -361
+  ypos 336
+ }
+ Merge2 {
+  inputs 2
+  operation average
+  Achannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  output {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  name Merge6
+  xpos -269
+  ypos 439
+ }
+push $N6002eb0
+ Shuffle {
+  red black
+  blue black
+  alpha black
+  name Shuffle5
+  xpos 185
+  ypos 97
+ }
+set N60629f0 [stack 0]
+push $N60629f0
+ Blur {
+  channels {-rgba.red rgba.green -rgba.blue}
+  size 2
+  name G_Blur
+  xpos 185
+  ypos 209
+ }
+set N76c7be0 [stack 0]
+ Merge2 {
+  inputs 2
+  operation min
+  Achannels {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  output {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  name Min5
+  xpos 315
+  ypos 272
+ }
+push $N76c7be0
+push $N60629f0
+ Merge2 {
+  inputs 2
+  operation max
+  Achannels {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  output {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  name Max5
+  xpos 51
+  ypos 271
+ }
+ Merge2 {
+  inputs 2
+  operation average
+  name Merge7
+  xpos 186
+  ypos 336
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red rgba.green -rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green -rgba.blue rgba.alpha}
+  name Merge8
+  xpos 186
+  ypos 439
+ }
+push $N6002eb0
+ Shuffle {
+  red black
+  green black
+  alpha black
+  name Shuffle4
+  xpos 557
+  ypos 278
+ }
+set N76c3490 [stack 0]
+push $N76c3490
+ Blur {
+  channels {-rgba.red -rgba.green rgba.blue}
+  size 2
+  name B_blur
+  xpos 557
+  ypos 391
+ }
+set N76f4ef0 [stack 0]
+ Merge2 {
+  inputs 2
+  operation min
+  Achannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  output {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  name Min3
+  xpos 694
+  ypos 451
+ }
+push $N76f4ef0
+push $N76c3490
+ Merge2 {
+  inputs 2
+  operation max
+  Achannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  output {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  name Max3
+  xpos 424
+  ypos 421
+ }
+ Merge2 {
+  inputs 2
+  operation average
+  Achannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  output {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  name Merge9
+  xpos 560
+  ypos 541
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {rgba.red rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {-rgba.red -rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Merge10
+  xpos 186
+  ypos 548
+ }
+ Output {
+  name Output1
+  xpos 186
+  ypos 638
+ }
+set N76d2350 [stack 0]
+push $N76d2350
+ Viewer {
+  inputs 3
+  input_process false
+  name Viewer1
+  selected true
+  xpos -275
+  ypos 904
+ }
+end_group

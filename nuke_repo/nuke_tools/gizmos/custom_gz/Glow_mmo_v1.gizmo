@@ -1,0 +1,234 @@
+#! C:/Program Files/Nuke8.0v5/nuke-8.0.v5.dll -nx
+version 8.0 v5
+Gizmo {
+ addUserKnob {20 Glow}
+ addUserKnob {41 saturation l "Pre Blur Saturation" T ColorCorrect10.saturation}
+ addUserKnob {41 gamma l "Pre Blur Gamma" T ColorCorrect10.gamma}
+ addUserKnob {41 gain_6 l "Pre Blur Gain" T ColorCorrect10.gain}
+ addUserKnob {26 ""}
+ addUserKnob {41 size l "Glow Size" T Blur1.size}
+ addUserKnob {41 gain l "Blur1 Gain" T ColorCorrect1.gain}
+ addUserKnob {41 gain_1 l "Blur2 Gain" T ColorCorrect2.gain}
+ addUserKnob {41 gain_2 l "Blur3 Gain" T ColorCorrect3.gain}
+ addUserKnob {41 gain_3 l "Blur4 Gain" T ColorCorrect4.gain}
+ addUserKnob {41 gain_4 l "Blur5 Gain" T ColorCorrect5.gain}
+ addUserKnob {41 gain_5 l "Blur6 Gain" T ColorCorrect6.gain}
+ addUserKnob {41 gain_7 l "Blur7 Gain" T ColorCorrect7.gain}
+ addUserKnob {41 gain_8 l "Blur8 Gain" T ColorCorrect8.gain}
+ addUserKnob {41 gain_9 l "Blur9 Gain" T ColorCorrect9.gain}
+ addUserKnob {41 gain_10 l "Blur10 Gain" T ColorCorrect11.gain}
+ addUserKnob {6 effectOnly l "Effect Only" +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 1017
+  ypos -86
+ }
+ Dot {
+  name Dot22
+  xpos 1051
+  ypos -46
+ }
+ ColorCorrect {
+  name ColorCorrect10
+  xpos 1017
+  ypos -28
+ }
+set Nd7e4fae0 [stack 0]
+ Dot {
+  name Dot1
+  xpos 674
+  ypos 107
+ }
+set Nd7d7ca40 [stack 0]
+ Dot {
+  name Dot2
+  xpos 674
+  ypos 509
+ }
+push $Nd7e4fae0
+ Shuffle {
+  alpha black
+  name Shuffle1
+  label "\[value in]"
+  xpos 1017
+  ypos 22
+ }
+set Nd7a34510 [stack 0]
+ Blur {
+  size {{parent.Blur1.size*2*2*2*2*2*2*2*2*2}}
+  name Blur10
+  label "Size \[value size]"
+  xpos 1893
+  ypos 117
+ }
+ ColorCorrect {
+  name ColorCorrect11
+  xpos 1893
+  ypos 165
+ }
+push 0
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2*2*2*2*2*2*2}}
+  name Blur9
+  label "Size \[value size]"
+  xpos 1750
+  ypos 124
+ }
+ ColorCorrect {
+  name ColorCorrect9
+  xpos 1750
+  ypos 172
+ }
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2*2*2*2*2*2}}
+  name Blur8
+  label "Size \[value size]"
+  xpos 1607
+  ypos 125
+ }
+ ColorCorrect {
+  name ColorCorrect8
+  xpos 1607
+  ypos 173
+ }
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2*2*2*2*2}}
+  name Blur7
+  label "Size \[value size]"
+  xpos 1483
+  ypos 124
+ }
+ ColorCorrect {
+  name ColorCorrect7
+  xpos 1483
+  ypos 172
+ }
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2*2*2*2}}
+  name Blur6
+  label "Size \[value size]"
+  xpos 1356
+  ypos 125
+ }
+ ColorCorrect {
+  name ColorCorrect6
+  xpos 1356
+  ypos 173
+ }
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2*2*2}}
+  name Blur5
+  label "Size \[value size]"
+  xpos 1230
+  ypos 125
+ }
+ ColorCorrect {
+  name ColorCorrect5
+  xpos 1230
+  ypos 173
+ }
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2*2}}
+  name Blur4
+  label "Size \[value size]"
+  xpos 1117
+  ypos 126
+ }
+ ColorCorrect {
+  name ColorCorrect4
+  xpos 1117
+  ypos 174
+ }
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2*2}}
+  name Blur3
+  label "Size \[value size]"
+  xpos 1003
+  ypos 123
+ }
+ ColorCorrect {
+  name ColorCorrect3
+  xpos 1003
+  ypos 171
+ }
+push 0
+push $Nd7a34510
+ Blur {
+  size {{parent.Blur1.size*2}}
+  name Blur2
+  label "Size \[value size]"
+  xpos 891
+  ypos 121
+ }
+ ColorCorrect {
+  name ColorCorrect2
+  xpos 891
+  ypos 169
+ }
+push $Nd7a34510
+ Blur {
+  size 1
+  name Blur1
+  label "Size \[value size]"
+  xpos 780
+  ypos 121
+ }
+ ColorCorrect {
+  name ColorCorrect1
+  xpos 780
+  ypos 169
+ }
+ Merge2 {
+  inputs 11+1
+  bbox B
+  name Merge3
+  xpos 1003
+  ypos 356
+ }
+set Na0ade030 [stack 0]
+push $Na0ade030
+push $Nd7d7ca40
+ Merge2 {
+  inputs 2
+  bbox B
+  name Merge1
+  xpos 856
+  ypos 356
+ }
+ Switch {
+  inputs 2
+  which {{parent.effectOnly}}
+  name Switch1
+  xpos 1002
+  ypos 434
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox1
+  xpos 1002
+  ypos 506
+ }
+set Nd7a33e30 [stack 0]
+ Output {
+  name Output1
+  xpos 1002
+  ypos 572
+ }
+push $Nd7a33e30
+ Viewer {
+  input_process false
+  name Viewer1
+  selected true
+  xpos 1322
+  ypos 506
+ }
+end_group

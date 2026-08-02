@@ -1,0 +1,18 @@
+set cut_paste_input [stack 0]
+version 13.1 v1
+push $cut_paste_input
+NoOp {
+name FIX_COLLECT_RELATIVE
+tile_color 0x999900ff
+note_font Arial
+note_font_size 15
+note_font_color 0xffffffff
+selected true
+xpos 4404
+ypos -49246
+hide_input true
+addUserKnob {20 Fix_Collect}
+addUserKnob {3 directories_count}
+directories_count 4
+addUserKnob {22 collect_relative T "from CollectTool.collect_tool.libs.fix_collects_reads import fix_path\nfix_path(nuke.thisNode().knob('directories_count').getValue())" +STARTLINE}
+}

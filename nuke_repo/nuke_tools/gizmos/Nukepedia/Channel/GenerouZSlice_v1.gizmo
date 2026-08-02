@@ -1,0 +1,214 @@
+#! /Applications/Nuke6.2v4/NukeX6.2v4.app/../Nuke6.2v4.app/Contents/MacOS/Nuke6.2v4 -nx
+version 6.2 v4
+Gizmo {
+ inputs 2
+ addUserKnob {20 Range_Tools l "Range Tools"}
+ addUserKnob {4 Output_Type l "Output Type" M {"Forward & Backward" "Forward Only" "Backward Only"}}
+ addUserKnob {26 ""}
+ addUserKnob {20 Range_Control l "Range Control" n 1}
+ addUserKnob {41 add l INVISIBLE +INVISIBLE T Offset.add}
+ addUserKnob {7 Position R -1 1}
+ addUserKnob {41 range l INVISIBLE +INVISIBLE T Range.range}
+ addUserKnob {7 DepthRange l Width}
+ DepthRange 1
+ addUserKnob {7 CoreWidth l "Core Width" R 0 0.99999}
+ addUserKnob {41 blackpoint l INVISIBLE +INVISIBLE T Grade_Core.blackpoint}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {41 which_1 l INVISIBLE +INVISIBLE T Choice.which}
+ addUserKnob {26 ""}
+ addUserKnob {6 UseMask l "Use Mask" +STARTLINE}
+ UseMask true
+ addUserKnob {41 MaskInput l "Mask Input" T Keyer2.input}
+ addUserKnob {41 which l INVISIBLE +INVISIBLE T UsingMask.which}
+ addUserKnob {26 ""}
+ addUserKnob {20 Info n 1}
+ Info 0
+ addUserKnob {26 Information l "Created by:" T "Aled Rhys Jones ©2011"}
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+}
+ Input {
+  inputs 0
+  name Mask
+  xpos -270
+  ypos -147
+  number 1
+ }
+ Keyer {
+  input alpha
+  invert true
+  operation "max keyer"
+  name Keyer2
+  xpos -270
+  ypos -35
+ }
+ Input {
+  inputs 0
+  name Depth
+  xpos -545
+  ypos -377
+ }
+ Grade {
+  channels depth
+  add {{parent.Position*-1 i x1 -0.0001}}
+  name Offset
+  tile_color 0xff0000ff
+  note_font "Geneva Bold Bold Bold Bold Bold Bold Bold Bold"
+  xpos -545
+  ypos -209
+ }
+ Multiply {
+  value 4
+  name Multiply2
+  xpos -545
+  ypos -169
+ }
+set N188e7360 [stack 0]
+ Dot {
+  name Dot1
+  xpos -707
+  ypos -161
+ }
+ Keyer {
+  input depth
+  operation "max keyer"
+  range {{(parent.DepthRange*-1*2)+2 i} {2+(2-range.A) i x1 4} 4 4}
+  name Range
+  tile_color 0xff0000ff
+  label "Range = 0 to 2"
+  note_font "Geneva Bold Bold Bold Bold Bold Bold Bold"
+  xpos -741
+  ypos -65
+ }
+ set C188efeb0 [stack 0]
+ Grade {
+  channels alpha
+  blackpoint {{0.5+(parent.CoreWidth/2) i}}
+  name Grade_Core
+  tile_color 0xff0000ff
+  xpos -741
+  ypos 26
+ }
+ set C188f5790 [stack 0]
+push $N188e7360
+ Invert {
+  channels alpha
+  name Invert3
+  xpos -545
+  ypos -135
+ }
+clone $C188efeb0 {
+  xpos -545
+  ypos -65
+  selected false
+ }
+ Invert {
+  channels alpha
+  name Invert5
+  xpos -545
+  ypos -19
+ }
+clone $C188f5790 {
+  xpos -545
+  ypos 142
+  selected false
+ }
+ ChannelMerge {
+  inputs 2
+  operation absminus
+  name ChannelMerge3
+  xpos -741
+  ypos 136
+ }
+ Invert {
+  channels alpha
+  name Invert4
+  xpos -741
+  ypos 182
+ }
+ Clamp {
+  channels alpha
+  minimum 1e-05
+  MinClampTo_enable true
+  name Clamp1
+  xpos -741
+  ypos 216
+ }
+ Dot {
+  name Dot4
+  xpos -707
+  ypos 255
+ }
+set N21e2ee00 [stack 0]
+push $N188e7360
+ Dot {
+  name Dot2
+  xpos -377
+  ypos -161
+ }
+ Keyer {
+  input depth
+  operation "max keyer"
+  range {2 2 4 4}
+  name Keyer1
+  xpos -411
+  ypos 142
+ }
+set N21e34230 [stack 0]
+ ChannelMerge {
+  inputs 2
+  operation out
+  name Backward
+  xpos -411
+  ypos 269
+ }
+push $N21e2ee00
+push $N21e34230
+ ChannelMerge {
+  inputs 2
+  operation in
+  name Forward
+  xpos -563
+  ypos 311
+ }
+push $N21e2ee00
+ Switch {
+  inputs 3
+  which {{Output_Type i}}
+  name Choice
+  tile_color 0xff0000ff
+  label "0: Band\n1: Band Forward\n2: Band Backward"
+  xpos -563
+  ypos 376
+ }
+ Shuffle {
+  in alpha
+  red black
+  green black
+  blue black
+  name Shuffle1
+  xpos -563
+  ypos 454
+ }
+set N21e4ada0 [stack 0]
+ ChannelMerge {
+  inputs 2
+  operation stencil
+  name ChannelMerge1
+  selected true
+  xpos -270
+  ypos 443
+ }
+push $N21e4ada0
+ Switch {
+  inputs 2
+  which {{parent.UseMask i x1 1}}
+  name UsingMask
+  xpos -400
+  ypos 587
+ }
+ Output {
+  name Output1
+  xpos -400
+  ypos 663
+ }
+end_group

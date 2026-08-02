@@ -1,0 +1,110 @@
+Group {
+ name apDirBlur
+ help "Simpler and more intuitive Directional Blur. Through placing two points, the Directional Blur is applied taking into account both the distance and angle between the points.\n\napDirBlur v0.1 by Adrian Pueyo\nwww.adrianpueyo.com, 2016"
+ knobChanged "\nif nuke.thisNode()\['length'].getValue()==1:\n    nuke.thisNode()\['value'].setEnabled(True)\nelse:\n    nuke.thisNode()\['value'].setEnabled(False)\n"
+ tile_color 0xd0824eff
+ selected true
+ addUserKnob {20 apDirBlur}
+ addUserKnob {41 channels T DirBlur.channels}
+ addUserKnob {41 p0 l "point 0" T RampPoints.p0}
+ addUserKnob {41 p1 l "point 1" T RampPoints.p1}
+ addUserKnob {26 space l "" +STARTLINE T " "}
+ addUserKnob {4 length M {"distance between p0 and p1" "arbitrary value" "" ""}}
+ addUserKnob {7 value +DISABLED R 0 100}
+ value {0}
+ addUserKnob {7 multiplier R 0 10}
+ multiplier {1}
+ addUserKnob {41 filter T DirBlur.filter}
+ addUserKnob {41 quality l "" -STARTLINE T DirBlur.quality}
+ addUserKnob {6 crop_to_format l "crop to format" -STARTLINE}
+ crop_to_format true
+ addUserKnob {26 ""}
+ addUserKnob {41 maskChannel l "mask channel" T KeymixDirBlur.maskChannel}
+ addUserKnob {7 mix}
+ mix {1}
+ addUserKnob {26 copyright l "" +STARTLINE T "\napDirBlur v0.1 - adrianpueyo.com, 2016"}
+}
+ Input {
+  inputs 0
+  name Inputmask
+  xpos 180
+  ypos 66
+  number 1
+ }
+ Invert {
+  name Invert1
+  xpos 180
+  ypos 90
+ }
+ Input {
+  inputs 0
+  name Inputimg
+  xpos 70
+  ypos -82
+ }
+set N2395c720 [stack 0]
+ NoOp {
+  name DirBlurController
+  xpos 70
+  ypos -58
+  addUserKnob {20 DirBlurController}
+  addUserKnob {7 distance}
+  distance {{sqrt(pow(parent.p0.x-parent.p1.x,2)+pow(parent.p0.y-parent.p1.y,2))}}
+  addUserKnob {7 rotation}
+  rotation {{degrees(atan((parent.p1.x-parent.p0.x)/(parent.p1.y-parent.p0.y)))+90}}
+ }
+ Ramp {
+  output none
+  p0 {100 100}
+  p1 {100 200}
+  name RampPoints
+  xpos 70
+  ypos -34
+ }
+ Transform {
+  rotate {{parent.DirBlurController.rotation}}
+  center {753 602}
+  name TransformIn
+  xpos 70
+  ypos -2
+ }
+ Blur {
+  channels rgba
+  size {{parent.length==1?parent.value*parent.multiplier:DirBlurController.distance*parent.multiplier} 0}
+  quality {15}
+  name DirBlur
+  xpos 70
+  ypos 22
+ }
+ Transform {
+  rotate {{-parent.DirBlurController.rotation}}
+  center {753 602}
+  name TransformOut
+  xpos 70
+  ypos 46
+ }
+ Crop {
+  box {{max(input.bbox.x,parent.bbox.x)} {max(input.bbox.y,parent.bbox.y)} {min(input.bbox.r,input.width)} {min(input.bbox.t,input.height)}}
+  crop false
+  name CropToBBox
+  xpos 70
+  ypos 70
+  disable {{!parent.crop_to_format}}
+ }
+push $N2395c720
+ Keymix {
+  inputs 3
+  channels {{{parent.DirBlur.channels}}}
+  invertMask true
+  mix {{parent.mix}}
+  name KeymixDirBlur
+  selected true
+  xpos 70
+  ypos 94
+ }
+ Output {
+  name Output1
+  xpos 70
+  ypos 118
+ }
+end_group

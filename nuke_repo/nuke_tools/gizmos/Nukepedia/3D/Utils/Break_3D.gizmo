@@ -1,0 +1,49 @@
+#! C:/Program Files/Nuke6.3v4/Nuke6.3.exe -nx
+version 6.3 v4
+Gizmo {
+ note_font Verdana
+ mapsize {0.15 0.15}
+ addUserKnob {20 User l Break}
+ addUserKnob {41 scale l "Break Ratio" T Transform4.scale}
+ addUserKnob {41 filter l "Reddux Filter" T Transform4.filter}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 265
+  ypos 53
+ }
+ Transform {
+  scale 0.36
+  center {960 540}
+  filter Mitchell
+  name Transform4
+  xpos 265
+  ypos 93
+ }
+ Blur {
+  name Blur2
+  xpos 339
+  ypos 125
+ }
+ Transform {
+  scale {{parent.Transform4.scale i}}
+  center {960 540}
+  invert_matrix true
+  filter Mitchell
+  name Transform5
+  xpos 266
+  ypos 182
+ }
+ Crop {
+  box {0 0 1920 1080}
+  name Crop2
+  xpos 266
+  ypos 222
+ }
+ Output {
+  name Output1
+  xpos 266
+  ypos 322
+ }
+end_group

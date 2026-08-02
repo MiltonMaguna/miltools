@@ -1,0 +1,179 @@
+#! C:/Program Files/Nuke15.1v9/nuke-15.1.9.dll -nx
+version 15.1 v9
+Gizmo {
+ tile_color 0xffbe00ff
+ label "aspect = 19:6\naspect = 4:5\naspect = 9:16"
+ addUserKnob {20 User}
+ addUserKnob {41 disable_16_9 l Disable_16_9 T Write_169.disable}
+ addUserKnob {41 disable_4_5 l Disable_4_5 T Write_45.disable}
+ addUserKnob {41 disable_9_16 l Disable_9_16 T Write_916.disable}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {22 Render T "# get data Read, filename and first and last frame\nn = nuke.thisNode()\nnode_input = n.input(0)\n\nif node_input.Class() == 'Read':\n    \n    file = node_input.knob(\"file\").value()\n    frames = \[\[int(node_input.knob('first').getValue()), int(node_input.knob('last').getValue()), 1]]\n\n    # name\n    dir_path, file_name = os.path.split(file)\n    file_name, _ = os.path.splitext(file_name)\n\n    parts = file_name.split('_')\n    if not len(parts) > 1:\n        name = parts\[0]\n    name = '_'.join(parts\[:2])\n\n    # extension\n    ext = 'mov'\n    # fps\n    fps = int(nuke.root().fps())\n\n    # loop inside group\n    n.begin()\n\n    nodes_render = \[]\n    for node in nuke.allNodes():\n        if node.Class() == 'Write':\n\n            aspect = node.knob('aspect').getValue()\n            filename = (os.path.join(dir_path, f'\{name\}_\{aspect\}.\{ext\}')).replace('\\\\', '/')\n            \n            # knob\n            node.knob('file').setValue(filename)\n            node.knob('mov64_fps').setValue(fps)\n\n            if int(node.knob(\"disable\").getValue()):\n                print(f'NOT RENDER \{node.knob(\"name\").getValue()\}')\n                continue\n\n            nodes_render.append(node)\n\n    nuke.executeMultiple((tuple(nodes_render)), frames)\nelse:\n    nuke.message(\"Connect input directly to Read\")" +STARTLINE}
+ addUserKnob {26 version l "" +STARTLINE T "renders aspect v001"}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -916
+  ypos -443
+ }
+ NoOp {
+  name data_write
+  xpos -916
+  ypos -374
+  addUserKnob {20 User}
+  addUserKnob {26 enable}
+  addUserKnob {6 format_16_9 +STARTLINE}
+  addUserKnob {6 format_9_16 +STARTLINE}
+  addUserKnob {6 format_4_5 +STARTLINE}
+  addUserKnob {3 first_frame}
+  addUserKnob {3 last_frame -STARTLINE}
+  addUserKnob {22 python_button T "n = nuke.thisNode()\nfile = n.input(0).knob(\"file\").value()" +STARTLINE}
+  addUserKnob {20 custom_name}
+  addUserKnob {1 format_169}
+  format_169 _169
+  addUserKnob {1 format_45}
+  format_45 _45
+  addUserKnob {1 format_916}
+  format_916 _916
+ }
+ Dot {
+  name Dot1
+  xpos -882
+  ypos -322
+ }
+set Nc4dac400 [stack 0]
+ Output {
+  name Output1
+  xpos -432
+  ypos -325
+ }
+push $Nc4dac400
+ Reformat {
+  type "to box"
+  format "1920 1080 0 0 1920 1080 1 HD_1080"
+  box_width 1000
+  box_height 1250
+  box_fixed true
+  resize height
+  name Reformat3
+  label "4:5\n "
+  xpos -916
+  ypos -250
+ }
+ Write {
+  file C:/Users/miltonmaguna.ESTUDIO/Desktop/borrar/REP_0010_4_5.mov
+  file_type mov
+  mov64_format "mov (QuickTime / MOV)"
+  mov64_codec appr
+  mov_h264_codec_profile "High 4:2:0 8-bit"
+  mov64_pixel_format {{0}}
+  mov64_quality High
+  mov64_fast_start true
+  mov64_write_timecode true
+  mov64_gop_size 12
+  mov64_b_frames 0
+  mov64_bitrate 20000
+  mov64_bitrate_tolerance 4000000
+  mov64_quality_min 1
+  mov64_quality_max 3
+  colorspace color_picking
+  create_directories true
+  checkHashOnRead false
+  version 3
+  ocioColorspace scene_linear
+  display ACES
+  view sRGB
+  name Write_45
+  xpos -916
+  ypos -148
+  addUserKnob {20 custom_name}
+  addUserKnob {1 aspect}
+  aspect 4_5
+ }
+push $Nc4dac400
+ Reformat {
+  type "to box"
+  format "1920 1080 0 0 1920 1080 1 HD_1080"
+  box_width 1080
+  box_height 1920
+  box_fixed true
+  resize height
+  name Reformat2
+  label "9:16\n "
+  xpos -671
+  ypos -250
+ }
+ Write {
+  file C:/Users/miltonmaguna.ESTUDIO/Desktop/borrar/REP_0010_9_16.mov
+  file_type mov
+  mov64_format "mov (QuickTime / MOV)"
+  mov64_codec appr
+  mov_h264_codec_profile "High 4:2:0 8-bit"
+  mov64_pixel_format {{0}}
+  mov64_quality High
+  mov64_fast_start true
+  mov64_write_timecode true
+  mov64_gop_size 12
+  mov64_b_frames 0
+  mov64_bitrate 20000
+  mov64_bitrate_tolerance 4000000
+  mov64_quality_min 1
+  mov64_quality_max 3
+  colorspace color_picking
+  create_directories true
+  checkHashOnRead false
+  version 3
+  ocioColorspace scene_linear
+  display ACES
+  view sRGB
+  name Write_916
+  xpos -671
+  ypos -148
+  addUserKnob {20 custom_name}
+  addUserKnob {1 aspect}
+  aspect 9_16
+ }
+push $Nc4dac400
+ Reformat {
+  type "to box"
+  format "1920 1080 0 0 1920 1080 1 HD_1080"
+  box_width 1920
+  box_height 1080
+  box_fixed true
+  name Reformat1
+  label 16:9
+  xpos -1135
+  ypos -250
+ }
+ Write {
+  file C:/Users/miltonmaguna.ESTUDIO/Desktop/borrar/REP_0010_16_9.mov
+  file_type mov
+  mov64_format "mov (QuickTime / MOV)"
+  mov64_codec appr
+  mov_h264_codec_profile "High 4:2:0 8-bit"
+  mov64_pixel_format {{0}}
+  mov64_quality High
+  mov64_fast_start true
+  mov64_write_timecode true
+  mov64_gop_size 12
+  mov64_b_frames 0
+  mov64_bitrate 20000
+  mov64_bitrate_tolerance 4000000
+  mov64_quality_min 1
+  mov64_quality_max 3
+  colorspace color_picking
+  create_directories true
+  checkHashOnRead false
+  version 3
+  ocioColorspace scene_linear
+  display ACES
+  view sRGB
+  name Write_169
+  xpos -1135
+  ypos -143
+  addUserKnob {20 custom_name}
+  addUserKnob {1 aspect}
+  aspect 16_9
+ }
+end_group
